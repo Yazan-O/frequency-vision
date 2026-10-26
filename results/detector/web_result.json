@@ -1,0 +1,19 @@
+{
+ "rgb_only": {
+  "false_alarms": 34796,
+  "false_alarms_per_min": 412.69,
+  "recall": 0.544,
+  "precision": 0.67,
+  "map50": 0.505,
+  "note": "OpenCV 5 DNN drone detector alone, score >= 0.125, false detections over 84.3 min of FRED test video"
+ },
+ "rgb_event": {
+  "false_alarms": 26006,
+  "false_alarms_per_min": 308.44,
+  "recall": 0.544,
+  "precision": 0.731,
+  "map50": 0.516,
+  "note": "same detector, a box is kept only if its events show a propeller hum (hum_train_chosen: {'snr': 3, 'min_events': 0}), rule chosen on train"
+ },
+ "source": "eval/run_eval.py, FRED test, all 47 sequences, every frame; full metrics in results_test.json"
+}

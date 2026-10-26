@@ -1,0 +1,35 @@
+{
+ "n_seq_test": 47,
+ "stride": 15,
+ "win_ms": 100.0,
+ "min_events_per_tile": 20,
+ "tile_px": 8,
+ "method": "strobe.freq.frequency_map on 8x8-pixel tiles over the full 1280x720 sensor; each connected group of active tiles is one box scored by its strongest hum; score threshold chosen on held-out train sequences",
+ "c_event_only_iou0.5": {
+  "ap": 0.0659342667386045,
+  "score_thr_from_trainval": 25.46,
+  "tp": 1292,
+  "fp": 6123,
+  "fn": 7351,
+  "precision": 0.17424140256237355,
+  "recall": 0.14948513247714915,
+  "f1": 0.1609166770457093,
+  "false_alarms_per_min": 1091.6600633914422,
+  "false_alarm_frames_per_min": 562.3217115689382
+ },
+ "n_frames": 10096,
+ "minutes": 5.608888888888889,
+ "n_gt": 8643,
+ "c_event_only_iou0.1": {
+  "ap": 0.25077761346546945,
+  "score_thr_from_trainval": 25.46,
+  "tp": 2826,
+  "fp": 4589,
+  "fn": 5817,
+  "precision": 0.3811193526635199,
+  "recall": 0.32696980215203053,
+  "f1": 0.3519740939095778,
+  "false_alarms_per_min": 818.1656101426307,
+  "false_alarm_frames_per_min": 349.80190174326464
+ }
+}
