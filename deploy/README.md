@@ -6,14 +6,15 @@ Live endpoint: `https://<public-ip-with-dashes>.sslip.io` (`/health`, `/version`
 
 | Resource | Name | Purpose |
 |---|---|---|
-| EC2 `t4g.small` (Graviton2, Ubuntu 24.04 arm64, 30 GB gp3, CPU credits `standard`) | `strobe` | always-on endpoint |
+| EC2 `c8g.medium` (Graviton4) from the COOL Graviton4 Marketplace AMI | `strobe-cool` | live endpoint, served by COOL (`python deploy/aws.py cool --type c8g.medium`) |
+| EC2 `t4g.small` (Graviton2, Ubuntu 24.04 arm64), optional | `strobe` | pip OpenCV 5 endpoint without a COOL subscription (`python deploy/aws.py web`) |
 | Security group | `opencv26-strobe-web` | inbound 80 and 443 only; no SSH (shell access is SSM Session Manager) |
 | IAM role and instance profile | `opencv26-strobe-ec2` | SSM, CloudWatch agent, S3 bucket, Bedrock InvokeModel |
 | S3 bucket | `opencv26-strobe-<random>` | release bundles and benchmark outputs |
 | CloudWatch | log group `/opencv26/strobe`, namespace `opencv26/strobe`, alarm `strobe-auto-recover` | app log, memory and disk, EC2 auto-recover |
-| Budget | `opencv26-alert` | email when actual monthly spend passes the limit |
+| Budgets | `opencv26-alert`, `opencv26-daily` | email when actual monthly or daily spend passes the limit |
 
-On the instance: a Python venv at `/srv/strobe/venv` with `requirements.txt` (pip `opencv-contrib-python-headless==5.0.0.93`), `uvicorn` on 127.0.0.1:8080 as systemd unit `strobe`, Caddy in front with an automatic Let's Encrypt certificate for the free `sslip.io` name of the public IP, and a one-minute timer `strobe-health` that restarts the app if `/health` stops answering. No Elastic IP, NAT gateway or load balancer.
+On the COOL instance the app runs on COOL's own Python build through `/usr/local/bin/coolpy` (OpenCV from `/opt/cool`, KleidiCV HAL). On the pip instance: a Python venv at `/srv/strobe/venv` with `requirements.txt` (pip `opencv-contrib-python-headless==5.0.0.93`), `uvicorn` on 127.0.0.1:8080 as systemd unit `strobe`, Caddy in front with an automatic Let's Encrypt certificate for the free `sslip.io` name of the public IP, and a one-minute timer `strobe-health` that restarts the app if `/health` stops answering. No Elastic IP, NAT gateway or load balancer.
 
 ## Reproduce
 
