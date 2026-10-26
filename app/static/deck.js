@@ -20,7 +20,9 @@ const roled = clips.filter((c) => c.role === "demo" || c.role === "hard");
 const droneClips = (roled.length ? roled : clips.filter((c) => c.drone && c.cloud.crop)).filter((c) => c.cloud.crop)
   .sort((a, b) => (a.role === "hard") - (b.role === "hard") || (hzOf(a) || 1e9) - (hzOf(b) || 1e9));
 const bg = clips.find((c) => !c.drone) || clips[clips.length - 1];
-const modelOf = (c) => (c.hum && c.hum.model) || (c.classes && c.classes[0]) || "drone";
+const nice = (s) => String(s).replace(/cineape20ger/gi, "Cineape20 (GER)").replace(/cineape20(?! \(GER\))/gi, "Cineape20");
+const modelOf = (c) => nice((c.hum && c.hum.model) || (c.classes && c.classes[0]) || "drone");
+const showHz = (d, ref) => Math.round(ref && Math.abs(d.peak_hz - ref) <= 1.5 * Math.max(d.df || 0, 1) ? ref : d.peak_hz);
 const shortName = (c) => modelOf(c).replace(/^(DJI|DarwinFPV|Betafpv)\s+/i, "");
 const cur = { clip: null, crop: null, HZ: null, imgs: null, i: 0 };
 const bufs = {};
@@ -282,7 +284,6 @@ function slide3() {
     const isDrone = host.dataset.side === "drone";
     const st = { clip: null, frame: 0, box: 0, req: 0, played: false };
     const head = el("div", "head");
-    head.append(icon(isDrone ? "i-drone" : "i-nodrone"));
     const verdict = el("span", "verdict", "…"); const score = { set textContent(v) { verdict.title = v; } };
     const prov = el("button", "prov"); prov.append(icon("i-data")); prov.setAttribute("aria-label", "Data source");
     tipOn(prov, () => `${st.clip.provenance} · ${st.clip.title} · seq ${st.clip.seq}`);
@@ -314,7 +315,7 @@ function slide3() {
       });
       ctx.setLineDash([]);
       boxes.replaceChildren(...f.boxes.map((b, i) => {
-        const btn = el("button", "iconbtn"); btn.append(icon(b.kind === "drone" ? "i-drone" : "i-frame"));
+        const btn = el("button", "btn chip", b.kind === "drone" ? "drone" : `box ${i + 1}`);
         btn.setAttribute("aria-label", `${b.kind === "drone" ? "Drone box (FRED annotation)" : b.label} ${Math.round(b.box[2] - b.box[0])} by ${Math.round(b.box[3] - b.box[1])} px`);
         btn.setAttribute("aria-pressed", String(i === st.box));
         btn.addEventListener("click", () => { st.box = i; paint(); st.run(); });
@@ -338,11 +339,11 @@ function slide3() {
         if (id !== st.req) return;
         st.data = d;
         verdict.className = "verdict" + (d.clear ? " hum" : "");
-        verdict.replaceChildren(icon(d.clear ? "i-wave" : "i-x"), document.createTextNode(d.clear ? `${Math.round(d.peak_hz)} Hz` : "no hum"));
+        verdict.textContent = `${isDrone ? "Drone box" : "No drone"}: ${d.clear ? `${showHz(d, hzOf(clip))} Hz` : "no hum"}`;
         score.textContent = `score ${fmt(d.snr, 0)} (hum ≥ ${d.clear_snr}) · ${d.n_events.toLocaleString()} events`;
         verdict.title += ` · peak ${d.peak_hz} Hz, ${d.mode === "live" ? `computed live in ${d.compute_ms} ms by ${d.source}` : d.source}`;
-        svg.setAttribute("aria-label", `${isDrone ? "Drone" : "No-drone"} clip box spectrum: ${d.clear ? "hums at " + Math.round(d.peak_hz) + " Hz" : "no hum"}, peak score ${fmt(d.snr, 1)}, ${d.n_events} events, ${d.window_ms} ms window, ${d.mode}`);
-        animateSpec(svg, d, current === 2 || st.played);
+        svg.setAttribute("aria-label", `${isDrone ? "Drone" : "No-drone"} clip box spectrum: ${d.clear ? "hums at " + showHz(d, hzOf(clip)) + " Hz" : "no hum"}, peak score ${fmt(d.snr, 1)}, ${d.n_events} events, ${d.window_ms} ms window, ${d.mode}`);
+        animateSpec(svg, d, current === 2 || st.played, showHz(d, hzOf(clip)));
         st.played = st.played || current === 2;
       } catch (e) { if (id === st.req) verdict.textContent = "offline"; }
     };
@@ -359,7 +360,7 @@ function slide3() {
   spec.sides.bg.setClip(bg);
 }
 
-function animateSpec(svg, d, animate) {
+function animateSpec(svg, d, animate, hzLabel) {
   const W = 600, H = 300, L = 44, R = 8, T = 10, B = 40, fmax = 1200;
   const X = (f) => L + (f / fmax) * (W - L - R);
   const Y = (v) => T + (1 - (Math.log10(Math.max(v, 0.1)) + 1) / 5) * (H - T - B);
@@ -379,7 +380,7 @@ function animateSpec(svg, d, animate) {
     if (!d.clear) return;
     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
     const px = X(d.peak_hz), py = Y(pv), right = px < W - 130;
-    g.innerHTML = `<circle class="pk pulse" cx="${px}" cy="${py}" r="9" filter="url(#glow)"/><circle class="pk" cx="${px}" cy="${py}" r="4.5"/><text class="pkl" x="${right ? px + 14 : px - 14}" y="${Math.max(py - 12, T + 18)}" text-anchor="${right ? "start" : "end"}">${Math.round(d.peak_hz)} Hz</text>`;
+    g.innerHTML = `<circle class="pk pulse" cx="${px}" cy="${py}" r="9" filter="url(#glow)"/><circle class="pk" cx="${px}" cy="${py}" r="4.5"/><text class="pkl" x="${right ? px + 14 : px - 14}" y="${Math.max(py - 12, T + 18)}" text-anchor="${right ? "start" : "end"}">${hzLabel ?? Math.round(d.peak_hz)} Hz</text>`;
     svg.append(g);
   };
   if (!animate || reduce) { frame(1); finish(); return; }
@@ -390,34 +391,40 @@ function animateSpec(svg, d, animate) {
 
 const STAGE = { detect_frame: "look", track: "look", box_spectrum: "listen", request_window: "listen", frequency_map: "listen", event_map: "listen", ask_human: "decide", raise_alert: "decide", finish: "decide" };
 const TOOL_ICON = { detect_frame: "i-camera", track: "i-track", box_spectrum: "i-sine", request_window: "i-clock", frequency_map: "i-events", event_map: "i-events", ask_human: "i-human", raise_alert: "i-alert", finish: "i-flag" };
+const ACT = { detect_frame: "camera", track: "follow", box_spectrum: "listen", request_window: "listen longer", frequency_map: "hum map", event_map: "motion map", ask_human: "ask you", raise_alert: "alert", finish: "finish" };
+const LANES = [["look", "Look", "camera and follow"], ["listen", "Listen", "event camera hum"], ["decide", "Decide", "ask, alert, finish"]];
 const epKind = (ep) => { const c = clips.find((x) => x.id === ep.episode); return /^late/.test(ep.episode) ? "late" : (c ? !c.drone : /^background/.test(ep.episode)) ? "none" : "drone"; };
 const EP_LABEL = { drone: "drone", late: "late drone", none: "no drone" };
 const EP_ICON = { drone: "i-drone", late: "i-late", none: "i-nodrone" };
-const agent = { ep: null, timer: null, run: false, shown: false };
+const STORY = { late: "The camera detector sees nothing. The hum map finds the drone it missed.", drone: "The camera proposes boxes. Listening tells which one hums.", none: "No boxes and no hum spots, so no alert.", rule: "Fixed rules on the same tools, for comparison." };
+const agent = { ep: null, timer: null, run: false, wait: null, items: [], k: 0, hz: null, live: null };
+const epHz = (ep) => { const r = ep.rows.slice().reverse().find((x) => x.kind === "step" && x.result && x.result.verdict === "hum"); return r ? r.result.peak_hz : null; };
+const heading = (v) => { const a = Math.abs(v[0]) >= Math.abs(v[1]); return a ? (v[0] >= 0 ? "right" : "left") : (v[1] >= 0 ? "down" : "up"); };
 
 function cardFor(r, k, steps) {
   const x = r.result || {}, stage = STAGE[r.tool] || "listen", li = el("li", stage);
   li.dataset.st = stage; li.style.setProperty("--d", `${k * 45}ms`);
-  if (r.tool === "ask_human") return askCard(r, k, steps, li);
-  const top = el("div", "top"); top.append(icon(TOOL_ICON[r.tool] || "i-wave"), el("span", "n", String(r.step)));
+  if (r.tool === "ask_human" && !agent.live) return askCard(r, k, steps, li);
+  const top = el("div", "top"); top.append(icon(TOOL_ICON[r.tool] || "i-wave"), el("span", "n", ACT[r.tool] || r.tool));
   let v = r.tool, w = null, cls = "";
   if (r.guard && r.guard !== "ok") { v = "blocked"; cls = "nohum"; }
   else if (x.error) { v = "error"; cls = "nohum"; }
   else switch (r.tool) {
-    case "detect_frame": { const n = (x.detections || []).length; v = `${n} box${n === 1 ? "" : "es"}`; cls = n ? "" : "nohum"; break; }
+    case "detect_frame": { const n = (x.detections || []).length; v = n ? `${n} box${n === 1 ? "" : "es"}` : "nothing"; w = n ? "possible drone" : "no drone seen"; cls = n ? "" : "nohum"; break; }
     case "box_spectrum": case "request_window":
-      v = `${Math.round(x.peak_hz)} Hz`; w = [r.tool === "request_window" ? "i-clock" : null, `${x.window_ms} ms`];
+      v = `${Math.round(x.peak_hz)} Hz`; w = `${x.verdict === "hum" ? "hums" : x.verdict === "ambiguous" ? "unsure" : "no hum"}, ${x.window_ms} ms`;
       cls = x.verdict === "hum" ? "hum" : x.verdict === "ambiguous" ? "maybe" : "nohum"; break;
-    case "frequency_map": case "event_map": v = x.dominant_hz ? `${Math.round(x.dominant_hz)} Hz` : "no hum"; cls = x.hum_pixels ? "maybe" : "nohum"; break;
-    case "track": v = x.lost ? "lost" : `${Math.round(x.displacement_px)} px`; w = ["i-track", "followed"]; break;
-    case "raise_alert": v = "alert"; cls = "alert"; break;
-    case "finish": v = x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict); cls = "fin"; break;
+    case "frequency_map": case "event_map": { const s = (x.hum_spots || []).length; v = x.dominant_hz ? `${Math.round(x.dominant_hz)} Hz` : "no hum"; w = s ? "humming spot found" : "no humming spot"; cls = s ? "maybe" : "nohum"; break; }
+    case "track": v = x.lost ? "lost it" : "still there"; w = x.lost ? null : `moving ${heading(x.velocity_px_s || [0, 0])}`; cls = x.lost ? "nohum" : ""; break;
+    case "raise_alert": v = "alert sent"; w = x.severity || null; cls = "alert"; break;
+    case "ask_human": v = x.approved ? "approved" : "not approved"; w = /^live page visitor/.test(x.responder || "") ? "by you" : x.responder || null; cls = x.approved ? "" : "nohum"; break;
+    case "finish": v = x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict); w = "final answer"; cls = "fin"; break;
   }
   if (cls) li.classList.add(cls);
   li.append(top, el("span", "v", v));
-  if (w) { const s = el("span", "w"); if (w[0]) s.append(icon(w[0])); s.append(document.createTextNode(w[1])); li.append(s); }
+  if (w) li.append(el("span", "w", w));
   const verdict = x.verdict ? `, verdict ${x.verdict}${x.snr != null ? `, score ${fmt(x.snr, 1)}` : ""}${x.n_events != null ? `, ${x.n_events} events` : ""}` : "";
-  li.setAttribute("aria-label", `Step ${r.step}, ${stage}: ${r.tool}, ${v}${w ? ", " + w[1] : ""}${verdict}`);
+  li.setAttribute("aria-label", `Step ${r.step}, ${stage}: ${ACT[r.tool] || r.tool}, ${v}${w ? ", " + w : ""}${verdict}`);
   li.title = `step ${r.step} · ${r.tool} · ${v}${verdict}`;
   li.tabIndex = 0;
   li.addEventListener("click", () => focusCard(k));
@@ -428,10 +435,11 @@ function askCard(r, k, steps, li) {
   const prior = steps.slice(0, k).reverse().find((s) => s.result && s.result.verdict === "hum");
   const hz = prior ? Math.round(prior.result.peak_hz) : null;
   li.classList.add("ask");
-  const top = el("div", "top"); top.append(icon("i-human"), el("span", "n", String(r.step)));
+  const top = el("div", "top"); top.append(icon("i-human"), el("span", "n", ACT.ask_human));
   const q = el("div", "q", hz ? `Drone humming at ${hz} Hz. Raise the alert?` : "Raise the alert?");
   const acts = el("div", "acts"), rec = el("span", "rec");
   const send = async (decision) => {
+    resume(li, decision);
     try {
       const res = await fetch("/api/approve", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ episode: agent.ep.episode, step: r.step, decision }) });
       if (!res.ok) throw new Error(res.status);
@@ -439,7 +447,7 @@ function askCard(r, k, steps, li) {
       rec.replaceChildren(icon(decision === "approve" ? "i-check" : "i-x"), document.createTextNode(`${d.approvals} · ${d.rejections}`));
       rec.setAttribute("aria-label", `Recorded on the server at ${d.utc}: ${d.decision}. Nothing external was triggered. ${d.approvals} approvals and ${d.rejections} rejections on this step so far.`);
       rec.title = `Recorded on the server, ${d.utc}. Nothing external triggered. ${d.approvals} approve / ${d.rejections} reject so far.`;
-    } catch (e) { rec.textContent = "offline"; }
+    } catch (e) { rec.textContent = "not recorded"; }
   };
   const a = el("button", "btn yes"); a.append(icon("i-check"), document.createTextNode("Approve")); a.addEventListener("click", () => send("approve"));
   const j = el("button", "btn no"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
@@ -451,32 +459,50 @@ function askCard(r, k, steps, li) {
 }
 
 function focusCard(k) {
-  const items = [...$("cards").children];
-  items.forEach((c, j) => c.classList.toggle("now", j === k));
-  const st = items[k] ? items[k].dataset.st : null;
-  document.querySelectorAll("#loop .st").forEach((s) => s.classList.toggle("on", s.dataset.st === st));
+  agent.items.forEach((c, j) => c.classList.toggle("now", j === k));
+  const st = agent.items[k] ? agent.items[k].dataset.st : null;
+  document.querySelectorAll("#cards .lane").forEach((s) => s.classList.toggle("on", s.dataset.st === st));
+}
+
+function playBtn(state) {
+  const b = $("replay");
+  b.classList.toggle("running", state !== "idle");
+  b.replaceChildren(icon(state === "idle" ? "i-play" : "i-pause"), el("span", "", state === "idle" ? "Play" : state === "wait" ? "Waiting for you" : "Stop"));
+  b.setAttribute("aria-label", state === "idle" ? "Play the agent steps one by one" : "Stop the replay");
 }
 
 function stopPlay() {
-  clearTimeout(agent.timer); agent.run = false;
-  const b = $("replay"); b.classList.remove("running"); b.replaceChildren(icon("i-play"), el("span", "", "Play")); b.setAttribute("aria-label", "Play the agent steps one by one");
+  clearTimeout(agent.timer); agent.run = false; agent.wait = null;
+  playBtn("idle");
+}
+
+function showAll() { agent.items.forEach((c) => c.classList.remove("hid")); $("agentnote").textContent = ""; }
+
+function step() {
+  if (!agent.run) return;
+  const c = agent.items[agent.k];
+  c.classList.remove("hid"); focusCard(agent.k);
+  if (!reduce) c.animate([{ opacity: 0, transform: "translateY(10px) scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
+  if (c.classList.contains("ask")) { agent.wait = c; playBtn("wait"); return; }
+  agent.k += 1;
+  if (agent.k < agent.items.length) agent.timer = setTimeout(step, reduce ? 300 : 600); else stopPlay();
+}
+
+function resume(li, decision) {
+  if (!agent.run || agent.wait !== li) return;
+  agent.wait = null;
+  if (decision === "approve") { playBtn("run"); agent.k += 1; if (agent.k < agent.items.length) agent.timer = setTimeout(step, reduce ? 300 : 600); else stopPlay(); return; }
+  stopPlay();
+  $("agentnote").textContent = "You rejected, so the replay stops here with no alert. In the recorded run the operator stand-in approved.";
 }
 
 function play() {
-  if (agent.run) { stopPlay(); [...$("cards").children].forEach((c) => { c.style.visibility = ""; }); focusCard(-1); return; }
-  agent.run = true;
-  const b = $("replay"); b.classList.add("running"); b.replaceChildren(icon("i-pause"), el("span", "", "Stop")); b.setAttribute("aria-label", "Stop the replay");
-  const items = [...$("cards").children];
+  if (agent.live) return;
+  if (agent.run) { stopPlay(); showAll(); focusCard(-1); return; }
+  agent.run = true; agent.k = 0; $("agentnote").textContent = "";
+  playBtn("run");
   $("cards").classList.remove("anim");
-  items.forEach((c) => { c.style.visibility = "hidden"; });
-  let k = 0;
-  const step = () => {
-    if (!agent.run) return;
-    items[k].style.visibility = ""; focusCard(k);
-    if (!reduce) items[k].animate([{ opacity: 0, transform: "translateY(14px) scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 380, easing: "cubic-bezier(.2,.8,.2,1)" });
-    k += 1;
-    if (k < items.length) agent.timer = setTimeout(step, reduce ? 300 : 750); else stopPlay();
-  };
+  agent.items.forEach((c) => c.classList.add("hid"));
   step();
 }
 
@@ -493,19 +519,107 @@ function slide4() {
     bar.append(b);
   });
   $("replay").addEventListener("click", play);
+  $("live").addEventListener("click", runLive);
   stopPlay();
-  const first = Math.max(0, eps.findIndex((e) => e.planner !== "rule" && epKind(e) === "drone"));
+  let first = eps.findIndex((e) => e.planner !== "rule" && epKind(e) === "late");
+  if (first < 0) first = Math.max(0, eps.findIndex((e) => e.planner !== "rule"));
   pickEp(eps[first], bar.children[first]);
 }
 
-function pickEp(ep, btn) {
+function makeLanes() {
+  return LANES.map(([st, name, sub]) => { const li = el("li", "lane"); li.dataset.st = st; const h = el("div", "lh"); h.append(el("b", "", name), el("span", "", sub)); const ol = el("ol", "row"); li.append(h, ol); return li; });
+}
+function addCard(lanes, c) { lanes[LANES.findIndex((l) => l[0] === c.dataset.st)].querySelector(".row").append(c); }
+
+function liveAsk(id, ask) {
+  const li = el("li", "decide ask pending"); li.dataset.st = "decide";
+  const m = /([\d.]+) Hz/.exec(ask.question || ""), top = el("div", "top");
+  top.append(icon("i-human"), el("span", "n", "asks you, live"));
+  const q = el("div", "q", m ? `Drone humming at ${Math.round(+m[1])} Hz. Raise a critical alert?` : "Raise a critical alert?");
+  const acts = el("div", "acts");
+  const send = async (decision) => {
+    acts.querySelectorAll("button").forEach((b) => { b.disabled = true; });
+    try { const r = await fetch(`/api/agent/live/${id}/decide`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ decision }) }); if (!r.ok) throw new Error(r.status); }
+    catch (e) { $("agentnote").textContent = `Decision not sent: ${e.message}`; }
+  };
+  const a = el("button", "btn yes"); a.append(icon("i-check"), document.createTextNode("Approve")); a.addEventListener("click", () => send("approve"));
+  const j = el("button", "btn no"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
+  acts.append(a, j);
+  li.append(top, q, acts);
+  li.setAttribute("aria-label", `The live agent asks you: ${q.textContent} Approve or Reject; it waits up to 60 seconds.`);
+  return li;
+}
+
+function stopLive() { if (agent.live) { clearTimeout(agent.live.t); agent.live = null; } $("live").disabled = false; }
+
+async function runLive() {
+  if (agent.live) return;
   stopPlay();
+  const btn = $("live"); btn.disabled = true;
+  let id;
+  try {
+    const r = await fetch("/api/agent/live", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario: "clear_210" }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || r.status);
+    id = d.id;
+  } catch (e) { $("agentnote").textContent = `Live run not started: ${e.message}`; btn.disabled = false; return; }
+  [...$("epbtns").children].forEach((o) => o.setAttribute("aria-pressed", "false"));
+  agent.live = { id, n: 0, t: null };
+  const lanes = makeLanes();
+  $("cards").classList.remove("anim");
+  $("cards").replaceChildren(...lanes); agent.items = [];
+  $("story").textContent = "Live: the fixed-rule planner is calling the real tools on the server now. It waits for you before a critical alert.";
+  $("replaytag").textContent = "Live run on the server · FRED sequence 210 · fixed rules";
+  $("replaytag").title = "";
+  $("agentnote").textContent = "Running on the server…";
+  const poll = async () => {
+    if (!agent.live || agent.live.id !== id) return;
+    let d;
+    try { d = await fetch(`/api/agent/live/${id}`).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+    catch (e) { agent.live.t = setTimeout(poll, 800); return; }
+    if (!agent.live || agent.live.id !== id) return;
+    const steps = d.rows.filter((r) => r.kind === "step");
+    for (let k = agent.live.n; k < steps.length; k++) {
+      const c = cardFor(steps[k], k, steps); agent.items.push(c); addCard(lanes, c); focusCard(agent.items.length - 1);
+      const x = steps[k].result || {};
+      if (x.verdict === "hum") { agent.hz = x.peak_hz; if (current === 4) setLogoHz(agent.hz); }
+    }
+    agent.live.n = steps.length;
+    const pend = $("cards").querySelector(".pending");
+    if (d.status === "waiting" && d.ask && !pend) { const c = liveAsk(id, d.ask); addCard(lanes, c); c.querySelector(".yes").focus({ preventScroll: true }); }
+    if (d.status !== "waiting" && pend) pend.remove();
+    if (d.status === "done") {
+      const s = d.summary;
+      const al = s && s.alerts && s.alerts[0];
+      $("agentnote").textContent = d.error ? `Live run failed: ${d.error}` : `Done in ${fmt(s.wall_s, 1)} s, ${s.steps} steps, all run live on the server. ${al ? (al.severity === "critical" ? "Critical alert raised after your approval." : `Without your approval the planner only raised a ${al.severity}.`) : "No alert."}`;
+      stopLive();
+      return;
+    }
+    $("agentnote").textContent = d.status === "waiting" ? "Waiting for you: Approve or Reject (60 s)." : "Running on the server…";
+    agent.live.t = setTimeout(poll, 400);
+  };
+  poll();
+}
+
+const plannerName = (ep) => ep.planner === "rule" ? "fixed rules" : /claude-sonnet-4-6/.test(ep.model || "") ? "Claude Sonnet 4.6 on Amazon Bedrock" : (ep.model || ep.planner);
+function pickEp(ep, btn) {
+  stopPlay(); stopLive();
   [...$("epbtns").children].forEach((o) => o.setAttribute("aria-pressed", String(o === btn)));
   agent.ep = ep;
   const steps = ep.rows.filter((r) => r.kind === "step");
   const host = $("cards");
   host.classList.remove("anim"); void host.offsetWidth; host.classList.add("anim");
-  host.replaceChildren(...steps.map((r, k) => cardFor(r, k, steps)));
+  const lanes = LANES.map(([st, name, sub]) => { const li = el("li", "lane"); li.dataset.st = st; const h = el("div", "lh"); h.append(el("b", "", name), el("span", "", sub)); const ol = el("ol", "row"); li.append(h, ol); return li; });
+  agent.items = steps.map((r, k) => cardFor(r, k, steps));
+  agent.items.forEach((c) => lanes[LANES.findIndex((l) => l[0] === c.dataset.st)].querySelector(".row").append(c));
+  host.replaceChildren(...lanes);
+  const sc = ep.rows.find((r) => r.kind === "start"), seq = sc && sc.scenario ? sc.scenario.seq : "";
+  $("story").textContent = STORY[ep.planner === "rule" ? "rule" : epKind(ep)];
+  $("replaytag").textContent = `Replay of a recorded run · FRED sequence ${seq} · ${ep.planner === "rule" ? "fixed rules" : "planned by Claude Sonnet 4.6"}`;
+  $("replaytag").title = `Planner: ${plannerName(ep)}. Episode ${ep.episode}.`;
+  $("agentnote").textContent = "";
+  agent.hz = epHz(ep);
+  if (current === 4) setLogoHz(agent.hz);
   focusCard(-1);
 }
 
@@ -553,16 +667,18 @@ async function slide5() {
   const b = d && d.bench, bb = $("benchbars");
   if (!b || b.status !== "ok") { bb.append(el("div", "win5", "pending")); return; }
   const short = { connectedComponentsWithStats: "components", dnn_forward: "DNN", GaussianBlur: "blur", cvtColor: "cvtColor", resize: "resize", dft: "DFT" };
+  const ratio = (o) => o.x86_over_graviton4 || o.x86_ms / o.graviton4_ms;
+  const ops = b.ops.slice().sort((p, q) => ratio(q) - ratio(p)), top = ops[0], rmax = ratio(top);
   const wins = b.ops.filter((o) => o.graviton4_ms < o.x86_ms).length;
-  const w = $("winner"); w.append(document.createTextNode(`${wins}/${b.ops.length}`)); w.append(el("small", "", "faster on Graviton4"));
-  w.setAttribute("aria-label", `Graviton4 ${b.graviton4.instance} faster than x86 ${b.x86.instance} on ${wins} of ${b.ops.length} OpenCV 5 operations, ${b.graviton4.threads} threads, p50 ms. Source ${b.graviton4.file} and ${b.x86.file}.`);
-  b.ops.forEach((o) => {
-    const m = Math.max(o.graviton4_ms, o.x86_ms), r = o.x86_over_graviton4 || o.x86_ms / o.graviton4_ms;
+  const w = $("winner"); w.append(document.createTextNode(`${fmt(ratio(top), 2)}×`)); w.append(el("small", "", `${short[top.op] || top.op} on Graviton4 · ${wins} of ${b.ops.length} faster`));
+  w.setAttribute("aria-label", `${top.op} runs ${fmt(ratio(top), 2)} times faster on Graviton4 ${b.graviton4.instance} than on x86 ${b.x86.instance}; Graviton4 is faster on ${wins} of ${b.ops.length} OpenCV 5 operations, ${b.graviton4.threads} threads, p50 ms. Source ${b.graviton4.file} and ${b.x86.file}.`);
+  ops.forEach((o) => {
+    const r = ratio(o);
     const row = el("div", "bbrow"); row.title = `${o.op}: Graviton4 ${fmt(o.graviton4_ms, 3)} ms, x86 ${fmt(o.x86_ms, 3)} ms`;
-    const bars = el("div", "bars2"); const g = el("div", "b g4"), x = el("div", "b x86");
-    g.style.width = (o.graviton4_ms / m * 100) + "%"; x.style.width = (o.x86_ms / m * 100) + "%";
-    g.style.transform = x.style.transform = "scaleX(0)";
-    bars.append(g, x);
+    const bars = el("div", "bars2"); const g = el("div", "b g4" + (r < 1 ? " lose" : ""));
+    g.style.width = (r / rmax * 100) + "%"; g.style.transform = "scaleX(0)";
+    const one = el("i", "one"); one.style.left = (100 / rmax) + "%";
+    bars.append(g, one);
     row.append(el("span", "", short[o.op] || o.op), bars, el("span", "r" + (r > 1 ? " win" : ""), `${fmt(r, 2)}×`));
     bb.append(row);
   });
@@ -602,7 +718,7 @@ function specPlot(ctx, d, box, opt) {
   if (d.peak_hz > 0) {
     const pv = d.power[Math.round(d.peak_hz / d.df)] || 1, px = X(d.peak_hz), py = Y(pv), right = px < x1 - 150;
     if (d.clear) { ctx.save(); ctx.shadowColor = HUM; ctx.shadowBlur = 22; ctx.fillStyle = HUM; ctx.beginPath(); ctx.arc(px, py, 8, 0, 7); ctx.fill(); ctx.restore(); }
-    txt(ctx, d.clear ? `${Math.round(d.peak_hz)} Hz` : `${Math.round(d.peak_hz)} Hz, no hum`, right ? px + 14 : px - 14, Math.max(py - 14, y0 + 22), { font: "500 24px 'JetBrains Mono', monospace", color: d.clear ? HUM : "#777", align: right ? "left" : "right" });
+    txt(ctx, d.clear ? `${showHz(d, cur.HZ)} Hz` : `${Math.round(d.peak_hz)} Hz, no hum`, right ? px + 14 : px - 14, Math.max(py - 14, y0 + 22), { font: "500 24px 'JetBrains Mono', monospace", color: d.clear ? HUM : "#777", align: right ? "left" : "right" });
   }
   return { X, Y };
 }
@@ -718,7 +834,7 @@ function drawSnr() {
   scx.fillStyle = "rgba(30,30,30,.05)";
   const pre = (f) => 40 + (f - f0) / (f1 - f0) * 560;
   scx.fillRect(pre(d.peak_hz - M.local), 20, pre(d.peak_hz + M.local) - pre(d.peak_hz - M.local), H - 60);
-  const { X, Y } = specPlot(scx, d, [40, 20, 600, H - 40], { f0, f1, ticks: [Math.round(d.peak_hz - 100), Math.round(d.peak_hz), Math.round(d.peak_hz + 100)] });
+  const { X, Y } = specPlot(scx, d, [40, 20, 600, H - 40], { f0, f1, ticks: [showHz(d, cur.HZ) - 100, showHz(d, cur.HZ), showHz(d, cur.HZ) + 100] });
   const loc = d.power.filter((p, k2) => Math.abs(k2 * d.df - d.peak_hz) <= M.local).slice().sort((a, b) => a - b);
   const med = loc[Math.floor(loc.length / 2)];
   scx.strokeStyle = INK; scx.lineWidth = 2; scx.setLineDash([8, 6]); scx.beginPath(); scx.moveTo(X(d.peak_hz - M.local), Y(med)); scx.lineTo(X(d.peak_hz + M.local), Y(med)); scx.stroke(); scx.setLineDash([]);
@@ -798,7 +914,7 @@ function clipBar() {
   droneClips.forEach((c) => {
     const HZ = hzOf(c), b = el("button", "btn" + (HZ ? "" : " hard"));
     b.append(el("span", "", shortName(c)), el("b", "", HZ ? `${Math.round(HZ)} Hz` : "hard case"));
-    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}, ${HZ ? "median hum " + HZ + " Hz" : "hard case, no clean peak"}: ${c.title}`);
+    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}, ${HZ ? "median hum " + HZ + " Hz" : "hard case, no clean peak"}: ${nice(c.title)}`);
     b.dataset.clip = c.id;
     b.addEventListener("click", () => setClip(c));
     bar.append(b);
@@ -822,7 +938,7 @@ function preload() {
 async function setClip(clip) {
   if (cur.clip === clip) return;
   cur.clip = clip; cur.HZ = hzOf(clip); cur.crop = null;
-  setLogoHz(cur.HZ);
+  if (current !== 4) setLogoHz(cur.HZ);
   document.querySelectorAll("#clipbar [data-clip]").forEach((b) => { const on = b.dataset.clip === clip.id; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
   const crop = clip.cloud.crop ? await bufOf(clip.cloud.crop.src) : null;
   if (cur.clip !== clip) return;
@@ -837,22 +953,32 @@ const deck = $("deck"), slides = [...deck.querySelectorAll(".slide")];
 let current = -1;
 const pager = $("pager");
 slides.forEach((s, i) => { const b = el("button"); b.setAttribute("aria-label", `Go to slide ${i + 1}: ${s.getAttribute("aria-label")}`); b.addEventListener("click", () => go(i)); pager.append(b); });
-function go(i, smooth = !reduce) { i = Math.max(0, Math.min(slides.length - 1, i)); deck.scrollTo({ left: i * deck.clientWidth, behavior: smooth ? "smooth" : "auto" }); enter(i); }
+deck.classList.add("byindex");
+function go(i, smooth = !reduce) {
+  i = Math.max(0, Math.min(slides.length - 1, i));
+  deck.classList.toggle("still", !smooth);
+  deck.style.setProperty("--i", i);
+  if (deck.scrollLeft || deck.scrollTop) deck.scrollTo(0, 0);
+  enter(i);
+}
 function enter(i) {
   if (i === current) return;
+  const prev = current;
   current = i;
+  document.body.dataset.slide = i;
   [...pager.children].forEach((b, j) => b.setAttribute("aria-current", String(j === i)));
   document.querySelectorAll(".steps button").forEach((b) => b.classList.toggle("on", +b.dataset.go === i));
   $("prev").disabled = i === 0; $("next").disabled = i === slides.length - 1;
   history.replaceState(null, "", "#" + slides[i].id);
   slides.forEach((s, j) => s.toggleAttribute("inert", j !== i));
   if (i === 1 && cur.crop) slide2();
-  if (i === 2) Object.values(spec.sides).forEach((s) => { if (s.data && !s.played) { s.played = true; animateSpec(s.svg, s.data, true); } });
+  if (i === 2) Object.values(spec.sides).forEach((s) => { if (s.data && !s.played) { s.played = true; animateSpec(s.svg, s.data, true, showHz(s.data, hzOf(s.clip))); } });
   if (i === 3 && cur.crop) slideMath();
-  if (i !== 4 && agent.run) stopPlay();
+  if (i !== 4 && agent.run) { stopPlay(); showAll(); focusCard(-1); }
+  if (i === 4) setLogoHz(agent.hz); else if (prev === 4) setLogoHz(cur.HZ);
   if (i === 5) requestAnimationFrame(growBars);
 }
-deck.addEventListener("scroll", () => { clearTimeout(deck._t); deck._t = setTimeout(() => enter(Math.round(deck.scrollLeft / deck.clientWidth)), 80); });
+deck.addEventListener("scroll", () => { if (deck.scrollLeft || deck.scrollTop) deck.scrollTo(0, 0); });
 $("prev").addEventListener("click", () => go(current - 1));
 $("next").addEventListener("click", () => go(current + 1));
 document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); go(+b.dataset.go); }));
@@ -866,17 +992,17 @@ addEventListener("keydown", (e) => {
 });
 let wheelLock = 0;
 deck.addEventListener("wheel", (e) => {
-  if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+  const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
   e.preventDefault();
   const now = performance.now();
-  if (now < wheelLock || Math.abs(e.deltaY) < 8) return;
+  if (now < wheelLock || Math.abs(d) < 8) return;
   wheelLock = now + 750;
-  go(current + (e.deltaY > 0 ? 1 : -1));
+  go(current + (d > 0 ? 1 : -1));
 }, { passive: false });
-addEventListener("resize", () => deck.scrollTo({ left: current * deck.clientWidth }));
 addEventListener("hashchange", () => { const k = slides.findIndex((s) => location.hash === "#" + s.id); if (k >= 0 && k !== current) go(k); });
 let drag = null;
-deck.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch" || e.button !== 0 || e.target.closest("button,input,a,#cloud,canvas.thumb,.thumb")) return; drag = { x: e.clientX, y: e.clientY }; });
+deck.addEventListener("pointerdown", (e) => { if ((e.pointerType !== "touch" && e.button !== 0) || e.target.closest("button,input,a,#cloud,canvas.thumb,.thumb,.cards")) return; drag = { x: e.clientX, y: e.clientY }; });
+addEventListener("pointercancel", () => { drag = null; });
 addEventListener("pointerup", (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(current + (dx < 0 ? 1 : -1)); });
 
 clipBar();

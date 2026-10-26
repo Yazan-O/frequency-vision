@@ -4,7 +4,7 @@
 <meta name="application-name" content="Frequency Vision">
 <link rel="alternate" type="application/json" href="/api/summary" title="Machine-readable summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/deck.css">
+<link rel="stylesheet" href="/static/deck.css?v=7">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
 <link rel="preload" href="/data/clips.json" as="fetch" crossorigin>
 <link rel="preload" href="/data/traces.json" as="fetch" crossorigin>
@@ -83,7 +83,7 @@
     <button data-go="5" aria-label="Slide 6: results"><svg class="ic"><use href="#i-trophy"/></svg></button>
   </nav>
 </header>
-<div class="clipbar" role="group" aria-label="Drone clip" id="clipbar"></div>
+<div class="clipbar" role="group" aria-label="Drone clip" id="clipbar"><span class="replaytag" id="replaytag"></span></div>
 
 <main class="deck" id="deck">
   <section class="slide s1" id="s1" aria-label="The hum">
@@ -126,7 +126,7 @@
 
   <section class="slide s3" id="s3" aria-label="Spectrum, drone versus no drone">
     <h2 class="hl" id="hl3">A drone hums as one tall spike. Empty sky stays flat.</h2>
-    <div class="seg win" role="group" aria-label="Event window length" id="winbtns"><svg class="ic lead" aria-hidden="true"><use href="#i-clock"/></svg></div>
+    <div class="seg win" role="group" aria-label="Event window length" id="winbtns"></div>
     <div class="duo">
       <div class="side" data-side="drone"></div>
       <div class="side" data-side="bg"></div>
@@ -161,21 +161,16 @@
     <h2 class="hl">The agent looks, listens, then asks you before it alerts.</h2>
     <div class="agent-top">
       <div class="seg" role="group" aria-label="Agent episode" id="epbtns"></div>
+      <button id="live" class="btn live" aria-label="Run the fixed-rule agent live on the server now, with your approval before the alert"><svg class="ic"><use href="#i-agent"/></svg><span>Run agent live</span></button>
       <button id="replay" class="btn play" aria-label="Replay the agent steps"><svg class="ic"><use href="#i-play"/></svg><span>Play</span></button>
     </div>
-    <div class="loop" id="loop" aria-hidden="true">
-      <div class="st" data-st="look"><span class="ring"><svg class="ic"><use href="#i-eye"/></svg></span><b>look</b></div>
-      <svg class="arrow" viewBox="0 0 60 12"><path d="M2 6h52M48 1l6 5-6 5"/></svg>
-      <div class="st" data-st="listen"><span class="ring"><svg class="ic"><use href="#i-sine"/></svg></span><b>listen</b></div>
-      <svg class="arrow" viewBox="0 0 60 12"><path d="M2 6h52M48 1l6 5-6 5"/></svg>
-      <div class="st" data-st="decide"><span class="ring"><svg class="ic"><use href="#i-human"/></svg></span><b>decide</b></div>
-    </div>
-    <ol class="cards" id="cards" aria-label="Recorded agent steps"></ol>
+    <p class="story" id="story"></p>
+    <ol class="cards" id="cards" aria-label="Recorded agent steps, grouped into look, listen and decide"></ol>
+    <p class="agentnote" id="agentnote" aria-live="polite"></p>
   </section>
 
   <section class="slide s5" id="s6" aria-label="Results">
     <h2 class="hl">Each drone model hums at its own pitch.</h2>
-    <div class="clips" id="clipcards"></div>
     <div class="res">
       <div class="fa">
         <div class="tag"><svg class="ic"><use href="#i-alert"/></svg><span id="fatag">false alarms</span></div>
@@ -185,9 +180,10 @@
         <div class="tag"><svg class="ic"><use href="#i-chip"/></svg><span>OpenCV 5 speed</span></div>
         <div class="win5" id="winner"></div>
         <div id="benchbars" class="bb"></div>
-        <div class="bkey"><span><i class="sw g4"></i>Graviton4</span><span><i class="sw x86"></i>x86</span></div>
+        <div class="bkey"><span><i class="sw g4"></i>times faster on Graviton4 than x86</span><span><i class="sw one"></i>same speed</span></div>
       </div>
     </div>
+    <div class="clips" id="clipcards"></div>
   </section>
 </main>
 
@@ -209,10 +205,10 @@
   <p>Slide 3: the event spectrum of a box in the drone clip next to a box in a clip with no drone, computed live on the server by box_spectrum (OpenCV 5 calcHist and dft) for each click. The shaded band is the propeller band, 150 to 1000 Hz. Power is shown relative to the band median on a log scale. A box hums when its band peak stands at least 98 times above the local spectral floor and it holds at least 200 events. Window buttons set the event window length. Thumbnails pick the frame and box.</p>
   <p id="sr-math">Slide 4, the math, in four panels (tabs on narrow screens). (1) Sampling: a 30 fps camera only sees frequencies up to its Nyquist limit of 15 Hz; a propeller blade-pass rate of several hundred Hz folds (aliases) to a slow apparent rate, the wagon-wheel effect: f_alias = |f - k*30|. Events binned at 0.1 ms (10 kHz) see up to 5 kHz. (2) Fourier transform: the brighter-minus-darker event count inside the box over time, multiplied by a Hanning window, goes through cv.dft; the power spectrum shows the blade-pass peak. X(f) = sum over t of x(t) w(t) exp(-i 2 pi f t). (3) Score: the peak power divided by the median power within plus or minus 100 Hz of it. Thresholds chosen on FRED training data: ambiguous above 7.9, hum above 98. (4) Frequency resolution is 1/T for a window of T seconds, so a longer window sharpens the peak; this is why the agent asks for a longer window (request_window) when a spectrum is ambiguous. (5) OpenCV 5 calls in order: calcHist (event binning), dft (spectrum), connectedComponentsWithStats (event blobs and masks), dnn (RGB detector).</p>
   <p id="sr-math-live"></p>
-  <p>Slide 5: the agent's recorded steps from the evaluation traces (eval_v3), as a loop of look, listen and decide. Each step is a card: look (detect_frame, track), listen (box_spectrum, request_window, frequency_map) with the measured peak in Hz, coloured orange when it passes the hum test, outlined when ambiguous, grey when there is no hum; decide (ask_human, raise_alert, finish). Episodes: a drone (FRED 210), a drone that appears late (FRED 142), no drone (FRED 138), each planned by Claude Sonnet 4.6 on Amazon Bedrock, and a fixed-rule baseline on FRED 210. Nothing plays until you press Play. The Approve and Reject buttons record a decision on the server only; nothing external is triggered. The approval inside the recorded run came from an automatic stand-in for the operator, marked SIMULATED in the trace.</p>
+  <p>Slide 5: the agent's recorded steps from the evaluation traces (eval_v3), grouped into three rows: look, listen and decide. Play shows one step about every 0.6 seconds and stops at the approval step until you press Approve or Reject; the default episode is the drone that appears late (FRED 142), where the camera detector finds nothing and the frequency map finds the drone. Each step is a card: look (detect_frame, track), listen (box_spectrum, request_window, frequency_map) with the measured peak in Hz, coloured orange when it passes the hum test, outlined when ambiguous, grey when there is no hum; decide (ask_human, raise_alert, finish). Episodes: a drone (FRED 210), a drone that appears late (FRED 142), no drone (FRED 138), each planned by Claude Sonnet 4.6 on Amazon Bedrock, and a fixed-rule baseline on FRED 210. Nothing plays until you press Play. "Run agent live" starts the fixed-rule planner on the server against the real tools (detector, box spectrum, tracker) on FRED sequence 210; it stops before the critical alert and waits up to 60 seconds for your Approve or Reject. The Approve and Reject buttons record a decision on the server only; nothing external is triggered. The approval inside the recorded run came from an automatic stand-in for the operator, marked SIMULATED in the trace.</p>
   <p>Slide 6: one card per drone clip with the measured median blade-pass frequency and the share of 100 ms windows that pass the hum test; false alarms over 84.3 minutes of FRED test video with the RGB detector alone versus RGB plus the hum check; and the OpenCV 5 benchmark on AWS Graviton4 c8g.xlarge versus x86 c7i.xlarge, p50 milliseconds at 4 threads, from bench/results.</p>
   <p>Data: FRED (real event + RGB recording, Apache-2.0 per its Hugging Face card), test split, huggingface.co/datasets/GabrieleMagrini/FRED. Nothing on this page is simulated except the operator stand-in noted above.</p>
   <p>Machine-readable summary: <a href="/api/summary">/api/summary</a>. Server build: <a href="/version">/version</a>.</p>
 </section>
-<script type="module" src="/static/deck.js"></script>
+<script type="module" src="/static/deck.js?v=7"></script>
 </body></html>
