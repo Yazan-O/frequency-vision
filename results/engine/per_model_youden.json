@@ -1,0 +1,56 @@
+{
+ "Betafpv air75": {
+  "n_boxes": 3706,
+  "share_above_7.86": 0.485,
+  "median_hz": 685.0,
+  "iqr": [
+   446.1,
+   832.7
+  ]
+ },
+ "DJI Mini 2": {
+  "n_boxes": 1951,
+  "share_above_7.86": 0.992,
+  "median_hz": 320.4,
+  "iqr": [
+   307.5,
+   334.1
+  ]
+ },
+ "DJI Mini 3": {
+  "n_boxes": 2405,
+  "share_above_7.86": 0.629,
+  "median_hz": 245.1,
+  "iqr": [
+   216.7,
+   444.5
+  ]
+ },
+ "DJI Tello EDU": {
+  "n_boxes": 11068,
+  "share_above_7.86": 0.77,
+  "median_hz": 563.7,
+  "iqr": [
+   522.3,
+   607.5
+  ]
+ },
+ "DarwinFPV cineape20": {
+  "n_boxes": 6621,
+  "share_above_7.86": 0.434,
+  "median_hz": 664.1,
+  "iqr": [
+   387.1,
+   853.9
+  ]
+ },
+ "DarwinFPV cineape20ger": {
+  "n_boxes": 1160,
+  "share_above_7.86": 0.698,
+  "median_hz": 240.5,
+  "iqr": [
+   218.9,
+   307.5
+  ]
+ }
+}

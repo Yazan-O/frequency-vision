@@ -1,0 +1,2258 @@
+{
+ "generated_utc": "2026-10-26T14:43:14Z",
+ "data": "D:\\PHD_Take2\\opencv2026\\repo\\data\\fred_slices",
+ "scenarios": "D:\\PHD_Take2\\opencv2026\\repo\\eval\\scenarios.json",
+ "vision_source": {
+  "spectrum": "strobe.freq (lane L1)",
+  "detect": "event blobs (agent, cv.connectedComponentsWithStats)"
+ },
+ "thresholds": {
+  "hum_snr": 15.0,
+  "ambiguous_snr": 7.5,
+  "min_events": 200,
+  "fs": 10000,
+  "band": [
+   150.0,
+   1000.0
+  ]
+ },
+ "budget": {
+  "max_steps": 24,
+  "max_rejections": 4,
+  "max_compute_ms": 30000.0,
+  "max_events_per_call": 6000000,
+  "min_window_ms": 20.0,
+  "max_window_ms": 1000.0,
+  "max_map_ms": 300.0,
+  "buffer_s": 1.0,
+  "max_alerts": 3
+ },
+ "summary": {
+  "bedrock": {
+   "episodes": 8,
+   "success": 4,
+   "success_rate": 0.5,
+   "false_alerts": 0,
+   "mean_steps": 14.12,
+   "mean_wall_s": 17.066,
+   "median_stream_latency_s": 0.25,
+   "vision_changed_next_call": 7,
+   "of_which_decision_changed": 1,
+   "fallbacks": 0,
+   "asks": 2,
+   "next_tool_after_verdict": {
+    "ambiguous": {
+     "box_spectrum": 6,
+     "track": 3,
+     "request_window": 10,
+     "frequency_map": 3,
+     "detect_frame": 4,
+     "ask_human": 1
+    },
+    "hum": {
+     "request_window": 2,
+     "ask_human": 1,
+     "track": 1,
+     "box_spectrum": 1
+    },
+    "none": {
+     "frequency_map": 2,
+     "box_spectrum": 5,
+     "detect_frame": 3,
+     "request_window": 3,
+     "track": 1
+    }
+   }
+  },
+  "rule": {
+   "episodes": 8,
+   "success": 2,
+   "success_rate": 0.25,
+   "false_alerts": 2,
+   "mean_steps": 17.12,
+   "mean_wall_s": 0.58,
+   "median_stream_latency_s": null,
+   "vision_changed_next_call": 20,
+   "of_which_decision_changed": 5,
+   "fallbacks": 0,
+   "asks": 2,
+   "next_tool_after_verdict": {
+    "ambiguous": {
+     "request_window": 20,
+     "box_spectrum": 3,
+     "detect_frame": 3
+    },
+    "hum": {
+     "track": 2
+    },
+    "none": {
+     "detect_frame": 12,
+     "box_spectrum": 10
+    }
+   }
+  },
+  "fixed": {
+   "episodes": 8,
+   "success": 3,
+   "success_rate": 0.375,
+   "false_alerts": 1,
+   "mean_steps": 10,
+   "mean_wall_s": 0.34,
+   "median_stream_latency_s": 0.5,
+   "vision_changed_next_call": 0,
+   "of_which_decision_changed": 0,
+   "fallbacks": 0,
+   "asks": 0,
+   "next_tool_after_verdict": {
+    "ambiguous": {
+     "detect_frame": 5,
+     "finish": 1
+    },
+    "hum": {
+     "raise_alert": 2
+    },
+    "none": {
+     "detect_frame": 10,
+     "finish": 1
+    }
+   }
+  }
+ },
+ "by_kind": {
+  "bedrock": {
+   "background": {
+    "episodes": 2,
+    "success": 2,
+    "success_rate": 1.0,
+    "false_alerts": 0,
+    "mean_steps": 12.5,
+    "mean_wall_s": 15.947,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 2,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "none": {
+      "detect_frame": 1,
+      "box_spectrum": 1
+     },
+     "ambiguous": {
+      "request_window": 2,
+      "detect_frame": 1
+     }
+    }
+   },
+   "clear": {
+    "episodes": 2,
+    "success": 1,
+    "success_rate": 0.5,
+    "false_alerts": 0,
+    "mean_steps": 8.5,
+    "mean_wall_s": 12.117,
+    "median_stream_latency_s": 0.5,
+    "vision_changed_next_call": 0,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "box_spectrum": 2,
+      "track": 1
+     },
+     "hum": {
+      "request_window": 1,
+      "ask_human": 1
+     }
+    }
+   },
+   "distant": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 16.5,
+    "mean_wall_s": 17.254,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 1,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "none": {
+      "frequency_map": 1,
+      "box_spectrum": 3
+     },
+     "ambiguous": {
+      "request_window": 4,
+      "frequency_map": 2,
+      "detect_frame": 3,
+      "box_spectrum": 3
+     }
+    }
+   },
+   "late": {
+    "episodes": 2,
+    "success": 1,
+    "success_rate": 0.5,
+    "false_alerts": 0,
+    "mean_steps": 19,
+    "mean_wall_s": 22.944,
+    "median_stream_latency_s": 0.0,
+    "vision_changed_next_call": 4,
+    "of_which_decision_changed": 1,
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "request_window": 4,
+      "frequency_map": 1,
+      "track": 2,
+      "box_spectrum": 1,
+      "ask_human": 1
+     },
+     "hum": {
+      "track": 1,
+      "box_spectrum": 1,
+      "request_window": 1
+     },
+     "none": {
+      "request_window": 3,
+      "box_spectrum": 1,
+      "track": 1,
+      "detect_frame": 2,
+      "frequency_map": 1
+     }
+    }
+   }
+  },
+  "rule": {
+   "background": {
+    "episodes": 2,
+    "success": 2,
+    "success_rate": 1.0,
+    "false_alerts": 0,
+    "mean_steps": 21,
+    "mean_wall_s": 0.808,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 6,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "none": {
+      "detect_frame": 4,
+      "box_spectrum": 3
+     },
+     "ambiguous": {
+      "request_window": 6,
+      "box_spectrum": 1,
+      "detect_frame": 1
+     }
+    }
+   },
+   "clear": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 1,
+    "mean_steps": 11,
+    "mean_wall_s": 0.549,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 2,
+    "of_which_decision_changed": 1,
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "request_window": 2
+     },
+     "hum": {
+      "track": 1
+     }
+    }
+   },
+   "distant": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 1,
+    "mean_steps": 12.5,
+    "mean_wall_s": 0.34,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 0,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "none": {
+      "detect_frame": 2,
+      "box_spectrum": 2
+     },
+     "hum": {
+      "track": 1
+     }
+    }
+   },
+   "late": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 24,
+    "mean_wall_s": 0.621,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 12,
+    "of_which_decision_changed": 4,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "request_window": 12,
+      "detect_frame": 2,
+      "box_spectrum": 2
+     },
+     "none": {
+      "detect_frame": 6,
+      "box_spectrum": 5
+     }
+    }
+   }
+  },
+  "fixed": {
+   "background": {
+    "episodes": 2,
+    "success": 2,
+    "success_rate": 1.0,
+    "false_alerts": 0,
+    "mean_steps": 9,
+    "mean_wall_s": 0.511,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 0,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "none": {
+      "detect_frame": 2
+     }
+    }
+   },
+   "clear": {
+    "episodes": 2,
+    "success": 1,
+    "success_rate": 0.5,
+    "false_alerts": 0,
+    "mean_steps": 7,
+    "mean_wall_s": 0.332,
+    "median_stream_latency_s": 0.5,
+    "vision_changed_next_call": 0,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "detect_frame": 1
+     },
+     "hum": {
+      "raise_alert": 1
+     }
+    }
+   },
+   "distant": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 11.5,
+    "mean_wall_s": 0.246,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 0,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "none": {
+      "detect_frame": 6
+     },
+     "ambiguous": {
+      "finish": 1
+     }
+    }
+   },
+   "late": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 1,
+    "mean_steps": 12.5,
+    "mean_wall_s": 0.269,
+    "median_stream_latency_s": null,
+    "vision_changed_next_call": 0,
+    "of_which_decision_changed": 0,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "detect_frame": 4
+     },
+     "none": {
+      "detect_frame": 2,
+      "finish": 1
+     },
+     "hum": {
+      "raise_alert": 1
+     }
+    }
+   }
+  }
+ },
+ "episodes": {
+  "bedrock": [
+   {
+    "id": "clear_111",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 7,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 9.043,
+    "tool_ms": 318.1,
+    "planner_ms": 8720.3,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "detect_frame",
+     "frequency_map",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [],
+    "bedrock_usage": {
+     "input": 20963,
+     "output": 499,
+     "calls": 7,
+     "latency_ms": 8720.037599967327
+    }
+   },
+   {
+    "id": "clear_210",
+    "kind": "clear",
+    "drone": true,
+    "success": true,
+    "true_alerts": 1,
+    "false_alerts": 0,
+    "verdict": "drone_alerted",
+    "steps": 10,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 15.192,
+    "tool_ms": 151.3,
+    "planner_ms": 19838.2,
+    "stream_latency_s": 0.5,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "track",
+     "request_window",
+     "box_spectrum",
+     "ask_human",
+     "raise_alert",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "hum",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "track"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 27000,
+     "output": 1199,
+     "calls": 7,
+     "latency_ms": 15034.611200040672
+    }
+   },
+   {
+    "id": "distant_90",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 8,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 11.175,
+    "tool_ms": 186.2,
+    "planner_ms": 10984.8,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "frequency_map",
+     "detect_frame",
+     "frequency_map",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "frequency_map"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 25068,
+     "output": 662,
+     "calls": 8,
+     "latency_ms": 10984.250899928156
+    }
+   },
+   {
+    "id": "distant_115",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 25,
+    "rejections": 1,
+    "asks": 0,
+    "wall_s": 23.333,
+    "tool_ms": 300.3,
+    "planner_ms": 37821.1,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "frequency_map",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "frequency_map",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 4,
+      "to_step": 5,
+      "before": [
+       200,
+       8.46,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       9.56,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     }
+    ],
+    "transitions": [
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "frequency_map"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "frequency_map"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 91178,
+     "output": 2118,
+     "calls": 17,
+     "latency_ms": 23021.724099991843
+    }
+   },
+   {
+    "id": "background_138",
+    "kind": "background",
+    "drone": false,
+    "success": true,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 11,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 14.498,
+    "tool_ms": 360.6,
+    "planner_ms": 14131.7,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "frequency_map",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 37236,
+     "output": 832,
+     "calls": 11,
+     "latency_ms": 14130.459500069264
+    }
+   },
+   {
+    "id": "background_163",
+    "kind": "background",
+    "drone": false,
+    "success": true,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 14,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 17.396,
+    "tool_ms": 538.8,
+    "planner_ms": 18601.4,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "frequency_map",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "finish"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 5,
+      "to_step": 6,
+      "before": [
+       200,
+       12.55,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.16,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 6,
+      "to_step": 7,
+      "before": [
+       300,
+       12.16,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       8.1,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     }
+    ],
+    "transitions": [
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 50122,
+     "output": 1087,
+     "calls": 13,
+     "latency_ms": 16849.473999871407
+    }
+   },
+   {
+    "id": "late_41",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 24,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 28.072,
+    "tool_ms": 332.8,
+    "planner_ms": 27728.8,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "frequency_map",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "request_window",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "track",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "frequency_map",
+     "detect_frame"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 4,
+      "to_step": 5,
+      "before": [
+       150,
+       7.74,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       7.69,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 16,
+      "to_step": 17,
+      "before": [
+       150,
+       20.31,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       19.89,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 17,
+      "to_step": 18,
+      "before": [
+       300,
+       19.89,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       19.94,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "frequency_map"
+     ],
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "none",
+      "request_window"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "track"
+     ],
+     [
+      "none",
+      "request_window"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "track"
+     ],
+     [
+      "none",
+      "request_window"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 124447,
+     "output": 2076,
+     "calls": 24,
+     "latency_ms": 27727.33970003901
+    }
+   },
+   {
+    "id": "late_142",
+    "kind": "late",
+    "drone": true,
+    "success": true,
+    "true_alerts": 1,
+    "false_alerts": 0,
+    "verdict": "drone_alerted",
+    "steps": 14,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 17.815,
+    "tool_ms": 662.3,
+    "planner_ms": 21520.2,
+    "stream_latency_s": 0.0,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "frequency_map",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "track",
+     "request_window",
+     "box_spectrum",
+     "request_window",
+     "ask_human",
+     "raise_alert",
+     "finish"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       150,
+       9.67,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       6.36,
+       "none"
+      ],
+      "decision_changed": true
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "none",
+      "frequency_map"
+     ],
+     [
+      "hum",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "track"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "hum",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "ask_human"
+     ]
+    ],
+    "bedrock_usage": {
+     "input": 44731,
+     "output": 1484,
+     "calls": 11,
+     "latency_ms": 17146.561100089457
+    }
+   }
+  ],
+  "rule": [
+   {
+    "id": "clear_111",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 14,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.892,
+    "tool_ms": 887.2,
+    "planner_ms": 0.1,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "clear_210",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 1,
+    "verdict": "drone_alerted",
+    "steps": 8,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 0.206,
+    "tool_ms": 201.1,
+    "planner_ms": 0.2,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "track",
+     "ask_human",
+     "raise_alert",
+     "finish"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       100,
+       11.84,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.39,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       12.39,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       17.48,
+       "hum"
+      ],
+      "decision_changed": true
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "distant_90",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 15,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.441,
+    "tool_ms": 434.5,
+    "planner_ms": 0.2,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "distant_115",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 1,
+    "verdict": "drone_alerted",
+    "steps": 10,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 0.238,
+    "tool_ms": 229.4,
+    "planner_ms": 0.7,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "raise_alert",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "background_138",
+    "kind": "background",
+    "drone": false,
+    "success": true,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 18,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 1.07,
+    "tool_ms": 1058.2,
+    "planner_ms": 0.5,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "background_163",
+    "kind": "background",
+    "drone": false,
+    "success": true,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 24,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.547,
+    "tool_ms": 512.3,
+    "planner_ms": 0.3,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 5,
+      "to_step": 6,
+      "before": [
+       100,
+       11.82,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.14,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 6,
+      "to_step": 7,
+      "before": [
+       300,
+       12.14,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       11.2,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 11,
+      "to_step": 12,
+      "before": [
+       100,
+       10.67,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.16,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 12,
+      "to_step": 13,
+      "before": [
+       300,
+       12.16,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       8.1,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 22,
+      "to_step": 23,
+      "before": [
+       100,
+       8.72,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       11.63,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 23,
+      "to_step": 24,
+      "before": [
+       300,
+       11.63,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       13.86,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "late_41",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 24,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.525,
+    "tool_ms": 512.1,
+    "planner_ms": 0.6,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 8,
+      "to_step": 9,
+      "before": [
+       100,
+       34.18,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       26.92,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 9,
+      "to_step": 10,
+      "before": [
+       300,
+       26.92,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       26.69,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 13,
+      "to_step": 14,
+      "before": [
+       100,
+       7.81,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       7.69,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 14,
+      "to_step": 15,
+      "before": [
+       300,
+       7.69,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       7.68,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 19,
+      "to_step": 20,
+      "before": [
+       100,
+       9.05,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       6.8,
+       "none"
+      ],
+      "decision_changed": true
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "late_142",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 24,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.718,
+    "tool_ms": 704.1,
+    "planner_ms": 0.2,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "box_spectrum",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum"
+    ],
+    "vision_changed_next_call": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       100,
+       9.24,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       6.36,
+       "none"
+      ],
+      "decision_changed": true
+     },
+     {
+      "from_step": 4,
+      "to_step": 5,
+      "before": [
+       100,
+       13.5,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       11.32,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 5,
+      "to_step": 6,
+      "before": [
+       300,
+       11.32,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       12.72,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 11,
+      "to_step": 12,
+      "before": [
+       100,
+       8.46,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       5.84,
+       "none"
+      ],
+      "decision_changed": true
+     },
+     {
+      "from_step": 15,
+      "to_step": 16,
+      "before": [
+       100,
+       7.58,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       6.9,
+       "none"
+      ],
+      "decision_changed": true
+     },
+     {
+      "from_step": 18,
+      "to_step": 19,
+      "before": [
+       100,
+       8.44,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       9.35,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     },
+     {
+      "from_step": 19,
+      "to_step": 20,
+      "before": [
+       300,
+       9.35,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       11.3,
+       "ambiguous"
+      ],
+      "decision_changed": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "box_spectrum"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   }
+  ],
+  "fixed": [
+   {
+    "id": "clear_111",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 8,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.455,
+    "tool_ms": 447.7,
+    "planner_ms": 3.4,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "clear_210",
+    "kind": "clear",
+    "drone": true,
+    "success": true,
+    "true_alerts": 1,
+    "false_alerts": 0,
+    "verdict": "drone_alerted",
+    "steps": 6,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.208,
+    "tool_ms": 202.3,
+    "planner_ms": 0.1,
+    "stream_latency_s": 0.5,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "raise_alert",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "raise_alert"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "distant_90",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 9,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.242,
+    "tool_ms": 235.3,
+    "planner_ms": 0.1,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "distant_115",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 14,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.251,
+    "tool_ms": 240.6,
+    "planner_ms": 1.1,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "finish"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "background_138",
+    "kind": "background",
+    "drone": false,
+    "success": true,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 9,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.58,
+    "tool_ms": 573.1,
+    "planner_ms": 0,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "background_163",
+    "kind": "background",
+    "drone": false,
+    "success": true,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 9,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.443,
+    "tool_ms": 435.8,
+    "planner_ms": 0.3,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "none",
+      "detect_frame"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "late_41",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 17,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.367,
+    "tool_ms": 357.5,
+    "planner_ms": 0.3,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "finish"
+     ]
+    ],
+    "bedrock_usage": null
+   },
+   {
+    "id": "late_142",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 1,
+    "verdict": "drone_alerted",
+    "steps": 8,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 0.171,
+    "tool_ms": 163.1,
+    "planner_ms": 0.5,
+    "stream_latency_s": null,
+    "planner_final": "fixed",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "detect_frame",
+     "box_spectrum",
+     "raise_alert",
+     "finish"
+    ],
+    "vision_changed_next_call": [],
+    "transitions": [
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "none",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "raise_alert"
+     ]
+    ],
+    "bedrock_usage": null
+   }
+  ]
+ }
+}

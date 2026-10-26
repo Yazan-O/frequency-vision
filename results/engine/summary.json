@@ -1,0 +1,9861 @@
+{
+ "meta": {
+  "min_events": 200,
+  "train_fa_target_on_busiest": 0.05,
+  "n_test_rows": 322919,
+  "n_train_rows": 672866,
+  "n_test_seq": 47,
+  "n_train_seq": 184
+ },
+ "table": [
+  {
+   "win_ms": 20,
+   "variant": "count",
+   "threshold_from_train": 21.796,
+   "train_drone_tpr": 0.1452794864937149,
+   "train_busiest_fpr": 0.050008025539048706,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.11180054989968047,
+   "test_random_fpr": 0.00022294887039239002,
+   "test_busiest_fpr": 0.019768133174791914,
+   "test_auc_drone_vs_random": 0.7833635803910849,
+   "test_auc_drone_vs_busiest": 0.6781862744908541,
+   "train_auc_drone_vs_busiest": 0.6527904799987831
+  },
+  {
+   "win_ms": 20,
+   "variant": "signed",
+   "threshold_from_train": 19.855,
+   "train_drone_tpr": 0.28517428902558617,
+   "train_busiest_fpr": 0.050008025539048706,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.2250501597681504,
+   "test_random_fpr": 0.00029726516052318666,
+   "test_busiest_fpr": 0.024635850178359096,
+   "test_auc_drone_vs_random": 0.7842231230887178,
+   "test_auc_drone_vs_busiest": 0.6922242093038318,
+   "train_auc_drone_vs_busiest": 0.6761058321592982
+  },
+  {
+   "win_ms": 20,
+   "variant": "signed_mask",
+   "threshold_from_train": 24.889,
+   "train_drone_tpr": 0.2738700187215833,
+   "train_busiest_fpr": 0.050025860070268054,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.21137697852418816,
+   "test_random_fpr": 0.00011147443519619501,
+   "test_busiest_fpr": 0.01895065398335315,
+   "test_auc_drone_vs_random": 0.757870476591578,
+   "test_auc_drone_vs_busiest": 0.7024918252909231,
+   "train_auc_drone_vs_busiest": 0.6929543672411272
+  },
+  {
+   "win_ms": 20,
+   "variant": "signed_mask_notch",
+   "threshold_from_train": 24.532,
+   "train_drone_tpr": 0.27404831951502184,
+   "train_busiest_fpr": 0.050008025539048706,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.21167422159470908,
+   "test_random_fpr": 0.00011147443519619501,
+   "test_busiest_fpr": 0.01895065398335315,
+   "test_auc_drone_vs_random": 0.7578698836130796,
+   "test_auc_drone_vs_busiest": 0.7024728679271016,
+   "train_auc_drone_vs_busiest": 0.6929019524490186
+  },
+  {
+   "win_ms": 20,
+   "variant": "signed_notch",
+   "threshold_from_train": 19.678,
+   "train_drone_tpr": 0.28483551751805297,
+   "train_busiest_fpr": 0.050008025539048706,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.22516162591959574,
+   "test_random_fpr": 0.00029726516052318666,
+   "test_busiest_fpr": 0.024264268727705113,
+   "test_auc_drone_vs_random": 0.7842326852984496,
+   "test_auc_drone_vs_busiest": 0.6921737950864678,
+   "train_auc_drone_vs_busiest": 0.6759564475691565
+  },
+  {
+   "win_ms": 50,
+   "variant": "count",
+   "threshold_from_train": 76.071,
+   "train_drone_tpr": 0.1162898509378789,
+   "train_busiest_fpr": 0.05000891742464776,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.08984171806494762,
+   "test_random_fpr": 0.00011147443519619501,
+   "test_busiest_fpr": 0.029094827586206896,
+   "test_auc_drone_vs_random": 0.8665086058893536,
+   "test_auc_drone_vs_busiest": 0.665012596520056,
+   "train_auc_drone_vs_busiest": 0.6662519385270231
+  },
+  {
+   "win_ms": 50,
+   "variant": "signed",
+   "threshold_from_train": 60.233,
+   "train_drone_tpr": 0.24613080379430854,
+   "train_busiest_fpr": 0.05000891742464776,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.1916103143345471,
+   "test_random_fpr": 0.0001857907253269917,
+   "test_busiest_fpr": 0.028463139120095123,
+   "test_auc_drone_vs_random": 0.8686045584586286,
+   "test_auc_drone_vs_busiest": 0.6950883920948011,
+   "train_auc_drone_vs_busiest": 0.7006445908031631
+  },
+  {
+   "win_ms": 50,
+   "variant": "signed_mask",
+   "threshold_from_train": 91.264,
+   "train_drone_tpr": 0.24910848013693745,
+   "train_busiest_fpr": 0.050026752273943285,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.1937281712120086,
+   "test_random_fpr": 0.00014863258026159333,
+   "test_busiest_fpr": 0.02103151010701546,
+   "test_auc_drone_vs_random": 0.861350267983758,
+   "test_auc_drone_vs_busiest": 0.7515924006128827,
+   "train_auc_drone_vs_busiest": 0.7446858402617481
+  },
+  {
+   "win_ms": 50,
+   "variant": "signed_mask_notch",
+   "threshold_from_train": 86.064,
+   "train_drone_tpr": 0.2515690749589901,
+   "train_busiest_fpr": 0.05000891742464776,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.1967006019172178,
+   "test_random_fpr": 0.00011147443519619501,
+   "test_busiest_fpr": 0.01939655172413793,
+   "test_auc_drone_vs_random": 0.8613451921154244,
+   "test_auc_drone_vs_busiest": 0.7526391733375528,
+   "train_auc_drone_vs_busiest": 0.7449991386585693
+  },
+  {
+   "win_ms": 50,
+   "variant": "signed_notch",
+   "threshold_from_train": 53.791,
+   "train_drone_tpr": 0.2561871478496541,
+   "train_busiest_fpr": 0.05000891742464776,
+   "n_test_drone": 26914,
+   "n_test_random": 26912,
+   "n_test_busiest": 26912,
+   "test_drone_tpr": 0.20023036337965372,
+   "test_random_fpr": 0.00014863258026159333,
+   "test_busiest_fpr": 0.02363258026159334,
+   "test_auc_drone_vs_random": 0.8685741004873762,
+   "test_auc_drone_vs_busiest": 0.6966712774392068,
+   "train_auc_drone_vs_busiest": 0.7009249463723851
+  },
+  {
+   "win_ms": 100,
+   "variant": "count",
+   "threshold_from_train": 134.638,
+   "train_drone_tpr": 0.09469122813274605,
+   "train_busiest_fpr": 0.05001516151472451,
+   "n_test_drone": 26911,
+   "n_test_random": 26909,
+   "n_test_busiest": 26909,
+   "test_drone_tpr": 0.07145776819887778,
+   "test_random_fpr": 0.00014864915084172582,
+   "test_busiest_fpr": 0.04180757367423538,
+   "test_auc_drone_vs_random": 0.8969886151700027,
+   "test_auc_drone_vs_busiest": 0.6434859514835238,
+   "train_auc_drone_vs_busiest": 0.6531375084705158
+  },
+  {
+   "win_ms": 100,
+   "variant": "signed",
+   "threshold_from_train": 105.394,
+   "train_drone_tpr": 0.19760329546873048,
+   "train_busiest_fpr": 0.05001516151472451,
+   "n_test_drone": 26911,
+   "n_test_random": 26909,
+   "n_test_busiest": 26909,
+   "test_drone_tpr": 0.15402623462524617,
+   "test_random_fpr": 0.00018581143855215726,
+   "test_busiest_fpr": 0.0480880002972983,
+   "test_auc_drone_vs_random": 0.9034841614629441,
+   "test_auc_drone_vs_busiest": 0.688914019368295,
+   "train_auc_drone_vs_busiest": 0.6996750303375578
+  },
+  {
+   "win_ms": 100,
+   "variant": "signed_mask",
+   "threshold_from_train": 152.916,
+   "train_drone_tpr": 0.20698325516700253,
+   "train_busiest_fpr": 0.050032998590870986,
+   "n_test_drone": 26911,
+   "n_test_random": 26909,
+   "n_test_busiest": 26909,
+   "test_drone_tpr": 0.16751514250678162,
+   "test_random_fpr": 0.00018581143855215726,
+   "test_busiest_fpr": 0.042736630866996174,
+   "test_auc_drone_vs_random": 0.9170958301445462,
+   "test_auc_drone_vs_busiest": 0.7532103878380823,
+   "train_auc_drone_vs_busiest": 0.7585014308964702
+  },
+  {
+   "win_ms": 100,
+   "variant": "signed_mask_notch",
+   "threshold_from_train": 97.74,
+   "train_drone_tpr": 0.2454660556021185,
+   "train_busiest_fpr": 0.05001516151472451,
+   "n_test_drone": 26911,
+   "n_test_random": 26909,
+   "n_test_busiest": 26909,
+   "test_drone_tpr": 0.2004384824049645,
+   "test_random_fpr": 7.432457542086291e-05,
+   "test_busiest_fpr": 0.025753465383328997,
+   "test_auc_drone_vs_random": 0.9171105626281565,
+   "test_auc_drone_vs_busiest": 0.7577760775147737,
+   "train_auc_drone_vs_busiest": 0.7593920847399985
+  },
+  {
+   "win_ms": 100,
+   "variant": "signed_notch",
+   "threshold_from_train": 70.842,
+   "train_drone_tpr": 0.2385826631239189,
+   "train_busiest_fpr": 0.05001516151472451,
+   "n_test_drone": 26911,
+   "n_test_random": 26909,
+   "n_test_busiest": 26909,
+   "test_drone_tpr": 0.19033109137527404,
+   "test_random_fpr": 7.432457542086291e-05,
+   "test_busiest_fpr": 0.03221970344494407,
+   "test_auc_drone_vs_random": 0.9033413515872531,
+   "test_auc_drone_vs_busiest": 0.6958668353833516,
+   "train_auc_drone_vs_busiest": 0.7006854035113452
+  },
+  {
+   "win_ms": 200,
+   "variant": "count",
+   "threshold_from_train": 182.379,
+   "train_drone_tpr": 0.0879195349003103,
+   "train_busiest_fpr": 0.050016945826867165,
+   "n_test_drone": 26906,
+   "n_test_random": 26904,
+   "n_test_busiest": 26904,
+   "test_drone_tpr": 0.06920389504199807,
+   "test_random_fpr": 0.0002973535533749628,
+   "test_busiest_fpr": 0.045011894142135,
+   "test_auc_drone_vs_random": 0.8955775295403504,
+   "test_auc_drone_vs_busiest": 0.6111150113945006,
+   "train_auc_drone_vs_busiest": 0.6115074560865208
+  },
+  {
+   "win_ms": 200,
+   "variant": "signed",
+   "threshold_from_train": 124.616,
+   "train_drone_tpr": 0.18976709348361095,
+   "train_busiest_fpr": 0.050016945826867165,
+   "n_test_drone": 26906,
+   "n_test_random": 26904,
+   "n_test_busiest": 26904,
+   "test_drone_tpr": 0.15130454173790234,
+   "test_random_fpr": 0.0001486767766874814,
+   "test_busiest_fpr": 0.04917484388938448,
+   "test_auc_drone_vs_random": 0.9061023047409094,
+   "test_auc_drone_vs_busiest": 0.6625088545182102,
+   "train_auc_drone_vs_busiest": 0.6663544246256242
+  },
+  {
+   "win_ms": 200,
+   "variant": "signed_mask",
+   "threshold_from_train": 180.054,
+   "train_drone_tpr": 0.19078360737596747,
+   "train_busiest_fpr": 0.050016945826867165,
+   "n_test_drone": 26906,
+   "n_test_random": 26904,
+   "n_test_busiest": 26904,
+   "test_drone_tpr": 0.15435218910280235,
+   "test_random_fpr": 0.0001486767766874814,
+   "test_busiest_fpr": 0.046684507879869164,
+   "test_auc_drone_vs_random": 0.9377225986589715,
+   "test_auc_drone_vs_busiest": 0.7082343720461225,
+   "train_auc_drone_vs_busiest": 0.7075730343990008
+  },
+  {
+   "win_ms": 200,
+   "variant": "signed_mask_notch",
+   "threshold_from_train": 90.257,
+   "train_drone_tpr": 0.24815422477440524,
+   "train_busiest_fpr": 0.050016945826867165,
+   "n_test_drone": 26906,
+   "n_test_random": 26904,
+   "n_test_busiest": 26904,
+   "test_drone_tpr": 0.20790901657622834,
+   "test_random_fpr": 0.0,
+   "test_busiest_fpr": 0.021892655367231638,
+   "test_auc_drone_vs_random": 0.9378420136401134,
+   "test_auc_drone_vs_busiest": 0.7265170001665914,
+   "train_auc_drone_vs_busiest": 0.7156889654977191
+  },
+  {
+   "win_ms": 200,
+   "variant": "signed_notch",
+   "threshold_from_train": 70.345,
+   "train_drone_tpr": 0.24578235902557335,
+   "train_busiest_fpr": 0.050016945826867165,
+   "n_test_drone": 26906,
+   "n_test_random": 26904,
+   "n_test_busiest": 26904,
+   "test_drone_tpr": 0.2045640377610942,
+   "test_random_fpr": 0.0,
+   "test_busiest_fpr": 0.02122360987213797,
+   "test_auc_drone_vs_random": 0.9060973045960232,
+   "test_auc_drone_vs_busiest": 0.6843716941299296,
+   "train_auc_drone_vs_busiest": 0.6740899378914417
+  }
+ ],
+ "per_model": {
+  "20|count": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.01591583490693283,
+    "median_peak_hz": 451.93,
+    "iqr_peak_hz": [
+     404.345,
+     782.105
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     11,
+     23,
+     2,
+     5,
+     4,
+     8,
+     6,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.4989754098360656,
+    "median_peak_hz": 324.185,
+    "iqr_peak_hz": [
+     310.1225,
+     546.2950000000001
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     107,
+     618,
+     2,
+     39,
+     195,
+     7,
+     0,
+     5,
+     1
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.08814968814968815,
+    "median_peak_hz": 230.41500000000002,
+    "iqr_peak_hz": [
+     217.5175,
+     249.5125
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     14,
+     182,
+     1,
+     11,
+     4,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.1372301020869094,
+    "median_peak_hz": 563.6,
+    "iqr_peak_hz": [
+     533.605,
+     594.825
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     1,
+     2,
+     2,
+     135,
+     1039,
+     314,
+     3,
+     3,
+     15,
+     5
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.012384836127473191,
+    "median_peak_hz": 856.63,
+    "iqr_peak_hz": [
+     625.1775,
+     954.32
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     3,
+     8,
+     7,
+     5,
+     5,
+     22,
+     21,
+     11
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.14051724137931035,
+    "median_peak_hz": 224.09,
+    "iqr_peak_hz": [
+     212.97,
+     250.655
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     15,
+     139,
+     4,
+     1,
+     4,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "20|signed": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.03641758834637173,
+    "median_peak_hz": 788.54,
+    "iqr_peak_hz": [
+     618.665,
+     889.02
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     1,
+     15,
+     16,
+     0,
+     17,
+     21,
+     33,
+     24,
+     8
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7581967213114754,
+    "median_peak_hz": 319.245,
+    "iqr_peak_hz": [
+     306.845,
+     334.115
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     233,
+     1112,
+     3,
+     19,
+     94,
+     9,
+     3,
+     5,
+     2
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.10602910602910603,
+    "median_peak_hz": 239.79,
+    "iqr_peak_hz": [
+     220.675,
+     420.515
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     10,
+     166,
+     5,
+     54,
+     9,
+     3,
+     4,
+     0,
+     4,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.3478182310958533,
+    "median_peak_hz": 562.5,
+    "iqr_peak_hz": [
+     531.355,
+     593.3275
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     11,
+     368,
+     2632,
+     816,
+     12,
+     3,
+     6,
+     2
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.024467603081105575,
+    "median_peak_hz": 904.19,
+    "iqr_peak_hz": [
+     804.2425000000001,
+     977.56
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     1,
+     1,
+     2,
+     1,
+     3,
+     6,
+     23,
+     42,
+     58,
+     25
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.15086206896551724,
+    "median_peak_hz": 246.09,
+    "iqr_peak_hz": [
+     224.74,
+     407.56
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     6,
+     115,
+     8,
+     36,
+     5,
+     2,
+     1,
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "20|signed_mask": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.0283247909360669,
+    "median_peak_hz": 804.32,
+    "iqr_peak_hz": [
+     663.97,
+     888.83
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     9,
+     12,
+     0,
+     7,
+     23,
+     31,
+     18,
+     5
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.788422131147541,
+    "median_peak_hz": 320.39,
+    "iqr_peak_hz": [
+     307.72,
+     335.91999999999996
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     217,
+     1201,
+     3,
+     32,
+     72,
+     6,
+     1,
+     6,
+     1
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.0918918918918919,
+    "median_peak_hz": 242.7,
+    "iqr_peak_hz": [
+     221.79,
+     419.39
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     7,
+     146,
+     5,
+     48,
+     12,
+     2,
+     0,
+     0,
+     1,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.3220706477549914,
+    "median_peak_hz": 563.62,
+    "iqr_peak_hz": [
+     529.71,
+     597.57
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     1,
+     1,
+     12,
+     353,
+     2359,
+     815,
+     9,
+     5,
+     5,
+     5
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.018426219604289383,
+    "median_peak_hz": 913.1949999999999,
+    "iqr_peak_hz": [
+     831.605,
+     984.2774999999999
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     2,
+     2,
+     5,
+     13,
+     32,
+     46,
+     22
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.11810344827586207,
+    "median_peak_hz": 244.18,
+    "iqr_peak_hz": [
+     222.76,
+     329.83
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     1,
+     99,
+     4,
+     23,
+     6,
+     4,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "20|signed_mask_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.0283247909360669,
+    "median_peak_hz": 793.29,
+    "iqr_peak_hz": [
+     656.04,
+     862.5
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     11,
+     9,
+     2,
+     9,
+     22,
+     32,
+     20,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7925204918032787,
+    "median_peak_hz": 320.39,
+    "iqr_peak_hz": [
+     312.32,
+     335.95500000000004
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     217,
+     1208,
+     4,
+     34,
+     72,
+     5,
+     0,
+     7,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.0918918918918919,
+    "median_peak_hz": 242.7,
+    "iqr_peak_hz": [
+     222.29,
+     419.39
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     7,
+     146,
+     5,
+     49,
+     11,
+     2,
+     0,
+     0,
+     1,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.3226127021411148,
+    "median_peak_hz": 563.26,
+    "iqr_peak_hz": [
+     529.64,
+     589.43
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     1,
+     1,
+     13,
+     373,
+     2385,
+     780,
+     8,
+     5,
+     5,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.01736897749584655,
+    "median_peak_hz": 912.5,
+    "iqr_peak_hz": [
+     827.005,
+     978.005
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     2,
+     2,
+     5,
+     13,
+     32,
+     61,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.11896551724137931,
+    "median_peak_hz": 244.595,
+    "iqr_peak_hz": [
+     222.76,
+     335.5825
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     2,
+     98,
+     4,
+     23,
+     7,
+     4,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "20|signed_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.03587806851901807,
+    "median_peak_hz": 771.34,
+    "iqr_peak_hz": [
+     608.35,
+     872.32
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     1,
+     15,
+     16,
+     1,
+     18,
+     21,
+     34,
+     27,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7592213114754098,
+    "median_peak_hz": 319.37,
+    "iqr_peak_hz": [
+     310.8325,
+     334.28000000000003
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     227,
+     1118,
+     2,
+     26,
+     90,
+     9,
+     3,
+     7,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.10644490644490645,
+    "median_peak_hz": 239.06,
+    "iqr_peak_hz": [
+     220.60999999999999,
+     420.35249999999996
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     13,
+     165,
+     4,
+     54,
+     9,
+     3,
+     4,
+     0,
+     4,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.3486313126750384,
+    "median_peak_hz": 562.5,
+    "iqr_peak_hz": [
+     531.235,
+     587.78
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     12,
+     386,
+     2658,
+     783,
+     10,
+     3,
+     7,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.023561395559583146,
+    "median_peak_hz": 887.5,
+    "iqr_peak_hz": [
+     787.5,
+     962.5225
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     1,
+     1,
+     2,
+     1,
+     3,
+     7,
+     25,
+     42,
+     74,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.15,
+    "median_peak_hz": 246.095,
+    "iqr_peak_hz": [
+     224.8525,
+     412.2025
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     5,
+     115,
+     8,
+     36,
+     5,
+     2,
+     1,
+     2,
+     0,
+     0
+    ]
+   }
+  },
+  "50|count": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.007823037496628,
+    "median_peak_hz": 422.0,
+    "iqr_peak_hz": [
+     400.87,
+     516.38
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     7,
+     14,
+     1,
+     0,
+     1,
+     6,
+     0,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.41700819672131145,
+    "median_peak_hz": 319.745,
+    "iqr_peak_hz": [
+     307.0425,
+     345.91499999999996
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     126,
+     527,
+     0,
+     14,
+     140,
+     4,
+     0,
+     2,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.08482328482328483,
+    "median_peak_hz": 238.095,
+    "iqr_peak_hz": [
+     220.555,
+     248.31
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     15,
+     188,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.10271930617038576,
+    "median_peak_hz": 564.83,
+    "iqr_peak_hz": [
+     537.18,
+     599.97
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     2,
+     91,
+     760,
+     271,
+     0,
+     3,
+     8,
+     2
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.008457936867542667,
+    "median_peak_hz": 879.12,
+    "iqr_peak_hz": [
+     761.275,
+     941.7049999999999
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     4,
+     2,
+     5,
+     6,
+     17,
+     18,
+     4
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.15344827586206897,
+    "median_peak_hz": 228.34,
+    "iqr_peak_hz": [
+     214.42,
+     245.38
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     19,
+     156,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "50|signed": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.012948475856487725,
+    "median_peak_hz": 741.96,
+    "iqr_peak_hz": [
+     402.57500000000005,
+     833.89
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     1,
+     9,
+     10,
+     0,
+     2,
+     6,
+     14,
+     5,
+     1
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7248975409836066,
+    "median_peak_hz": 316.75,
+    "iqr_peak_hz": [
+     301.765,
+     327.835
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     306,
+     1034,
+     1,
+     10,
+     48,
+     5,
+     3,
+     7,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.14760914760914762,
+    "median_peak_hz": 231.26,
+    "iqr_peak_hz": [
+     211.5,
+     249.1
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     40,
+     285,
+     1,
+     13,
+     6,
+     3,
+     3,
+     0,
+     4,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.2713885626524528,
+    "median_peak_hz": 565.585,
+    "iqr_peak_hz": [
+     538.3924999999999,
+     595.72
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     1,
+     2,
+     3,
+     237,
+     2081,
+     662,
+     5,
+     3,
+     7,
+     3
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.01706690832200574,
+    "median_peak_hz": 898.74,
+    "iqr_peak_hz": [
+     823.79,
+     950.82
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     1,
+     3,
+     2,
+     3,
+     14,
+     34,
+     49,
+     7
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.19137931034482758,
+    "median_peak_hz": 231.605,
+    "iqr_peak_hz": [
+     217.5075,
+     254.4425
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     24,
+     180,
+     4,
+     9,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "50|signed_mask": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.011869436201780416,
+    "median_peak_hz": 770.815,
+    "iqr_peak_hz": [
+     419.0225,
+     837.9175
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     7,
+     7,
+     1,
+     3,
+     5,
+     13,
+     7,
+     1
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7540983606557377,
+    "median_peak_hz": 318.98,
+    "iqr_peak_hz": [
+     304.7325,
+     330.185
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     297,
+     1121,
+     1,
+     9,
+     35,
+     0,
+     0,
+     8,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.1284823284823285,
+    "median_peak_hz": 230.71,
+    "iqr_peak_hz": [
+     214.14,
+     248.24
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     34,
+     254,
+     1,
+     11,
+     3,
+     1,
+     1,
+     1,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.28304273195410606,
+    "median_peak_hz": 565.38,
+    "iqr_peak_hz": [
+     536.35,
+     598.12
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     9,
+     263,
+     2114,
+     728,
+     4,
+     3,
+     11,
+     1
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.010572421084428334,
+    "median_peak_hz": 915.6,
+    "iqr_peak_hz": [
+     853.9,
+     968.7550000000001
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     6,
+     18,
+     37,
+     5
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.16034482758620688,
+    "median_peak_hz": 232.52,
+    "iqr_peak_hz": [
+     222.4325,
+     255.0
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     11,
+     162,
+     3,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "50|signed_mask_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.011869436201780416,
+    "median_peak_hz": 790.0,
+    "iqr_peak_hz": [
+     474.185,
+     823.785
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     6,
+     6,
+     1,
+     3,
+     9,
+     13,
+     6,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7638319672131147,
+    "median_peak_hz": 319.35,
+    "iqr_peak_hz": [
+     310.0,
+     330.49
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     305,
+     1130,
+     2,
+     10,
+     35,
+     0,
+     0,
+     8,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.13264033264033265,
+    "median_peak_hz": 231.18,
+    "iqr_peak_hz": [
+     214.745,
+     248.70499999999998
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     37,
+     261,
+     1,
+     10,
+     3,
+     2,
+     1,
+     1,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.28683711265696993,
+    "median_peak_hz": 565.08,
+    "iqr_peak_hz": [
+     537.115,
+     590.405
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     8,
+     261,
+     2158,
+     729,
+     3,
+     3,
+     13,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.011025524845189549,
+    "median_peak_hz": 910.0,
+    "iqr_peak_hz": [
+     849.06,
+     950.25
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     1,
+     3,
+     1,
+     1,
+     6,
+     23,
+     38,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.16551724137931034,
+    "median_peak_hz": 234.025,
+    "iqr_peak_hz": [
+     223.405,
+     255.7
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     9,
+     169,
+     3,
+     10,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "50|signed_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3707,
+    "n_seq": 7,
+    "share_above_threshold": 0.013757755597518209,
+    "median_peak_hz": 734.0,
+    "iqr_peak_hz": [
+     410.0,
+     833.02
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     1,
+     10,
+     8,
+     1,
+     4,
+     7,
+     16,
+     4,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1952,
+    "n_seq": 4,
+    "share_above_threshold": 0.7525614754098361,
+    "median_peak_hz": 317.44,
+    "iqr_peak_hz": [
+     309.62,
+     328.92
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     314,
+     1068,
+     1,
+     11,
+     57,
+     5,
+     4,
+     8,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.15634095634095635,
+    "median_peak_hz": 231.725,
+    "iqr_peak_hz": [
+     213.73,
+     249.2025
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     42,
+     300,
+     1,
+     15,
+     7,
+     3,
+     4,
+     1,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11069,
+    "n_seq": 24,
+    "share_above_threshold": 0.28322341674948054,
+    "median_peak_hz": 564.71,
+    "iqr_peak_hz": [
+     537.96,
+     590.0
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     1,
+     2,
+     5,
+     243,
+     2195,
+     669,
+     6,
+     4,
+     10,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.01797311584352817,
+    "median_peak_hz": 878.6,
+    "iqr_peak_hz": [
+     808.425,
+     940.38
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     1,
+     4,
+     2,
+     5,
+     17,
+     36,
+     54,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.20603448275862069,
+    "median_peak_hz": 231.76,
+    "iqr_peak_hz": [
+     217.365,
+     254.755
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     31,
+     187,
+     4,
+     10,
+     5,
+     1,
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "100|count": {
+   "Betafpv air75": {
+    "n_boxes": 3706,
+    "n_seq": 7,
+    "share_above_threshold": 0.006745817593092283,
+    "median_peak_hz": 412.55,
+    "iqr_peak_hz": [
+     399.36,
+     793.62
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     7,
+     10,
+     1,
+     0,
+     1,
+     6,
+     0,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.3500768836494106,
+    "median_peak_hz": 318.71,
+    "iqr_peak_hz": [
+     306.35,
+     334.88
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     109,
+     478,
+     1,
+     8,
+     86,
+     0,
+     1,
+     0,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.10727650727650728,
+    "median_peak_hz": 241.38,
+    "iqr_peak_hz": [
+     222.05249999999998,
+     248.99
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     19,
+     236,
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11068,
+    "n_seq": 24,
+    "share_above_threshold": 0.06794362125045175,
+    "median_peak_hz": 562.6949999999999,
+    "iqr_peak_hz": [
+     533.3100000000001,
+     597.0225
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     3,
+     73,
+     502,
+     168,
+     2,
+     1,
+     3,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.003926899259930524,
+    "median_peak_hz": 844.815,
+    "iqr_peak_hz": [
+     669.9125,
+     931.47
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     2,
+     0,
+     6,
+     2,
+     8,
+     8,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.1543103448275862,
+    "median_peak_hz": 230.0,
+    "iqr_peak_hz": [
+     214.13,
+     246.89
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     17,
+     157,
+     3,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "100|signed": {
+   "Betafpv air75": {
+    "n_boxes": 3706,
+    "n_seq": 7,
+    "share_above_threshold": 0.006745817593092283,
+    "median_peak_hz": 446.2,
+    "iqr_peak_hz": [
+     403.5,
+     801.14
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     4,
+     10,
+     0,
+     2,
+     2,
+     6,
+     1,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.65504869297796,
+    "median_peak_hz": 317.4,
+    "iqr_peak_hz": [
+     305.63,
+     327.31
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     230,
+     1004,
+     0,
+     9,
+     24,
+     3,
+     1,
+     7,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.15093555093555094,
+    "median_peak_hz": 240.17,
+    "iqr_peak_hz": [
+     216.07999999999998,
+     252.34
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     33,
+     275,
+     5,
+     34,
+     6,
+     2,
+     3,
+     2,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11068,
+    "n_seq": 24,
+    "share_above_threshold": 0.20220455366823276,
+    "median_peak_hz": 566.0699999999999,
+    "iqr_peak_hz": [
+     539.4325,
+     597.7874999999999
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     2,
+     171,
+     1544,
+     506,
+     6,
+     2,
+     6,
+     1
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.0074006947590998335,
+    "median_peak_hz": 914.94,
+    "iqr_peak_hz": [
+     845.31,
+     964.62
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     1,
+     0,
+     2,
+     5,
+     15,
+     25,
+     1
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.16551724137931034,
+    "median_peak_hz": 232.54000000000002,
+    "iqr_peak_hz": [
+     221.065,
+     254.795
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     18,
+     153,
+     1,
+     16,
+     3,
+     0,
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "100|signed_mask": {
+   "Betafpv air75": {
+    "n_boxes": 3706,
+    "n_seq": 7,
+    "share_above_threshold": 0.007825148407987047,
+    "median_peak_hz": 459.77,
+    "iqr_peak_hz": [
+     404.69,
+     797.44
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     5,
+     10,
+     1,
+     3,
+     4,
+     4,
+     2,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.6858021527421835,
+    "median_peak_hz": 319.1,
+    "iqr_peak_hz": [
+     306.53499999999997,
+     329.76
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     246,
+     1042,
+     0,
+     12,
+     31,
+     1,
+     2,
+     4,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.17006237006237007,
+    "median_peak_hz": 235.87,
+    "iqr_peak_hz": [
+     214.2,
+     249.34
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     50,
+     314,
+     2,
+     34,
+     6,
+     0,
+     0,
+     1,
+     2,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11068,
+    "n_seq": 24,
+    "share_above_threshold": 0.22497289483194796,
+    "median_peak_hz": 566.52,
+    "iqr_peak_hz": [
+     539.0775000000001,
+     598.25
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     3,
+     193,
+     1698,
+     584,
+     5,
+     1,
+     6,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.005286210542214167,
+    "median_peak_hz": 935.28,
+    "iqr_peak_hz": [
+     892.095,
+     967.33
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     8,
+     25,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.17844827586206896,
+    "median_peak_hz": 234.46,
+    "iqr_peak_hz": [
+     222.535,
+     254.11
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     14,
+     172,
+     2,
+     16,
+     2,
+     0,
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "100|signed_mask_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3706,
+    "n_seq": 7,
+    "share_above_threshold": 0.011872638963842417,
+    "median_peak_hz": 615.0,
+    "iqr_peak_hz": [
+     407.7025,
+     810.0
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     7,
+     13,
+     1,
+     5,
+     5,
+     10,
+     3,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.7672988211173757,
+    "median_peak_hz": 319.79,
+    "iqr_peak_hz": [
+     307.5,
+     331.23
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     286,
+     1136,
+     0,
+     14,
+     45,
+     4,
+     2,
+     10,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.21496881496881498,
+    "median_peak_hz": 235.79,
+    "iqr_peak_hz": [
+     214.63,
+     249.72
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     63,
+     395,
+     5,
+     39,
+     8,
+     2,
+     1,
+     1,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11068,
+    "n_seq": 24,
+    "share_above_threshold": 0.27087097940007226,
+    "median_peak_hz": 565.84,
+    "iqr_peak_hz": [
+     538.9875000000001,
+     592.5
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     4,
+     245,
+     2039,
+     693,
+     9,
+     1,
+     7,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.009666213562905906,
+    "median_peak_hz": 914.7149999999999,
+    "iqr_peak_hz": [
+     843.9350000000001,
+     960.4749999999999
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     2,
+     0,
+     2,
+     8,
+     17,
+     35,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.23620689655172414,
+    "median_peak_hz": 235.94,
+    "iqr_peak_hz": [
+     224.5525,
+     259.70500000000004
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     18,
+     219,
+     4,
+     27,
+     4,
+     0,
+     1,
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  "100|signed_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3706,
+    "n_seq": 7,
+    "share_above_threshold": 0.011332973556395036,
+    "median_peak_hz": 638.55,
+    "iqr_peak_hz": [
+     407.5825,
+     825.3075
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     6,
+     13,
+     1,
+     3,
+     5,
+     12,
+     2,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.7401332649923117,
+    "median_peak_hz": 318.52,
+    "iqr_peak_hz": [
+     307.5,
+     328.325
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     268,
+     1109,
+     0,
+     13,
+     37,
+     3,
+     2,
+     11,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.20956340956340958,
+    "median_peak_hz": 240.60500000000002,
+    "iqr_peak_hz": [
+     216.9475,
+     253.17249999999999
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     48,
+     377,
+     8,
+     47,
+     9,
+     3,
+     8,
+     1,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11068,
+    "n_seq": 24,
+    "share_above_threshold": 0.2497289483194796,
+    "median_peak_hz": 564.855,
+    "iqr_peak_hz": [
+     538.9775,
+     592.5
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     5,
+     211,
+     1907,
+     625,
+     6,
+     3,
+     7,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.015556562452801691,
+    "median_peak_hz": 887.5,
+    "iqr_peak_hz": [
+     783.335,
+     945.12
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     2,
+     1,
+     11,
+     16,
+     26,
+     47,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.22844827586206898,
+    "median_peak_hz": 234.81,
+    "iqr_peak_hz": [
+     222.34,
+     263.24
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     23,
+     200,
+     5,
+     32,
+     4,
+     0,
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "200|count": {
+   "Betafpv air75": {
+    "n_boxes": 3705,
+    "n_seq": 7,
+    "share_above_threshold": 0.005128205128205128,
+    "median_peak_hz": 405.0,
+    "iqr_peak_hz": [
+     400.83000000000004,
+     442.335
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     4,
+     11,
+     0,
+     0,
+     0,
+     4,
+     0,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.35776524859046643,
+    "median_peak_hz": 317.475,
+    "iqr_peak_hz": [
+     304.96999999999997,
+     332.26
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     116,
+     496,
+     0,
+     11,
+     75,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.12307692307692308,
+    "median_peak_hz": 241.46499999999997,
+    "iqr_peak_hz": [
+     223.7575,
+     247.8625
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     15,
+     281,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11064,
+    "n_seq": 24,
+    "share_above_threshold": 0.05992407809110629,
+    "median_peak_hz": 562.12,
+    "iqr_peak_hz": [
+     529.455,
+     597.075
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     66,
+     438,
+     154,
+     0,
+     0,
+     5,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.0024165533907264765,
+    "median_peak_hz": 846.0450000000001,
+    "iqr_peak_hz": [
+     720.8975,
+     913.6625
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     2,
+     2,
+     4,
+     6,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.14655172413793102,
+    "median_peak_hz": 227.885,
+    "iqr_peak_hz": [
+     213.445,
+     244.3625
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     15,
+     152,
+     2,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "200|signed": {
+   "Betafpv air75": {
+    "n_boxes": 3705,
+    "n_seq": 7,
+    "share_above_threshold": 0.005668016194331984,
+    "median_peak_hz": 798.0,
+    "iqr_peak_hz": [
+     408.91,
+     815.97
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     4,
+     4,
+     0,
+     1,
+     2,
+     9,
+     1,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.6529984623270118,
+    "median_peak_hz": 316.24,
+    "iqr_peak_hz": [
+     304.67,
+     326.6725
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     238,
+     1009,
+     0,
+     10,
+     13,
+     1,
+     1,
+     2,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.1812889812889813,
+    "median_peak_hz": 240.18,
+    "iqr_peak_hz": [
+     216.8775,
+     249.51
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     33,
+     357,
+     5,
+     35,
+     3,
+     0,
+     2,
+     0,
+     1,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11064,
+    "n_seq": 24,
+    "share_above_threshold": 0.19052783803326104,
+    "median_peak_hz": 566.065,
+    "iqr_peak_hz": [
+     539.46,
+     595.9525
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     2,
+     164,
+     1468,
+     465,
+     6,
+     2,
+     1,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.005135175955293762,
+    "median_peak_hz": 897.075,
+    "iqr_peak_hz": [
+     840.2175,
+     958.2149999999999
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     2,
+     0,
+     0,
+     0,
+     3,
+     2,
+     11,
+     15,
+     1
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.1706896551724138,
+    "median_peak_hz": 232.34,
+    "iqr_peak_hz": [
+     222.5,
+     254.945
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     19,
+     153,
+     3,
+     17,
+     5,
+     0,
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "200|signed_mask": {
+   "Betafpv air75": {
+    "n_boxes": 3705,
+    "n_seq": 7,
+    "share_above_threshold": 0.005668016194331984,
+    "median_peak_hz": 598.24,
+    "iqr_peak_hz": [
+     402.62,
+     802.06
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     4,
+     6,
+     1,
+     1,
+     3,
+     6,
+     0,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.6473603280369041,
+    "median_peak_hz": 318.4,
+    "iqr_peak_hz": [
+     306.5,
+     328.46000000000004
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     217,
+     1022,
+     0,
+     10,
+     11,
+     0,
+     1,
+     2,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.18503118503118504,
+    "median_peak_hz": 239.91,
+    "iqr_peak_hz": [
+     216.25,
+     248.95
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     42,
+     363,
+     3,
+     30,
+     4,
+     1,
+     0,
+     0,
+     2,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11064,
+    "n_seq": 24,
+    "share_above_threshold": 0.1984815618221258,
+    "median_peak_hz": 565.985,
+    "iqr_peak_hz": [
+     540.0,
+     596.805
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     3,
+     157,
+     1536,
+     489,
+     6,
+     1,
+     3,
+     1
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.0036248300860897147,
+    "median_peak_hz": 898.2950000000001,
+    "iqr_peak_hz": [
+     814.6075,
+     967.1875
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     2,
+     1,
+     0,
+     0,
+     2,
+     1,
+     6,
+     12,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.17586206896551723,
+    "median_peak_hz": 239.54500000000002,
+    "iqr_peak_hz": [
+     225.1425,
+     258.13
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     9,
+     168,
+     2,
+     21,
+     0,
+     3,
+     1,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "200|signed_mask_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3705,
+    "n_seq": 7,
+    "share_above_threshold": 0.009986504723346829,
+    "median_peak_hz": 751.29,
+    "iqr_peak_hz": [
+     462.27,
+     829.03
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     5,
+     6,
+     2,
+     4,
+     3,
+     15,
+     2,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.7724243977447462,
+    "median_peak_hz": 318.75,
+    "iqr_peak_hz": [
+     307.5,
+     329.21000000000004
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     0,
+     268,
+     1189,
+     0,
+     14,
+     27,
+     1,
+     2,
+     6,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.2598752598752599,
+    "median_peak_hz": 237.94,
+    "iqr_peak_hz": [
+     216.31,
+     250.0
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     64,
+     493,
+     8,
+     47,
+     7,
+     2,
+     1,
+     0,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11064,
+    "n_seq": 24,
+    "share_above_threshold": 0.2768438177874187,
+    "median_peak_hz": 563.94,
+    "iqr_peak_hz": [
+     536.46,
+     593.75
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     9,
+     231,
+     2124,
+     686,
+     4,
+     2,
+     7,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.00981724814982631,
+    "median_peak_hz": 877.14,
+    "iqr_peak_hz": [
+     793.54,
+     947.63
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     7,
+     10,
+     19,
+     29,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.2560344827586207,
+    "median_peak_hz": 236.87,
+    "iqr_peak_hz": [
+     224.09,
+     259.01
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     19,
+     237,
+     2,
+     30,
+     3,
+     3,
+     3,
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "200|signed_notch": {
+   "Betafpv air75": {
+    "n_boxes": 3705,
+    "n_seq": 7,
+    "share_above_threshold": 0.011066126855600539,
+    "median_peak_hz": 806.25,
+    "iqr_peak_hz": [
+     415.58,
+     834.26
+    ],
+    "proppulse_median_hz": 738,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     7,
+     5,
+     0,
+     3,
+     4,
+     19,
+     3,
+     0
+    ]
+   },
+   "DJI Mini 2": {
+    "n_boxes": 1951,
+    "n_seq": 4,
+    "share_above_threshold": 0.7667862634546386,
+    "median_peak_hz": 317.91499999999996,
+    "iqr_peak_hz": [
+     306.7225,
+     328.59000000000003
+    ],
+    "proppulse_median_hz": 316,
+    "hist_100hz_bins_100_1100": [
+     1,
+     279,
+     1164,
+     0,
+     15,
+     26,
+     2,
+     5,
+     4,
+     0
+    ]
+   },
+   "DJI Mini 3": {
+    "n_boxes": 2405,
+    "n_seq": 4,
+    "share_above_threshold": 0.2632016632016632,
+    "median_peak_hz": 239.47,
+    "iqr_peak_hz": [
+     217.5,
+     250.78
+    ],
+    "proppulse_median_hz": 223,
+    "hist_100hz_bins_100_1100": [
+     52,
+     500,
+     12,
+     49,
+     9,
+     4,
+     4,
+     0,
+     3,
+     0
+    ]
+   },
+   "DJI Tello EDU": {
+    "n_boxes": 11064,
+    "n_seq": 24,
+    "share_above_threshold": 0.26590744757772955,
+    "median_peak_hz": 564.96,
+    "iqr_peak_hz": [
+     537.1125,
+     593.1125
+    ],
+    "proppulse_median_hz": 539,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     7,
+     228,
+     2039,
+     654,
+     6,
+     2,
+     6,
+     0
+    ]
+   },
+   "DarwinFPV cineape20": {
+    "n_boxes": 6621,
+    "n_seq": 13,
+    "share_above_threshold": 0.014197251170518049,
+    "median_peak_hz": 877.89,
+    "iqr_peak_hz": [
+     791.405,
+     941.995
+    ],
+    "proppulse_median_hz": 547,
+    "hist_100hz_bins_100_1100": [
+     0,
+     0,
+     0,
+     0,
+     1,
+     11,
+     13,
+     26,
+     43,
+     0
+    ]
+   },
+   "DarwinFPV cineape20ger": {
+    "n_boxes": 1160,
+    "n_seq": 2,
+    "share_above_threshold": 0.25689655172413794,
+    "median_peak_hz": 233.66,
+    "iqr_peak_hz": [
+     222.5025,
+     258.5775
+    ],
+    "proppulse_median_hz": null,
+    "hist_100hz_bins_100_1100": [
+     30,
+     226,
+     5,
+     27,
+     7,
+     1,
+     1,
+     0,
+     1,
+     0
+    ]
+   }
+  }
+ },
+ "roc": {
+  "20|count": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.897,
+     0.24944262782401902,
+     0.5641301924648882
+    ],
+    [
+     3.315,
+     0.23576843043995244,
+     0.5439176636694657
+    ],
+    [
+     3.6406610169491542,
+     0.22023632580261593,
+     0.5255257486809839
+    ],
+    [
+     3.932,
+     0.20596759809750298,
+     0.5059820167942335
+    ],
+    [
+     4.214237288135592,
+     0.19270214030915578,
+     0.48524931262539944
+    ],
+    [
+     4.495,
+     0.17991973840665873,
+     0.4642193653860444
+    ],
+    [
+     4.761813559322036,
+     0.16669143876337694,
+     0.44348666121721037
+    ],
+    [
+     5.046,
+     0.1535002972651605,
+     0.4228282678160065
+    ],
+    [
+     5.347,
+     0.14105231866825207,
+     0.4013896113546853
+    ],
+    [
+     5.669,
+     0.12838139120095124,
+     0.3802110425800698
+    ],
+    [
+     6.012,
+     0.1161935196195006,
+     0.3585494538158579
+    ],
+    [
+     6.406254237288136,
+     0.10363406658739596,
+     0.33703648658690644
+    ],
+    [
+     6.8385423728813555,
+     0.09137187871581451,
+     0.3154120532065096
+    ],
+    [
+     7.338830508474581,
+     0.08074464922711058,
+     0.29215278293824776
+    ],
+    [
+     7.954118644067799,
+     0.07011741973840666,
+     0.26885635728617074
+    ],
+    [
+     8.734,
+     0.05997324613555291,
+     0.24515122241212753
+    ],
+    [
+     9.639694915254237,
+     0.04979191438763377,
+     0.22140893215426916
+    ],
+    [
+     10.884983050847454,
+     0.041245541022592154,
+     0.19606896039236085
+    ],
+    [
+     12.792355932203405,
+     0.03329369797859691,
+     0.1700973471055956
+    ],
+    [
+     15.780237288135599,
+     0.026233650416171223,
+     0.1432711599910827
+    ],
+    [
+     20.934932203389828,
+     0.02032550535077289,
+     0.11529315597830125
+    ],
+    [
+     29.68530508474573,
+     0.015234839476813318,
+     0.08646057813777216
+    ],
+    [
+     49.25289830508466,
+     0.010144173602853745,
+     0.057665155681058185
+    ],
+    [
+     99.29825423728826,
+     0.004793400713436385,
+     0.02912982091105001
+    ],
+    [
+     5180.2,
+     3.715814506539833e-05,
+     0.0
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.016,
+     0.017241379310344827,
+     0.5590399048822174
+    ],
+    [
+     3.618,
+     0.015271997621878716,
+     0.5271234301850338
+    ],
+    [
+     4.0776779661016995,
+     0.013488406658739596,
+     0.4949840231849595
+    ],
+    [
+     4.511,
+     0.01163049940546968,
+     0.46299323772014567
+    ],
+    [
+     4.93,
+     0.010107015457788348,
+     0.43059374303336556
+    ],
+    [
+     5.383,
+     0.008509215219976218,
+     0.39830571449803076
+    ],
+    [
+     5.880491525423742,
+     0.007097205707491082,
+     0.3657947536598053
+    ],
+    [
+     6.466,
+     0.00535077288941736,
+     0.333655346659731
+    ],
+    [
+     7.163406779661018,
+     0.004421819262782402,
+     0.30066136583190906
+    ],
+    [
+     7.991389830508473,
+     0.0032699167657550534,
+     0.2679274726907929
+    ],
+    [
+     9.08993220338982,
+     0.0022666468489892983,
+     0.2350449580144163
+    ],
+    [
+     10.528,
+     0.0012633769322235435,
+     0.20216244333803968
+    ],
+    [
+     12.8711186440678,
+     0.0005202140309155767,
+     0.16898268559114216
+    ],
+    [
+     16.921389830508474,
+     0.00022294887039239002,
+     0.13539421862227838
+    ],
+    [
+     24.75330508474573,
+     0.00022294887039239002,
+     0.10147135319907855
+    ],
+    [
+     40.59871186440667,
+     0.00011147443519619501,
+     0.06769710931113919
+    ],
+    [
+     87.15547457627126,
+     3.715814506539833e-05,
+     0.03388571003938471
+    ],
+    [
+     1723.364,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "20|signed": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.0800847457627096,
+     0.24706450653983353,
+     0.5664709816452403
+    ],
+    [
+     3.558,
+     0.22896848989298454,
+     0.5507170989076318
+    ],
+    [
+     3.967661016949154,
+     0.2118014268727705,
+     0.533960020807015
+    ],
+    [
+     4.33,
+     0.19526605231866825,
+     0.5167570781006168
+    ],
+    [
+     4.696,
+     0.17861920332936979,
+     0.49940551385895815
+    ],
+    [
+     5.045,
+     0.1626412009512485,
+     0.48153377424388794
+    ],
+    [
+     5.419,
+     0.14744351961950058,
+     0.46280746080107005
+    ],
+    [
+     5.829,
+     0.1322458382877527,
+     0.4440439919744371
+    ],
+    [
+     6.3023898305084725,
+     0.11660225921521998,
+     0.4257635431374006
+    ],
+    [
+     6.81,
+     0.1025564803804994,
+     0.40595972356394444
+    ],
+    [
+     7.381,
+     0.08795332936979786,
+     0.38678754551534517
+    ],
+    [
+     8.064508474576273,
+     0.0757654577883472,
+     0.3649030244482426
+    ],
+    [
+     8.87,
+     0.06335463733650416,
+     0.3434643679869213
+    ],
+    [
+     9.992,
+     0.05269024970273484,
+     0.32024225310247456
+    ],
+    [
+     11.601355932203399,
+     0.043177764565992864,
+     0.295794010552129
+    ],
+    [
+     13.80403389830509,
+     0.034780023781212845,
+     0.27030541725496027
+    ],
+    [
+     17.068474576271182,
+     0.028611771700356718,
+     0.2425875009288846
+    ],
+    [
+     21.72181355932201,
+     0.022294887039239,
+     0.2150182061380694
+    ],
+    [
+     28.61227118644068,
+     0.016684007134363854,
+     0.1867058036709519
+    ],
+    [
+     38.55918644067799,
+     0.012968192627824018,
+     0.15653563201307868
+    ],
+    [
+     54.196525423728794,
+     0.009029429250891795,
+     0.12658839265809615
+    ],
+    [
+     80.42940677966101,
+     0.006391200951248514,
+     0.09530355948576949
+    ],
+    [
+     132.30671186440668,
+     0.00379013079667063,
+     0.06401872631344281
+    ],
+    [
+     254.0978305084746,
+     0.002118014268727705,
+     0.03180500854573828
+    ],
+    [
+     6536.338,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.3121016949152544,
+     0.016609690844233055,
+     0.5596343910232593
+    ],
+    [
+     4.085389830508473,
+     0.014454518430439952,
+     0.5279036932451512
+    ],
+    [
+     4.7426779661017,
+     0.012039239001189061,
+     0.49643308315374896
+    ],
+    [
+     5.37796610169491,
+     0.00958680142687277,
+     0.46499962844616183
+    ],
+    [
+     6.108508474576272,
+     0.007320154577883472,
+     0.43334324143568403
+    ],
+    [
+     6.936542372881355,
+     0.005648038049940547,
+     0.4011295236679795
+    ],
+    [
+     7.919830508474581,
+     0.004050237812128418,
+     0.36884149513264475
+    ],
+    [
+     9.180118644067798,
+     0.00267538644470868,
+     0.3362933789106041
+    ],
+    [
+     11.022406779661019,
+     0.001449167657550535,
+     0.30363379653711825
+    ],
+    [
+     13.77408474576271,
+     0.0006316884661117717,
+     0.27056550494166604
+    ],
+    [
+     18.016847457627097,
+     0.0004087395957193817,
+     0.23690272720517203
+    ],
+    [
+     24.24105084745771,
+     0.00022294887039239002,
+     0.20316563870104778
+    ],
+    [
+     33.7013559322034,
+     0.0001857907253269917,
+     0.16931708404547818
+    ],
+    [
+     48.8528474576271,
+     7.431629013079666e-05,
+     0.13554284015753884
+    ],
+    [
+     73.20389830508472,
+     3.715814506539833e-05,
+     0.10165713011815412
+    ],
+    [
+     123.965762711864,
+     0.0,
+     0.06780857546258452
+    ],
+    [
+     242.48725423728825,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     6536.338,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "20|signed_mask": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.76252542372881,
+     0.1336206896551724,
+     0.5104406628520473
+    ],
+    [
+     3.571,
+     0.1203923900118906,
+     0.48985658021847367
+    ],
+    [
+     4.145101694915254,
+     0.10920778834720571,
+     0.46704317455599315
+    ],
+    [
+     4.684389830508473,
+     0.09761444708680142,
+     0.44474994426692427
+    ],
+    [
+     5.241677966101699,
+     0.08698721759809751,
+     0.4214906739986624
+    ],
+    [
+     5.849,
+     0.07643430439952438,
+     0.3981942483465854
+    ],
+    [
+     6.545254237288137,
+     0.06632728894173603,
+     0.3743404919372817
+    ],
+    [
+     7.38908474576271,
+     0.05648038049940547,
+     0.3503009586089024
+    ],
+    [
+     8.493152542372904,
+     0.04655915576694412,
+     0.32633573604815336
+    ],
+    [
+     10.021711864406797,
+     0.03860731272294887,
+     0.30036412276138813
+    ],
+    [
+     12.332067796610179,
+     0.030692627824019023,
+     0.27439250947462285
+    ],
+    [
+     16.237559322033892,
+     0.02471016646848989,
+     0.24648881622947166
+    ],
+    [
+     23.05072881355928,
+     0.01987960760998811,
+     0.21743330608605188
+    ],
+    [
+     34.334542372881366,
+     0.016163793103448277,
+     0.18722597904436353
+    ],
+    [
+     52.8206271186441,
+     0.012782401902497027,
+     0.15672140893215428
+    ],
+    [
+     84.81708474576271,
+     0.010367122473246136,
+     0.12525079884075202
+    ],
+    [
+     139.3483898305084,
+     0.006948573127229489,
+     0.09474622872854277
+    ],
+    [
+     245.73481355932176,
+     0.004421819262782402,
+     0.06338708478858586
+    ],
+    [
+     476.1390847457641,
+     0.00200653983353151,
+     0.031916474697183624
+    ],
+    [
+     8353.308,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.938355932203398,
+     0.00111474435196195,
+     0.5073567659953927
+    ],
+    [
+     3.9839661016949104,
+     0.0008917954815695601,
+     0.4736939882588987
+    ],
+    [
+     4.796,
+     0.0007060047562425683,
+     0.44006836590621984
+    ],
+    [
+     5.641542372881355,
+     0.0006316884661117717,
+     0.40614550048302
+    ],
+    [
+     6.621830508474581,
+     0.000557372175980975,
+     0.37233410121126553
+    ],
+    [
+     7.8971186440678,
+     0.00048305588585017834,
+     0.3384855465556959
+    ],
+    [
+     9.716627118644071,
+     0.00029726516052318666,
+     0.3047856134353868
+    ],
+    [
+     12.705694915254236,
+     0.00022294887039239002,
+     0.2709742141636323
+    ],
+    [
+     18.128728813559285,
+     0.00011147443519619501,
+     0.23719997027569295
+    ],
+    [
+     27.642627118644086,
+     0.00011147443519619501,
+     0.20327710485249312
+    ],
+    [
+     44.21001694915259,
+     0.00011147443519619501,
+     0.16939139481310841
+    ],
+    [
+     72.01084745762712,
+     7.431629013079666e-05,
+     0.13554284015753884
+    ],
+    [
+     123.50603389830468,
+     7.431629013079666e-05,
+     0.10161997473433901
+    ],
+    [
+     226.93186440677934,
+     3.715814506539833e-05,
+     0.06777142007876942
+    ],
+    [
+     451.542440677967,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     8353.308,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "20|signed_mask_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.7425762711864303,
+     0.1338436385255648,
+     0.5102177305491565
+    ],
+    [
+     3.528,
+     0.1203923900118906,
+     0.48981942483465857
+    ],
+    [
+     4.077,
+     0.10924494649227111,
+     0.46704317455599315
+    ],
+    [
+     4.615,
+     0.0980231866825208,
+     0.44437839042877314
+    ],
+    [
+     5.185,
+     0.08702437574316291,
+     0.4214906739986624
+    ],
+    [
+     5.791,
+     0.07658293697978596,
+     0.3980827821951401
+    ],
+    [
+     6.474254237288136,
+     0.0668475029726516,
+     0.3738203165638701
+    ],
+    [
+     7.304627118644064,
+     0.056629013079667063,
+     0.35015233707364196
+    ],
+    [
+     8.387,
+     0.04641052318668252,
+     0.326521512967229
+    ],
+    [
+     9.901237288135599,
+     0.03838436385255648,
+     0.3005870550642788
+    ],
+    [
+     12.167,
+     0.03058115338882283,
+     0.2745411310098833
+    ],
+    [
+     16.148694915254236,
+     0.0245243757431629,
+     0.24667459314854723
+    ],
+    [
+     22.752576271186378,
+     0.01987960760998811,
+     0.21743330608605188
+    ],
+    [
+     33.92230508474588,
+     0.016163793103448277,
+     0.18722597904436353
+    ],
+    [
+     52.2820338983051,
+     0.012782401902497027,
+     0.15672140893215428
+    ],
+    [
+     83.99916949152541,
+     0.010218489892984543,
+     0.12539942037601248
+    ],
+    [
+     137.3723559322034,
+     0.007060047562425684,
+     0.09463476257709742
+    ],
+    [
+     243.38349152542355,
+     0.0044589774078478,
+     0.06334992940477076
+    ],
+    [
+     473.9046610169495,
+     0.00200653983353151,
+     0.031916474697183624
+    ],
+    [
+     8353.308,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.897355932203398,
+     0.00111474435196195,
+     0.5073567659953927
+    ],
+    [
+     3.946898305084731,
+     0.0008917954815695601,
+     0.4736939882588987
+    ],
+    [
+     4.736254237288136,
+     0.0007431629013079667,
+     0.4399197443709594
+    ],
+    [
+     5.582542372881355,
+     0.0006316884661117717,
+     0.40614550048302
+    ],
+    [
+     6.533,
+     0.000557372175980975,
+     0.37237125659508064
+    ],
+    [
+     7.787,
+     0.00048305588585017834,
+     0.33852270193951106
+    ],
+    [
+     9.649,
+     0.00029726516052318666,
+     0.304859924203017
+    ],
+    [
+     12.601389830508474,
+     0.00022294887039239002,
+     0.2709742141636323
+    ],
+    [
+     17.915949152542368,
+     0.00011147443519619501,
+     0.23719997027569295
+    ],
+    [
+     27.497796610169534,
+     0.00011147443519619501,
+     0.20327710485249312
+    ],
+    [
+     43.810169491525485,
+     0.00011147443519619501,
+     0.16939139481310841
+    ],
+    [
+     71.29937288135592,
+     7.431629013079666e-05,
+     0.13554284015753884
+    ],
+    [
+     122.3048135593219,
+     7.431629013079666e-05,
+     0.10161997473433901
+    ],
+    [
+     224.28538983050822,
+     3.715814506539833e-05,
+     0.06777142007876942
+    ],
+    [
+     447.88496610169574,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     8353.308,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "20|signed_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.0410847457627095,
+     0.24706450653983353,
+     0.5664709816452403
+    ],
+    [
+     3.5213728813559353,
+     0.22896848989298454,
+     0.5506799435238166
+    ],
+    [
+     3.920661016949154,
+     0.2119872175980975,
+     0.5337742438879394
+    ],
+    [
+     4.278949152542372,
+     0.19470868014268727,
+     0.517165787322583
+    ],
+    [
+     4.640474576271183,
+     0.1788793103448276,
+     0.4990711154046221
+    ],
+    [
+     4.991,
+     0.1626412009512485,
+     0.48145946347625773
+    ],
+    [
+     5.363,
+     0.1471834126040428,
+     0.46314185925540613
+    ],
+    [
+     5.774,
+     0.13232015457788346,
+     0.44396968120680685
+    ],
+    [
+     6.234,
+     0.11727110582639715,
+     0.42516905699635876
+    ],
+    [
+     6.732,
+     0.10300237812128418,
+     0.40558816972579326
+    ],
+    [
+     7.308,
+     0.08784185493460167,
+     0.38678754551534517
+    ],
+    [
+     7.965508474576272,
+     0.075839774078478,
+     0.3648287136806123
+    ],
+    [
+     8.789542372881355,
+     0.06357758620689655,
+     0.3432042803002155
+    ],
+    [
+     9.900813559322064,
+     0.05295035671819263,
+     0.31994501003195364
+    ],
+    [
+     11.510118644067798,
+     0.043140606420927465,
+     0.2958311659359441
+    ],
+    [
+     13.634,
+     0.034742865636147445,
+     0.27037972802259047
+    ],
+    [
+     16.878,
+     0.028500297265160523,
+     0.24273612246414505
+    ],
+    [
+     21.46793220338982,
+     0.021997621878715814,
+     0.21531544920859033
+    ],
+    [
+     28.306627118644087,
+     0.01653537455410226,
+     0.18685442520621237
+    ],
+    [
+     38.1560338983051,
+     0.01293103448275862,
+     0.15657278739689381
+    ],
+    [
+     53.66323728813559,
+     0.008992271105826398,
+     0.12662554804191128
+    ],
+    [
+     79.45722033898303,
+     0.006354042806183115,
+     0.0953407148695846
+    ],
+    [
+     131.29059322033888,
+     0.00379013079667063,
+     0.06401872631344281
+    ],
+    [
+     252.56964406779676,
+     0.002118014268727705,
+     0.03180500854573828
+    ],
+    [
+     6536.338,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.282,
+     0.016684007134363854,
+     0.5595972356394442
+    ],
+    [
+     4.045,
+     0.014380202140309157,
+     0.5280151593965966
+    ],
+    [
+     4.692,
+     0.011853448275862068,
+     0.4966560154566397
+    ],
+    [
+     5.326,
+     0.009438168846611177,
+     0.46518540536523745
+    ],
+    [
+     6.036508474576272,
+     0.007394470868014268,
+     0.4332689306680538
+    ],
+    [
+     6.864542372881355,
+     0.005759512485136742,
+     0.40101805751653413
+    ],
+    [
+     7.819661016949161,
+     0.004124554102259215,
+     0.3687671843650145
+    ],
+    [
+     9.099118644067799,
+     0.00267538644470868,
+     0.3362933789106041
+    ],
+    [
+     10.906813559322035,
+     0.0013748513674197384,
+     0.30370810730474845
+    ],
+    [
+     13.617694915254237,
+     0.0006316884661117717,
+     0.27056550494166604
+    ],
+    [
+     17.757983050847454,
+     0.0004087395957193817,
+     0.23690272720517203
+    ],
+    [
+     24.00844067796613,
+     0.00022294887039239002,
+     0.20316563870104778
+    ],
+    [
+     33.3250338983051,
+     0.0001857907253269917,
+     0.16931708404547818
+    ],
+    [
+     48.47537288135591,
+     7.431629013079666e-05,
+     0.13554284015753884
+    ],
+    [
+     72.55767796610169,
+     3.715814506539833e-05,
+     0.10165713011815412
+    ],
+    [
+     123.11161016949042,
+     0.0,
+     0.06780857546258452
+    ],
+    [
+     240.54535593220345,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     6536.338,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "50|count": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.8161016949152544,
+     0.5296521997621879,
+     0.7584528498179386
+    ],
+    [
+     4.236,
+     0.5101813317479191,
+     0.7440737162814892
+    ],
+    [
+     4.532,
+     0.4908219381688466,
+     0.7296202719774095
+    ],
+    [
+     4.77291525423729,
+     0.473320451843044,
+     0.7131232815634986
+    ],
+    [
+     4.992,
+     0.45492717003567185,
+     0.6978152634316712
+    ],
+    [
+     5.211,
+     0.4378344233055886,
+     0.6808724084119789
+    ],
+    [
+     5.419,
+     0.4195154577883472,
+     0.6652671472096306
+    ],
+    [
+     5.615,
+     0.402608501783591,
+     0.6482871368061232
+    ],
+    [
+     5.809355932203391,
+     0.3842895362663496,
+     0.6326447202199599
+    ],
+    [
+     6.0,
+     0.3680142687277051,
+     0.6150702236754105
+    ],
+    [
+     6.189,
+     0.35069857312722946,
+     0.5984989224938694
+    ],
+    [
+     6.392,
+     0.33468341260404283,
+     0.5807014936464294
+    ],
+    [
+     6.6,
+     0.3171076099881094,
+     0.5643531247677789
+    ],
+    [
+     6.809,
+     0.30042360285374553,
+     0.5470758712937505
+    ],
+    [
+     7.018,
+     0.2840368608799049,
+     0.5296499962844616
+    ],
+    [
+     7.233,
+     0.2684304399524376,
+     0.5112580812959798
+    ],
+    [
+     7.474,
+     0.25159780023781214,
+     0.49427807089247233
+    ],
+    [
+     7.742,
+     0.23625148632580262,
+     0.47577468975254517
+    ],
+    [
+     8.021,
+     0.2212767538644471,
+     0.45671397785539125
+    ],
+    [
+     8.316,
+     0.20697086801426873,
+     0.43717024596864085
+    ],
+    [
+     8.656813559322035,
+     0.19117865636147444,
+     0.4190012632830497
+    ],
+    [
+     9.033,
+     0.17594381688466113,
+     0.4003864159916772
+    ],
+    [
+     9.468,
+     0.1609690844233056,
+     0.3814371702459686
+    ],
+    [
+     9.942677966101698,
+     0.14621730083234244,
+     0.3622649921973694
+    ],
+    [
+     10.51493220338982,
+     0.13272889417360284,
+     0.3418666864828714
+    ],
+    [
+     11.16,
+     0.12020659928656362,
+     0.32050234078918033
+    ],
+    [
+     12.03616949152542,
+     0.10787009512485136,
+     0.29891506279259866
+    ],
+    [
+     13.244661016949161,
+     0.09616527942925089,
+     0.2767332986549751
+    ],
+    [
+     14.758355932203397,
+     0.08616973840665874,
+     0.2528052314780412
+    ],
+    [
+     17.185440677966106,
+     0.0759140903686088,
+     0.22917440737162814
+    ],
+    [
+     20.84455932203389,
+     0.06811087990487515,
+     0.20309132793341755
+    ],
+    [
+     26.49796610169491,
+     0.061310939357907254,
+     0.17600505313219886
+    ],
+    [
+     35.17606779661021,
+     0.054325208085612364,
+     0.14906739986624062
+    ],
+    [
+     48.795796610169496,
+     0.04633620689655173,
+     0.1231700973471056
+    ],
+    [
+     66.03301694915254,
+     0.03559750297265161,
+     0.10002229323028906
+    ],
+    [
+     91.10944067796606,
+     0.02322384066587396,
+     0.07847217061752249
+    ],
+    [
+     139.35140677966066,
+     0.012225029726516052,
+     0.05558445418741176
+    ],
+    [
+     283.6718474576289,
+     0.00579667063020214,
+     0.028126625548041913
+    ],
+    [
+     9895.888,
+     3.715814506539833e-05,
+     0.0
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.7200847457627098,
+     0.052541617122473246,
+     0.7609794159173664
+    ],
+    [
+     4.496372881355936,
+     0.047934007134363854,
+     0.731700973471056
+    ],
+    [
+     4.9326610169491545,
+     0.04395808561236623,
+     0.7017908894998885
+    ],
+    [
+     5.334,
+     0.04065101070154578,
+     0.6712863193876792
+    ],
+    [
+     5.701237288135591,
+     0.036786563614744354,
+     0.6411533031136212
+    ],
+    [
+     6.04952542372881,
+     0.03277348394768133,
+     0.6112803745262688
+    ],
+    [
+     6.391813559322036,
+     0.02946640903686088,
+     0.5807014936464294
+    ],
+    [
+     6.77,
+     0.026047859690844232,
+     0.5503455450694805
+    ],
+    [
+     7.146,
+     0.022926575505350773,
+     0.5195065765029353
+    ],
+    [
+     7.544677966101699,
+     0.019508026159334127,
+     0.4889648510069109
+    ],
+    [
+     8.001966101694912,
+     0.016200951248513673,
+     0.4583859701270714
+    ],
+    [
+     8.482,
+     0.013451248513674198,
+     0.4272497584900052
+    ],
+    [
+     9.125542372881355,
+     0.010552913198573127,
+     0.39622501300438434
+    ],
+    [
+     9.866830508474582,
+     0.007691736028537456,
+     0.36520026751876344
+    ],
+    [
+     10.764,
+     0.005722354340071343,
+     0.3332837928215798
+    ],
+    [
+     11.910813559322037,
+     0.0037158145065398335,
+     0.3013673181243962
+    ],
+    [
+     13.660694915254236,
+     0.0018207491082045185,
+     0.2693765326595824
+    ],
+    [
+     16.285983050847456,
+     0.0007060047562425683,
+     0.2366054841346511
+    ],
+    [
+     20.85198305084749,
+     0.0003715814506539834,
+     0.20301701716578732
+    ],
+    [
+     28.301864406779693,
+     0.00022294887039239002,
+     0.16927992866166308
+    ],
+    [
+     41.655593220338964,
+     0.0001857907253269917,
+     0.13543137400609348
+    ],
+    [
+     64.92101694915235,
+     0.0001857907253269917,
+     0.10150850858289366
+    ],
+    [
+     108.36822033898288,
+     0.00011147443519619501,
+     0.06769710931113919
+    ],
+    [
+     234.87101694915273,
+     0.00011147443519619501,
+     0.03381139927175448
+    ],
+    [
+     6045.347,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "50|signed": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.966,
+     0.529577883472057,
+     0.7586014713531991
+    ],
+    [
+     4.401,
+     0.5083234244946492,
+     0.7459686408560601
+    ],
+    [
+     4.728627118644068,
+     0.48747770511296074,
+     0.7328527903693245
+    ],
+    [
+     5.007,
+     0.46726367419738407,
+     0.7193282306606227
+    ],
+    [
+     5.262,
+     0.44704964328180735,
+     0.7055807386490303
+    ],
+    [
+     5.500491525423728,
+     0.4267984542211653,
+     0.6918332466374377
+    ],
+    [
+     5.73477966101695,
+     0.4065101070154578,
+     0.6782343761611057
+    ],
+    [
+     5.958067796610169,
+     0.38666765755053506,
+     0.6641524856951773
+    ],
+    [
+     6.177,
+     0.3672339476813318,
+     0.6497361967749127
+    ],
+    [
+     6.42364406779661,
+     0.3472428656361474,
+     0.6358029278442446
+    ],
+    [
+     6.667,
+     0.3281807372175981,
+     0.6210150850858289
+    ],
+    [
+     6.903,
+     0.3097131391200951,
+     0.6055956008025563
+    ],
+    [
+     7.157508474576269,
+     0.2914684898929845,
+     0.5898788734487628
+    ],
+    [
+     7.408796610169491,
+     0.2730008917954816,
+     0.5744593891654901
+    ],
+    [
+     7.69,
+     0.2553507728894174,
+     0.5582967972059152
+    ],
+    [
+     7.983372881355935,
+     0.23792360285374553,
+     0.5417254960243739
+    ],
+    [
+     8.303322033898308,
+     0.22012485136741974,
+     0.5256372148324292
+    ],
+    [
+     8.688949152542373,
+     0.20240041617122473,
+     0.5094746228728543
+    ],
+    [
+     9.084237288135592,
+     0.1850847205707491,
+     0.49286616630749797
+    ],
+    [
+     9.54652542372881,
+     0.16903240190249702,
+     0.47503158207624285
+    ],
+    [
+     10.099,
+     0.15260850178359095,
+     0.457605707066954
+    ],
+    [
+     10.726,
+     0.13700208085612367,
+     0.4392881028461024
+    ],
+    [
+     11.503389830508473,
+     0.12173008323424495,
+     0.42063610017091474
+    ],
+    [
+     12.534711864406797,
+     0.10790725326991676,
+     0.40057219291075274
+    ],
+    [
+     13.921966101694911,
+     0.09453032104637336,
+     0.3800624210448094
+    ],
+    [
+     15.882779661016954,
+     0.08427467300832342,
+     0.3563944415545813
+    ],
+    [
+     18.861542372881352,
+     0.07635998810939358,
+     0.330422828267816
+    ],
+    [
+     23.283644067796647,
+     0.06929994054696789,
+     0.3035966411533031
+    ],
+    [
+     28.85566101694919,
+     0.06276010701545778,
+     0.2762131232815635
+    ],
+    [
+     35.594440677966105,
+     0.05447384066587396,
+     0.2506130638329494
+    ],
+    [
+     43.52969491525424,
+     0.04432966706302022,
+     0.22687077357509103
+    ],
+    [
+     53.308491525423655,
+     0.0334051724137931,
+     0.20390874637735007
+    ],
+    [
+     67.78196610169498,
+     0.024227110582639714,
+     0.17916326075648362
+    ],
+    [
+     90.2518305084746,
+     0.01657253269916766,
+     0.15293155978301257
+    ],
+    [
+     127.75383050847455,
+     0.011481866825208086,
+     0.12413613732629858
+    ],
+    [
+     193.35562711864392,
+     0.00758026159334126,
+     0.09411458720368582
+    ],
+    [
+     316.104728813558,
+     0.004793400713436385,
+     0.06301553095043472
+    ],
+    [
+     621.9611016949153,
+     0.0028611771700356716,
+     0.03106190086943598
+    ],
+    [
+     17898.287,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.853,
+     0.05291319857312723,
+     0.7606450174630304
+    ],
+    [
+     4.748,
+     0.04774821640903686,
+     0.7319239057739466
+    ],
+    [
+     5.312,
+     0.04302913198573127,
+     0.7027569294790815
+    ],
+    [
+     5.817,
+     0.03864447086801427,
+     0.6733670208813257
+    ],
+    [
+     6.272,
+     0.034222651605231864,
+     0.6437541799806792
+    ],
+    [
+     6.76,
+     0.029429250891795482,
+     0.6146615144534443
+    ],
+    [
+     7.242813559322036,
+     0.025527645659928655,
+     0.5846399643308315
+    ],
+    [
+     7.761101694915254,
+     0.021923305588585018,
+     0.5543211711376979
+    ],
+    [
+     8.34,
+     0.018133174791914387,
+     0.52426246563127
+    ],
+    [
+     9.048677966101698,
+     0.014120095124851368,
+     0.49435238166010254
+    ],
+    [
+     9.876898305084731,
+     0.010441438763376932,
+     0.4641450546184142
+    ],
+    [
+     10.947254237288135,
+     0.007134363852556481,
+     0.4335290183547596
+    ],
+    [
+     12.42816949152542,
+     0.004570451843043995,
+     0.40220702979861783
+    ],
+    [
+     14.575830508474581,
+     0.0020436979785969085,
+     0.3708478858586609
+    ],
+    [
+     17.9021186440678,
+     0.0008917954815695601,
+     0.3380768373337297
+    ],
+    [
+     23.044220338983052,
+     0.0003715814506539834,
+     0.30471130266775653
+    ],
+    [
+     30.035694915254236,
+     0.0001857907253269917,
+     0.2710113695474474
+    ],
+    [
+     39.71561016949147,
+     0.0001857907253269917,
+     0.23712565950806272
+    ],
+    [
+     53.82723728813566,
+     0.0001857907253269917,
+     0.2032027940848629
+    ],
+    [
+     74.78147457627128,
+     0.00014863258026159333,
+     0.1693542394292933
+    ],
+    [
+     111.14596610169488,
+     0.00011147443519619501,
+     0.1355056847737237
+    ],
+    [
+     174.19449152542373,
+     7.431629013079666e-05,
+     0.10161997473433901
+    ],
+    [
+     291.45227118644044,
+     7.431629013079666e-05,
+     0.0677342646949543
+    ],
+    [
+     584.1398474576271,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     17898.287,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "50|signed_mask": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.2819661016949393,
+     0.2920630202140309,
+     0.7248643828490748
+    ],
+    [
+     4.145,
+     0.2740784780023781,
+     0.7089990339600208
+    ],
+    [
+     4.663932203389831,
+     0.258583531510107,
+     0.6905699635877238
+    ],
+    [
+     5.08222033898305,
+     0.24412901307966706,
+     0.6711005424686037
+    ],
+    [
+     5.450508474576269,
+     0.2297116527942925,
+     0.6516311213494835
+    ],
+    [
+     5.791,
+     0.21514565992865636,
+     0.632384632533254
+    ],
+    [
+     6.14208474576271,
+     0.20109988109393578,
+     0.6124321914245374
+    ],
+    [
+     6.497,
+     0.18783442330558858,
+     0.5919967303262242
+    ],
+    [
+     6.847,
+     0.17501486325802615,
+     0.5707810061677937
+    ],
+    [
+     7.256,
+     0.16171224732461356,
+     0.5502340789180352
+    ],
+    [
+     7.677474576271183,
+     0.14911563614744353,
+     0.5288325778405291
+    ],
+    [
+     8.17605084745762,
+     0.13711355529131986,
+     0.5069480567734265
+    ],
+    [
+     8.76562711864407,
+     0.12604042806183116,
+     0.484134651110946
+    ],
+    [
+     9.434101694915254,
+     0.11433561236623067,
+     0.46191573158950733
+    ],
+    [
+     10.185,
+     0.10396848989298454,
+     0.43843352901835475
+    ],
+    [
+     11.203677966101699,
+     0.09311831153388823,
+     0.41536003566916846
+    ],
+    [
+     12.60289830508473,
+     0.08442330558858502,
+     0.39016868544252065
+    ],
+    [
+     14.633254237288135,
+     0.07665725326991676,
+     0.3640112952366798
+    ],
+    [
+     18.06250847457626,
+     0.07011741973840666,
+     0.3366649327487553
+    ],
+    [
+     23.599830508474582,
+     0.06409780023781213,
+     0.30879839488741917
+    ],
+    [
+     31.668593220338995,
+     0.05737217598097503,
+     0.28160065393475514
+    ],
+    [
+     42.10093220338988,
+     0.04778537455410226,
+     0.25730103291967005
+    ],
+    [
+     54.53608474576271,
+     0.036526456599286564,
+     0.23467340417626514
+    ],
+    [
+     73.91328813559312,
+     0.025564803804994055,
+     0.21174853236233931
+    ],
+    [
+     103.22588135593226,
+     0.019322235434007136,
+     0.18406777142007877
+    ],
+    [
+     155.25850847457627,
+     0.015049048751486325,
+     0.15445493051943227
+    ],
+    [
+     239.94759322033897,
+     0.010887336504161712,
+     0.12473062346734042
+    ],
+    [
+     385.71135593220214,
+     0.007877526753864448,
+     0.09381734413316489
+    ],
+    [
+     658.4700169491496,
+     0.0049420332936979785,
+     0.06286690941517425
+    ],
+    [
+     1262.1749322033932,
+     0.00267538644470868,
+     0.031247677788511556
+    ],
+    [
+     25483.193,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.159898305084746,
+     0.00312128418549346,
+     0.708738946273315
+    ],
+    [
+     5.005237288135591,
+     0.002786860879904875,
+     0.6751504793044513
+    ],
+    [
+     5.63652542372881,
+     0.0024895957193816886,
+     0.6415620123355874
+    ],
+    [
+     6.203,
+     0.0021923305588585017,
+     0.6080107007505388
+    ],
+    [
+     6.793101694915254,
+     0.00200653983353151,
+     0.5742364568625994
+    ],
+    [
+     7.434,
+     0.00156064209274673,
+     0.5408709221966262
+    ],
+    [
+     8.167677966101698,
+     0.00111474435196195,
+     0.5073567659953927
+    ],
+    [
+     9.065966101694912,
+     0.0008546373365041617,
+     0.47373114364271385
+    ],
+    [
+     10.134,
+     0.0006316884661117717,
+     0.44010552129003494
+    ],
+    [
+     11.644,
+     0.00044589774078478004,
+     0.4064055881697258
+    ],
+    [
+     13.89183050847458,
+     0.0003715814506539834,
+     0.3725198781303411
+    ],
+    [
+     17.7623559322034,
+     0.00029726516052318666,
+     0.33867132347477147
+    ],
+    [
+     24.630813559322036,
+     0.0001857907253269917,
+     0.30489707958683215
+    ],
+    [
+     36.00303389830508,
+     0.0001857907253269917,
+     0.2710113695474474
+    ],
+    [
+     53.36879661016946,
+     0.0001857907253269917,
+     0.23712565950806272
+    ],
+    [
+     81.6523389830509,
+     0.00014863258026159333,
+     0.20323994946867802
+    ],
+    [
+     124.97469491525446,
+     0.00011147443519619501,
+     0.16939139481310841
+    ],
+    [
+     203.85627118644067,
+     7.431629013079666e-05,
+     0.13554284015753884
+    ],
+    [
+     338.4727288135592,
+     7.431629013079666e-05,
+     0.10161997473433901
+    ],
+    [
+     609.1377288135589,
+     3.715814506539833e-05,
+     0.06777142007876942
+    ],
+    [
+     1180.8136610169508,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     25483.193,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "50|signed_mask_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     2.219830508474646,
+     0.2920630202140309,
+     0.7248643828490748
+    ],
+    [
+     4.059,
+     0.2742271105826397,
+     0.7088504124247603
+    ],
+    [
+     4.569,
+     0.2586578478002378,
+     0.6905699635877238
+    ],
+    [
+     4.967,
+     0.24416617122473247,
+     0.6711376978524188
+    ],
+    [
+     5.329,
+     0.2298602853745541,
+     0.6515568105818533
+    ],
+    [
+     5.680796610169491,
+     0.21540576694411415,
+     0.632050234078918
+    ],
+    [
+     6.018,
+     0.200839774078478,
+     0.6128037452626885
+    ],
+    [
+     6.356,
+     0.18816884661117717,
+     0.5915508657204429
+    ],
+    [
+     6.7226610169491545,
+     0.17527497027348396,
+     0.5704837630972728
+    ],
+    [
+     7.097949152542372,
+     0.16182372175980975,
+     0.5500483019989596
+    ],
+    [
+     7.521,
+     0.1493757431629013,
+     0.5286096455376385
+    ],
+    [
+     7.999,
+     0.13737366230677764,
+     0.5067251244705357
+    ],
+    [
+     8.564,
+     0.12566884661117717,
+     0.48454336033291223
+    ],
+    [
+     9.208101694915255,
+     0.11437277051129607,
+     0.4618785762056922
+    ],
+    [
+     9.999389830508473,
+     0.10385701545778835,
+     0.438507839785985
+    ],
+    [
+     10.967677966101698,
+     0.09337841854934602,
+     0.41509994798246264
+    ],
+    [
+     12.26996610169491,
+     0.08449762187871582,
+     0.3900943746748904
+    ],
+    [
+     14.237254237288136,
+     0.07635998810939358,
+     0.3643085383072007
+    ],
+    [
+     17.526966101694903,
+     0.06933709869203329,
+     0.3374451958088727
+    ],
+    [
+     22.145,
+     0.061273781212841855,
+     0.311659359441183
+    ],
+    [
+     28.4481186440678,
+     0.050089179548156955,
+     0.28888310916251764
+    ],
+    [
+     36.656220338983054,
+     0.03812425683709869,
+     0.2669614327115999
+    ],
+    [
+     47.982389830508474,
+     0.028500297265160523,
+     0.24269896708032995
+    ],
+    [
+     68.31672881355928,
+     0.022183412604042805,
+     0.21512967228951474
+    ],
+    [
+     99.42218644067813,
+     0.018207491082045186,
+     0.1851824329345322
+    ],
+    [
+     150.5001694915255,
+     0.014714625445897741,
+     0.1547893289737683
+    ],
+    [
+     234.06047457627116,
+     0.010998810939357907,
+     0.12461915731589507
+    ],
+    [
+     375.9168474576267,
+     0.007914684898929845,
+     0.09378018874934978
+    ],
+    [
+     643.2377288135581,
+     0.004719084423305589,
+     0.06308984171806495
+    ],
+    [
+     1220.4048813559327,
+     0.002526753864447087,
+     0.03139629932377201
+    ],
+    [
+     25483.193,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.062949152542372,
+     0.00312128418549346,
+     0.708738946273315
+    ],
+    [
+     4.886237288135591,
+     0.002786860879904875,
+     0.6751504793044513
+    ],
+    [
+     5.51,
+     0.0024895957193816886,
+     0.6415991677194025
+    ],
+    [
+     6.089,
+     0.0022666468489892983,
+     0.6079363899829086
+    ],
+    [
+     6.664203389830509,
+     0.0020436979785969085,
+     0.5741993014787843
+    ],
+    [
+     7.281,
+     0.0015978002378121284,
+     0.5409080775804415
+    ],
+    [
+     7.980711864406796,
+     0.0012633769322235435,
+     0.5072081444601323
+    ],
+    [
+     8.85696610169491,
+     0.0008917954815695601,
+     0.4736939882588987
+    ],
+    [
+     9.936,
+     0.0007060047562425683,
+     0.4400312105224047
+    ],
+    [
+     11.40716949152542,
+     0.00048305588585017834,
+     0.40629412201828047
+    ],
+    [
+     13.532491525423742,
+     0.0004087395957193817,
+     0.372482722746526
+    ],
+    [
+     17.3242372881356,
+     0.00029726516052318666,
+     0.33867132347477147
+    ],
+    [
+     23.848101694915268,
+     0.0001857907253269917,
+     0.30489707958683215
+    ],
+    [
+     34.89455932203389,
+     0.0001857907253269917,
+     0.2710113695474474
+    ],
+    [
+     51.57032203389821,
+     0.00014863258026159333,
+     0.23716281489187782
+    ],
+    [
+     79.3603559322034,
+     0.00011147443519619501,
+     0.20327710485249312
+    ],
+    [
+     121.55816949152549,
+     0.00011147443519619501,
+     0.16939139481310841
+    ],
+    [
+     198.9715762711863,
+     7.431629013079666e-05,
+     0.13554284015753884
+    ],
+    [
+     327.8029830508473,
+     7.431629013079666e-05,
+     0.10161997473433901
+    ],
+    [
+     590.044067796609,
+     3.715814506539833e-05,
+     0.06777142007876942
+    ],
+    [
+     1145.380915254241,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     25483.193,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "50|signed_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.866050847457627,
+     0.5296150416171225,
+     0.7584900052017537
+    ],
+    [
+     4.301,
+     0.5081376337693222,
+     0.7461544177751356
+    ],
+    [
+     4.616,
+     0.48758917954815695,
+     0.7329271011369547
+    ],
+    [
+     4.894,
+     0.46785820451843046,
+     0.7186594337519506
+    ],
+    [
+     5.153,
+     0.4469753269916766,
+     0.7055807386490303
+    ],
+    [
+     5.383491525423728,
+     0.4266498216409037,
+     0.6919818681726982
+    ],
+    [
+     5.61,
+     0.4073275862068966,
+     0.6777142007876942
+    ],
+    [
+     5.826067796610168,
+     0.38715071343638524,
+     0.6636694657055807
+    ],
+    [
+     6.047,
+     0.3677170035671819,
+     0.6493646429367615
+    ],
+    [
+     6.273,
+     0.34854340071343637,
+     0.6345768001783458
+    ],
+    [
+     6.508,
+     0.32948127229488705,
+     0.6197889574199301
+    ],
+    [
+     6.747,
+     0.3100104042806183,
+     0.6052983577320353
+    ],
+    [
+     6.988508474576269,
+     0.2917657550535077,
+     0.5895816303782418
+    ],
+    [
+     7.248,
+     0.2736325802615933,
+     0.5739020584082634
+    ],
+    [
+     7.517,
+     0.255499405469679,
+     0.5580738649030245
+    ],
+    [
+     7.805,
+     0.23714328180737218,
+     0.5426543806197518
+    ],
+    [
+     8.121,
+     0.22031064209274673,
+     0.525562904064799
+    ],
+    [
+     8.473949152542373,
+     0.20184304399524375,
+     0.510031953630081
+    ],
+    [
+     8.87,
+     0.18493608799048752,
+     0.49305194322657353
+    ],
+    [
+     9.32852542372881,
+     0.16806629013079666,
+     0.47599762205543583
+    ],
+    [
+     9.863,
+     0.15283145065398335,
+     0.4574199301478784
+    ],
+    [
+     10.480406779661019,
+     0.13696492271105826,
+     0.4392881028461024
+    ],
+    [
+     11.222779661016945,
+     0.12180439952437574,
+     0.42056178940328454
+    ],
+    [
+     12.168355932203399,
+     0.10738703923900118,
+     0.4010923682841644
+    ],
+    [
+     13.567,
+     0.09419589774078478,
+     0.38043397488296055
+    ],
+    [
+     15.394254237288136,
+     0.08364298454221165,
+     0.35702608307943823
+    ],
+    [
+     18.094,
+     0.07446492271105827,
+     0.33235490822620195
+    ],
+    [
+     21.981322033898323,
+     0.06502675386444709,
+     0.3078695102920413
+    ],
+    [
+     26.354372881355985,
+     0.055031212841854936,
+     0.2839414431151074
+    ],
+    [
+     31.867627118644073,
+     0.04477556480380499,
+     0.26031061900869434
+    ],
+    [
+     38.99686440677966,
+     0.034965814506539836,
+     0.23623393029649997
+    ],
+    [
+     48.693864406779646,
+     0.026642390011890605,
+     0.21067102623170098
+    ],
+    [
+     63.345084745762726,
+     0.019359393579072532,
+     0.18403061603626367
+    ],
+    [
+     86.35161016949158,
+     0.015346313912009512,
+     0.15415768744891134
+    ],
+    [
+     123.75347457627117,
+     0.011110285374554102,
+     0.12450769116444974
+    ],
+    [
+     187.79413559322035,
+     0.007543103448275862,
+     0.09415174258750093
+    ],
+    [
+     308.6298983050847,
+     0.004793400713436385,
+     0.06301553095043472
+    ],
+    [
+     613.5254745762729,
+     0.002786860879904875,
+     0.03113621163706621
+    ],
+    [
+     17898.287,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.778169491525419,
+     0.052764565992865636,
+     0.7607564836144758
+    ],
+    [
+     4.6443728813559355,
+     0.047971165279429254,
+     0.7316638180872408
+    ],
+    [
+     5.203661016949154,
+     0.04299197384066587,
+     0.7027569294790815
+    ],
+    [
+     5.681949152542373,
+     0.038904577883472055,
+     0.6729583116593595
+    ],
+    [
+     6.128,
+     0.03433412604042806,
+     0.6437170245968641
+    ],
+    [
+     6.593,
+     0.029429250891795482,
+     0.6146615144534443
+    ],
+    [
+     7.062813559322036,
+     0.02582491082045184,
+     0.5843427212603106
+    ],
+    [
+     7.584101694915254,
+     0.021700356718192627,
+     0.5545441034405886
+    ],
+    [
+     8.148389830508473,
+     0.018318965517241378,
+     0.5240395333283793
+    ],
+    [
+     8.841677966101699,
+     0.014194411414982164,
+     0.49427807089247233
+    ],
+    [
+     9.671,
+     0.010404280618311534,
+     0.4642193653860444
+    ],
+    [
+     10.695254237288136,
+     0.006837098692033293,
+     0.4338262614252805
+    ],
+    [
+     12.107542372881355,
+     0.004570451843043995,
+     0.40220702979861783
+    ],
+    [
+     14.303152542372903,
+     0.0021923305588585017,
+     0.37069926432340045
+    ],
+    [
+     17.431949152542394,
+     0.0010775862068965517,
+     0.3378910604146541
+    ],
+    [
+     22.447,
+     0.0005202140309155767,
+     0.30459983651631123
+    ],
+    [
+     29.36625423728813,
+     0.0001857907253269917,
+     0.2710113695474474
+    ],
+    [
+     38.71172881355928,
+     0.00014863258026159333,
+     0.23716281489187782
+    ],
+    [
+     52.17696610169498,
+     0.00014863258026159333,
+     0.20323994946867802
+    ],
+    [
+     73.1565084745763,
+     0.00011147443519619501,
+     0.16939139481310841
+    ],
+    [
+     108.92347457627116,
+     0.00011147443519619501,
+     0.1355056847737237
+    ],
+    [
+     169.9604745762711,
+     7.431629013079666e-05,
+     0.10161997473433901
+    ],
+    [
+     284.35154237288134,
+     7.431629013079666e-05,
+     0.0677342646949543
+    ],
+    [
+     572.8985084745782,
+     0.0,
+     0.03392286542319982
+    ],
+    [
+     17898.287,
+     0.0,
+     3.715538381511481e-05
+    ]
+   ]
+  },
+  "100|count": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.411,
+     0.7249990709428072,
+     0.8682323213555795
+    ],
+    [
+     4.996,
+     0.7057861681965142,
+     0.8535543086470216
+    ],
+    [
+     5.328610169491525,
+     0.6868705637519046,
+     0.8385418602058637
+    ],
+    [
+     5.602,
+     0.6683265821843992,
+     0.8233064546096391
+    ],
+    [
+     5.815,
+     0.6487420565610019,
+     0.8089628776336814
+    ],
+    [
+     6.01,
+     0.6286744211973689,
+     0.7952510125970793
+    ],
+    [
+     6.192355932203391,
+     0.6092013824371029,
+     0.7806101594143658
+    ],
+    [
+     6.375,
+     0.5904715894310454,
+     0.7655233919215191
+    ],
+    [
+     6.544,
+     0.5727451781931696,
+     0.7493589981791833
+    ],
+    [
+     6.701915254237287,
+     0.5541268720502434,
+     0.7340121140054253
+    ],
+    [
+     6.869101694915254,
+     0.536177487086105,
+     0.7180335178923117
+    ],
+    [
+     7.022,
+     0.5175591809431789,
+     0.7029095908736205
+    ],
+    [
+     7.188474576271187,
+     0.49875506336170056,
+     0.6876741852773959
+    ],
+    [
+     7.35066101694915,
+     0.4797279720539596,
+     0.6728103749396158
+    ],
+    [
+     7.514847457627118,
+     0.46162993793897955,
+     0.6570175764557245
+    ],
+    [
+     7.694,
+     0.4441265004273663,
+     0.6406673850841663
+    ],
+    [
+     7.867,
+     0.42666022520346353,
+     0.6242428746609193
+    ],
+    [
+     8.047,
+     0.4082277304990895,
+     0.6087473523837836
+    ],
+    [
+     8.236,
+     0.39050131926121373,
+     0.5926572776931366
+    ],
+    [
+     8.417779661016949,
+     0.371920175405998,
+     0.5772360744676898
+    ],
+    [
+     8.611,
+     0.3530417332490988,
+     0.5623351046040652
+    ],
+    [
+     8.824,
+     0.33654167750566727,
+     0.5448701274571737
+    ],
+    [
+     9.035338983050849,
+     0.3192983760080271,
+     0.528148340827171
+    ],
+    [
+     9.272,
+     0.3024638596752016,
+     0.5112779160937907
+    ],
+    [
+     9.516,
+     0.2855921810546657,
+     0.49418453420534353
+    ],
+    [
+     9.799,
+     0.2692407744620759,
+     0.4767195570584519
+    ],
+    [
+     10.075084745762709,
+     0.25162585008733135,
+     0.460220727583516
+    ],
+    [
+     10.38327118644068,
+     0.23449403545282246,
+     0.443461781427669
+    ],
+    [
+     10.717,
+     0.21877438775130997,
+     0.42543941139311064
+    ],
+    [
+     11.114,
+     0.20372366122858523,
+     0.406488053212441
+    ],
+    [
+     11.595,
+     0.18833847411646662,
+     0.3879826093419048
+    ],
+    [
+     12.162,
+     0.17299044929205842,
+     0.3694400059455241
+    ],
+    [
+     12.855,
+     0.1579768850570441,
+     0.3505629668165434
+    ],
+    [
+     13.668559322033891,
+     0.14381805343936974,
+     0.33075693954145147
+    ],
+    [
+     14.678576271186445,
+     0.13047679215132482,
+     0.3102077217494705
+    ],
+    [
+     16.034288135593226,
+     0.11817607491917202,
+     0.2886180372338449
+    ],
+    [
+     18.00779661016949,
+     0.10624698056412353,
+     0.2666567574597748
+    ],
+    [
+     21.112677966101682,
+     0.0969935709242261,
+     0.24198283229905987
+    ],
+    [
+     25.375288135593202,
+     0.08852056932624773,
+     0.2165657166214559
+    ],
+    [
+     31.827,
+     0.07934148426177115,
+     0.19189179146074095
+    ],
+    [
+     40.675033898305074,
+     0.07090564495150321,
+     0.1664003567314481
+    ],
+    [
+     54.44562711864416,
+     0.062135345051841394,
+     0.14128051726059976
+    ],
+    [
+     73.95954237288137,
+     0.055408970976253295,
+     0.1140797443424622
+    ],
+    [
+     106.14213559322036,
+     0.04801367572187744,
+     0.08758500241536918
+    ],
+    [
+     152.88713559322008,
+     0.03731093686127318,
+     0.06439745828843224
+    ],
+    [
+     218.97001694915252,
+     0.021516964584339812,
+     0.04630076920218498
+    ],
+    [
+     383.35344067796706,
+     0.006800698651008956,
+     0.027126453866448665
+    ],
+    [
+     20125.664,
+     3.7162287710431455e-05,
+     0.0
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.65,
+     0.11951391727674755,
+     0.8635873806250233
+    ],
+    [
+     5.36,
+     0.11260173176260731,
+     0.8365724053361079
+    ],
+    [
+     5.809,
+     0.10591251997472964,
+     0.8093716324179704
+    ],
+    [
+     6.168,
+     0.09870303615890594,
+     0.7826539333358107
+    ],
+    [
+     6.483,
+     0.09245977182355346,
+     0.7550444056333842
+    ],
+    [
+     6.77,
+     0.08591920918651752,
+     0.7276578350860243
+    ],
+    [
+     7.047,
+     0.07889553680924598,
+     0.7007914979004868
+    ],
+    [
+     7.349,
+     0.07280092162473521,
+     0.672996172568838
+    ],
+    [
+     7.646,
+     0.066409008138541,
+     0.6455352829697893
+    ],
+    [
+     7.941,
+     0.059756958638373776,
+     0.6182230314741184
+    ],
+    [
+     8.263,
+     0.05369950574157345,
+     0.5903905466166252
+    ],
+    [
+     8.609,
+     0.047679215132483556,
+     0.5625580617591319
+    ],
+    [
+     8.969830508474574,
+     0.04247649485302315,
+     0.5337965887555275
+    ],
+    [
+     9.353,
+     0.0369764762718793,
+     0.505443870536212
+    ],
+    [
+     9.792203389830508,
+     0.031364970827604144,
+     0.4770911523168964
+    ],
+    [
+     10.289,
+     0.025902114534170722,
+     0.4487012745717365
+    ],
+    [
+     10.832,
+     0.02121966628265636,
+     0.4194938872579986
+    ],
+    [
+     11.514,
+     0.016016946003195958,
+     0.390806733306083
+    ],
+    [
+     12.479898305084745,
+     0.01174328291649634,
+     0.36115343168221176
+    ],
+    [
+     13.667,
+     0.00817570329629492,
+     0.3308684181189848
+    ],
+    [
+     15.234644067796602,
+     0.004682448251514363,
+     0.3003976069265356
+    ],
+    [
+     17.785559322033908,
+     0.0023412241257571814,
+     0.26884916948459736
+    ],
+    [
+     21.90716949152542,
+     0.0010033817681816492,
+     0.23629742484485897
+    ],
+    [
+     28.691610169491696,
+     0.0005574343156564718,
+     0.20285385158485378
+    ],
+    [
+     39.6674745762712,
+     0.0005202720279460403,
+     0.16896436401471518
+    ],
+    [
+     57.84425423728813,
+     0.00029729830168345164,
+     0.13529783359964326
+    ],
+    [
+     87.15316949152532,
+     0.00022297372626258873,
+     0.10148266508119357
+    ],
+    [
+     143.93611864406762,
+     0.00014864915084172582,
+     0.06766749656274386
+    ],
+    [
+     303.1244237288138,
+     0.0,
+     0.03392664709598305
+    ],
+    [
+     9825.576,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ]
+  },
+  "100|signed": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.4514745762711865,
+     0.7236983908729422,
+     0.8694957452342909
+    ],
+    [
+     5.045,
+     0.7025530491657066,
+     0.8568243469213332
+    ],
+    [
+     5.401,
+     0.6808502731428147,
+     0.844673181970198
+    ],
+    [
+     5.665,
+     0.6597049314355792,
+     0.8320017836572405
+    ],
+    [
+     5.908,
+     0.6388568880300272,
+     0.8188101519824607
+    ],
+    [
+     6.12,
+     0.6181203314876064,
+     0.8056185203076809
+    ],
+    [
+     6.327,
+     0.5979783715485525,
+     0.7918694957452342
+    ],
+    [
+     6.511542372881355,
+     0.5764242446765023,
+     0.7794953736390323
+    ],
+    [
+     6.7,
+     0.5558734995726337,
+     0.7661922633867192
+    ],
+    [
+     6.872,
+     0.5360288379352633,
+     0.7522946007208948
+    ],
+    [
+     7.047,
+     0.5154409305436842,
+     0.7389914904685816
+    ],
+    [
+     7.23,
+     0.49425842654873836,
+     0.7262086135780907
+    ],
+    [
+     7.421,
+     0.4747110632130514,
+     0.7119021961279774
+    ],
+    [
+     7.616,
+     0.4534170723549742,
+     0.6992307978150198
+    ],
+    [
+     7.804,
+     0.4332751124159203,
+     0.6855932518301067
+    ],
+    [
+     8.008,
+     0.414210858820469,
+     0.6706922819664821
+    ],
+    [
+     8.201,
+     0.3951094429373072,
+     0.6558284716287021
+    ],
+    [
+     8.405,
+     0.37545059273848896,
+     0.641633532756122
+    ],
+    [
+     8.609593220338981,
+     0.35601471626593334,
+     0.6270298390992531
+    ],
+    [
+     8.83277966101695,
+     0.3368018135196403,
+     0.6123518263906953
+    ],
+    [
+     9.081,
+     0.31669701586829685,
+     0.5986399613540931
+    ],
+    [
+     9.348,
+     0.2975584376974246,
+     0.583850470068002
+    ],
+    [
+     9.624,
+     0.27808539893715856,
+     0.5693954145145108
+    ],
+    [
+     9.914,
+     0.25954141736965325,
+     0.5542343279699751
+    ],
+    [
+     10.235,
+     0.24051432606191236,
+     0.5392590390546617
+    ],
+    [
+     10.608898305084745,
+     0.2220075067821175,
+     0.523763516777526
+    ],
+    [
+     11.007,
+     0.20390947266713738,
+     0.508007877819479
+    ],
+    [
+     11.5,
+     0.1851425173733695,
+     0.49284679127494335
+    ],
+    [
+     12.069457627118645,
+     0.16793637816343973,
+     0.47612500464494073
+    ],
+    [
+     12.724644067796609,
+     0.1516964584339812,
+     0.45847422986882685
+    ],
+    [
+     13.593,
+     0.13631127132186258,
+     0.44000594552413513
+    ],
+    [
+     14.626016949152538,
+     0.12111189564829611,
+     0.42124038497268773
+    ],
+    [
+     16.05120338983051,
+     0.10754766063398863,
+     0.4009141243357735
+    ],
+    [
+     18.21016949152542,
+     0.09576721542978185,
+     0.3788042064583256
+    ],
+    [
+     21.13015254237289,
+     0.0863651566390427,
+     0.35431607892683287
+    ],
+    [
+     25.197050847457636,
+     0.07952729570032331,
+     0.32726394411207316
+    ],
+    [
+     30.878932203389827,
+     0.07447322457170463,
+     0.29842815205677975
+    ],
+    [
+     38.40181355932202,
+     0.06901036827827121,
+     0.2699639552599309
+    ],
+    [
+     48.08376271186432,
+     0.06436508231446728,
+     0.24071940842034856
+    ],
+    [
+     61.60201694915254,
+     0.06005425694005723,
+     0.21114042584816617
+    ],
+    [
+     79.58225423728813,
+     0.05459140064662381,
+     0.18271338857716177
+    ],
+    [
+     104.54754237288157,
+     0.04831097402356089,
+     0.15510386087473524
+    ],
+    [
+     137.90740677966104,
+     0.03835148091716526,
+     0.13113596670506483
+    ],
+    [
+     178.11752542372884,
+     0.024861570478278642,
+     0.11073538701646167
+    ],
+    [
+     237.79089830508462,
+     0.012560853246125832,
+     0.08914570250083609
+    ],
+    [
+     378.8793050847437,
+     0.005722992307406444,
+     0.06209356768607632
+    ],
+    [
+     769.8845593220356,
+     0.0033817681816492623,
+     0.030545130244138085
+    ],
+    [
+     29562.941,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.788186440677964,
+     0.11929094355048497,
+     0.863736018728401
+    ],
+    [
+     5.55277966101695,
+     0.11111524025419005,
+     0.8380216268440415
+    ],
+    [
+     6.024,
+     0.10331115983499944,
+     0.8120099587529264
+    ],
+    [
+     6.423,
+     0.09580437771749228,
+     0.7855523763516777
+    ],
+    [
+     6.78433898305085,
+     0.08800029729830168,
+     0.7594292296830293
+    ],
+    [
+     7.125,
+     0.08008473001597978,
+     0.7335290401694474
+    ],
+    [
+     7.483,
+     0.07161172841800141,
+     0.708149084017688
+    ],
+    [
+     7.848898305084746,
+     0.0639191348619421,
+     0.6818401397198172
+    ],
+    [
+     8.21,
+     0.05648667731985581,
+     0.655419716844413
+    ],
+    [
+     8.588,
+     0.049611654093425994,
+     0.6284419010813422
+    ],
+    [
+     9.019,
+     0.04188189824965625,
+     0.6022072758351603
+    ],
+    [
+     9.519,
+     0.03522984874948902,
+     0.5750065029170228
+    ],
+    [
+     10.039,
+     0.028317663235348768,
+     0.5479915276281074
+    ],
+    [
+     10.694,
+     0.022148723475417145,
+     0.5202333618223032
+    ],
+    [
+     11.516406779661018,
+     0.016202757441748115,
+     0.4922522388614321
+    ],
+    [
+     12.479389830508472,
+     0.010331115983499945,
+     0.46423395637471665
+    ],
+    [
+     13.885,
+     0.006206102047642052,
+     0.4345063356991565
+    ],
+    [
+     15.879762711864409,
+     0.0035675796202014197,
+     0.40321801493812937
+    ],
+    [
+     18.998694915254234,
+     0.0013378423575755324,
+     0.3715580989186578
+    ],
+    [
+     23.41235593220337,
+     0.000408785164814746,
+     0.338560439968786
+    ],
+    [
+     29.563610169491508,
+     0.0003344605893938831,
+     0.3047452714503363
+    ],
+    [
+     38.15532203389835,
+     0.0002601360139730202,
+     0.2709301029318866
+    ],
+    [
+     49.61838983050847,
+     0.00022297372626258873,
+     0.23707777488759244
+    ],
+    [
+     65.65676271186442,
+     0.00022297372626258873,
+     0.20318828731745384
+    ],
+    [
+     91.1837457627119,
+     0.00018581143855215726,
+     0.16929879974731524
+    ],
+    [
+     130.95447457627122,
+     0.00018581143855215726,
+     0.1354093121771766
+    ],
+    [
+     199.8689661016949,
+     3.7162287710431455e-05,
+     0.10166846271041581
+    ],
+    [
+     339.04384745762695,
+     3.7162287710431455e-05,
+     0.06777897514027721
+    ],
+    [
+     702.7040338983062,
+     0.0,
+     0.03392664709598305
+    ],
+    [
+     29562.941,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ]
+  },
+  "100|signed_mask": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.556915254237287,
+     0.4542718049723141,
+     0.833859759949463
+    ],
+    [
+     5.206,
+     0.436173770857334,
+     0.8181412805172606
+    ],
+    [
+     5.611288135593222,
+     0.41900479393511464,
+     0.8013080153097246
+    ],
+    [
+     5.936,
+     0.40176149243747444,
+     0.7847348667830999
+    ],
+    [
+     6.216661016949151,
+     0.38392359433646733,
+     0.7686076325666085
+    ],
+    [
+     6.483,
+     0.3668661042773793,
+     0.7518858459366059
+    ],
+    [
+     6.738033898305086,
+     0.35081199598647295,
+     0.733900635427892
+    ],
+    [
+     7.008,
+     0.3340889665167788,
+     0.7167700940136004
+    ],
+    [
+     7.272,
+     0.31706863874540114,
+     0.6999368288060644
+    ],
+    [
+     7.521593220338982,
+     0.30049425842654875,
+     0.6825461707108618
+    ],
+    [
+     7.78277966101695,
+     0.2835854175183024,
+     0.665564267399948
+    ],
+    [
+     8.048,
+     0.26734549778884387,
+     0.648062130727212
+    ],
+    [
+     8.32,
+     0.2511055780593853,
+     0.6303370368994091
+    ],
+    [
+     8.628338983050849,
+     0.23508863205618938,
+     0.6123518263906953
+    ],
+    [
+     8.969525423728813,
+     0.22014939239659592,
+     0.5934004682100257
+    ],
+    [
+     9.339711864406782,
+     0.2054702887509755,
+     0.5741889933484449
+    ],
+    [
+     9.72,
+     0.19019658850198817,
+     0.555795028055442
+    ],
+    [
+     10.16316949152542,
+     0.17574045858263035,
+     0.5361004793578834
+    ],
+    [
+     10.677,
+     0.16106135493700993,
+     0.5169261640221471
+    ],
+    [
+     11.241,
+     0.14679103645620425,
+     0.49738025342796627
+    ],
+    [
+     11.933644067796608,
+     0.13292950314021332,
+     0.47723979042027426
+    ],
+    [
+     12.855,
+     0.12077743505890223,
+     0.4555386273271153
+    ],
+    [
+     13.993016949152539,
+     0.108699691553012,
+     0.43365166660473414
+    ],
+    [
+     15.619406779661018,
+     0.09833141328180163,
+     0.4101296867451971
+    ],
+    [
+     17.973389830508474,
+     0.08900367906648333,
+     0.38556724016201555
+    ],
+    [
+     21.97315254237289,
+     0.08097662492103014,
+     0.35970421017427817
+    ],
+    [
+     27.964050847457635,
+     0.07569958006614887,
+     0.3310913752740515
+    ],
+    [
+     36.18664406779661,
+     0.07172321528113271,
+     0.3011779569692691
+    ],
+    [
+     47.55994915254236,
+     0.06659481957709316,
+     0.27237932443982016
+    ],
+    [
+     63.85559322033884,
+     0.061392099297632764,
+     0.24369217048790456
+    ],
+    [
+     86.0333050847458,
+     0.056040729867330635,
+     0.2151536546393668
+    ],
+    [
+     120.8819322033898,
+     0.050020439258240734,
+     0.18728401025602914
+    ],
+    [
+     160.09776271186442,
+     0.039949459288713816,
+     0.16346475418973655
+    ],
+    [
+     205.41254237288138,
+     0.027016983165483666,
+     0.14246962208762215
+    ],
+    [
+     275.2179491525425,
+     0.015199375673566464,
+     0.12039686373601872
+    ],
+    [
+     426.26833898305046,
+     0.009067598201345275,
+     0.09263869793021441
+    ],
+    [
+     775.2723559322003,
+     0.005983128321379464,
+     0.06183345100516517
+    ],
+    [
+     1563.6928135593225,
+     0.0032331190308075367,
+     0.030693768347515887
+    ],
+    [
+     39368.719,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.466338983050849,
+     0.011817607491917202,
+     0.8356062576641522
+    ],
+    [
+     5.587,
+     0.010888550299156415,
+     0.8026829177659693
+    ],
+    [
+     6.197423728813563,
+     0.010033817681816493,
+     0.7696109397644086
+    ],
+    [
+     6.704796610169491,
+     0.00895611133821398,
+     0.736799078443759
+    ],
+    [
+     7.20308474576271,
+     0.007618268980638448,
+     0.7042101742781762
+    ],
+    [
+     7.693,
+     0.006317588910773347,
+     0.6716584296384378
+    ],
+    [
+     8.191,
+     0.005537180868854286,
+     0.6385492921110326
+    ],
+    [
+     8.740644067796609,
+     0.0046081236760935,
+     0.6055516331611609
+    ],
+    [
+     9.364,
+     0.0035675796202014197,
+     0.5727397718405113
+    ],
+    [
+     10.083,
+     0.002638522427440633,
+     0.5397421128906396
+    ],
+    [
+     10.957203389830509,
+     0.0019324389609424355,
+     0.506521496785701
+    ],
+    [
+     12.096,
+     0.001486491508417258,
+     0.47311508305154026
+    ],
+    [
+     13.639576271186444,
+     0.0011148686313129435,
+     0.4395600312140017
+    ],
+    [
+     15.959762711864409,
+     0.0007804080419190606,
+     0.4060049793764632
+    ],
+    [
+     19.977949152542376,
+     0.0005574343156564718,
+     0.37233844896139123
+    ],
+    [
+     26.192135593220335,
+     0.0003344605893938831,
+     0.3386347590204749
+    ],
+    [
+     35.079627118643934,
+     0.0002601360139730202,
+     0.3048195905020252
+    ],
+    [
+     48.33705084745764,
+     0.0002601360139730202,
+     0.2709301029318866
+    ],
+    [
+     68.42677966101695,
+     0.0002601360139730202,
+     0.23704061536174797
+    ],
+    [
+     98.8750338983052,
+     0.0002601360139730202,
+     0.20315112779160938
+    ],
+    [
+     149.42105084745774,
+     0.00018581143855215726,
+     0.16929879974731524
+    ],
+    [
+     223.8343050847458,
+     3.7162287710431455e-05,
+     0.13555795028055442
+    ],
+    [
+     368.1138813559321,
+     3.7162287710431455e-05,
+     0.10166846271041581
+    ],
+    [
+     692.8758644067788,
+     0.0,
+     0.06781613466612166
+    ],
+    [
+     1419.4088813559347,
+     0.0,
+     0.03392664709598305
+    ],
+    [
+     39368.719,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ]
+  },
+  "100|signed_mask_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.479,
+     0.45434612954773496,
+     0.833859759949463
+    ],
+    [
+     5.092101694915254,
+     0.4363224200081757,
+     0.8178811638363495
+    ],
+    [
+     5.481,
+     0.419636552826192,
+     0.8008249414737468
+    ],
+    [
+     5.786,
+     0.40157568099892227,
+     0.7849206644123221
+    ],
+    [
+     6.062,
+     0.3836634583224943,
+     0.7691650254542752
+    ],
+    [
+     6.325847457627118,
+     0.3658998847969081,
+     0.7527405150310282
+    ],
+    [
+     6.569033898305086,
+     0.34861942101155746,
+     0.7360930474527145
+    ],
+    [
+     6.81622033898305,
+     0.33297409788546584,
+     0.7178477202630894
+    ],
+    [
+     7.082,
+     0.31625106841577166,
+     0.7007171788487979
+    ],
+    [
+     7.334593220338982,
+     0.29919357835668364,
+     0.6838467541154175
+    ],
+    [
+     7.582,
+     0.2823590620238582,
+     0.6669391698561926
+    ],
+    [
+     7.848966101694914,
+     0.26567319484187446,
+     0.6495856712868344
+    ],
+    [
+     8.107152542372878,
+     0.24895016537218032,
+     0.632380810820854
+    ],
+    [
+     8.384,
+     0.2328588947935635,
+     0.6146185574672067
+    ],
+    [
+     8.712525423728813,
+     0.21758519454457617,
+     0.5959644754932927
+    ],
+    [
+     9.075711864406781,
+     0.20223716972016798,
+     0.5774218720969121
+    ],
+    [
+     9.455898305084744,
+     0.18811550039020403,
+     0.5576530043476645
+    ],
+    [
+     9.876084745762709,
+     0.1735478836077149,
+     0.538292891382706
+    ],
+    [
+     10.375542372881362,
+     0.15898026682522576,
+     0.5189699379435918
+    ],
+    [
+     10.927,
+     0.14493292207068267,
+     0.49920107019434434
+    ],
+    [
+     11.602644067796609,
+     0.13084841502842914,
+     0.47932072386756347
+    ],
+    [
+     12.438322033898293,
+     0.11832472407001375,
+     0.4579539965070046
+    ],
+    [
+     13.559016949152538,
+     0.10717603775688431,
+     0.4351752071643566
+    ],
+    [
+     15.071203389830508,
+     0.0962874874577279,
+     0.4121734606666419
+    ],
+    [
+     17.251,
+     0.08669961722843658,
+     0.3879082902902159
+    ],
+    [
+     20.819,
+     0.07841242706901037,
+     0.3623053769833897
+    ],
+    [
+     26.242525423728814,
+     0.07261511018618307,
+     0.33417561591914086
+    ],
+    [
+     33.781796610169486,
+     0.06730090304359136,
+     0.30559994054475864
+    ],
+    [
+     43.57010169491516,
+     0.061689397599316215,
+     0.27728438185128756
+    ],
+    [
+     56.363,
+     0.05314207142591698,
+     0.25197874475121695
+    ],
+    [
+     70.7616101694916,
+     0.0415845999479728,
+     0.22960871019285795
+    ],
+    [
+     89.84971186440676,
+     0.029358207291240848,
+     0.20794470662554346
+    ],
+    [
+     120.62708474576314,
+     0.019658850198818238,
+     0.18375385530080637
+    ],
+    [
+     169.75903389830518,
+     0.014679103645620424,
+     0.15480658466797964
+    ],
+    [
+     250.70611864406786,
+     0.01148314690252332,
+     0.12411281632046375
+    ],
+    [
+     410.52284745762677,
+     0.008584488461109666,
+     0.09312177176619227
+    ],
+    [
+     745.1560169491519,
+     0.005760154595116875,
+     0.06205640816023188
+    ],
+    [
+     1520.722457627123,
+     0.003270281318517968,
+     0.030656608821671434
+    ],
+    [
+     39368.719,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.343016949152548,
+     0.011780445204206772,
+     0.8356434171899967
+    ],
+    [
+     5.439576271186441,
+     0.010888550299156415,
+     0.8026457582401249
+    ],
+    [
+     6.0537118644067816,
+     0.00999665539410606,
+     0.769648099290253
+    ],
+    [
+     6.560898305084746,
+     0.008918949050503548,
+     0.7368362379696035
+    ],
+    [
+     7.037,
+     0.00795272957003233,
+     0.7039128980714207
+    ],
+    [
+     7.514,
+     0.006317588910773347,
+     0.6717327486901267
+    ],
+    [
+     8.019,
+     0.005648667731985581,
+     0.6384378135334993
+    ],
+    [
+     8.537,
+     0.004533799100672638,
+     0.6056631117386942
+    ],
+    [
+     9.163830508474573,
+     0.003530417332490988,
+     0.5727397718405113
+    ],
+    [
+     9.844,
+     0.002675684715151065,
+     0.5397049533647951
+    ],
+    [
+     10.718,
+     0.00204392582407373,
+     0.5064471777340122
+    ],
+    [
+     11.820779661016946,
+     0.0014493292207068268,
+     0.47311508305154026
+    ],
+    [
+     13.310152542372888,
+     0.0008918949050503549,
+     0.43978298836906843
+    ],
+    [
+     15.577762711864407,
+     0.0007060834664981976,
+     0.40607929842815205
+    ],
+    [
+     19.259898305084747,
+     0.0004831097402356089,
+     0.37241276801308015
+    ],
+    [
+     25.321271186440676,
+     0.0003344605893938831,
+     0.3386347590204749
+    ],
+    [
+     34.034881355932036,
+     0.0002601360139730202,
+     0.3048195905020252
+    ],
+    [
+     46.23950847457627,
+     0.0002601360139730202,
+     0.2709301029318866
+    ],
+    [
+     65.40469491525424,
+     0.00014864915084172582,
+     0.23715209393928133
+    ],
+    [
+     94.90850847457637,
+     7.432457542086291e-05,
+     0.20333692542083162
+    ],
+    [
+     142.58911864406792,
+     0.0,
+     0.16948459737653748
+    ],
+    [
+     215.93681355932208,
+     0.0,
+     0.13559510980639888
+    ],
+    [
+     354.9352881355932,
+     0.0,
+     0.10170562223626027
+    ],
+    [
+     672.5651016949084,
+     0.0,
+     0.06781613466612166
+    ],
+    [
+     1380.0134237288141,
+     0.0,
+     0.03392664709598305
+    ],
+    [
+     39368.719,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ]
+  },
+  "100|signed_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.328237288135593,
+     0.7236983908729422,
+     0.8694957452342909
+    ],
+    [
+     4.901,
+     0.7017354788360771,
+     0.8576046969640667
+    ],
+    [
+     5.259,
+     0.680701623991973,
+     0.8447846605477314
+    ],
+    [
+     5.524,
+     0.6588501988182393,
+     0.8327078146482851
+    ],
+    [
+     5.753,
+     0.6377791816864247,
+     0.8199992568094832
+    ],
+    [
+     5.961,
+     0.6168568137054518,
+     0.8069934227639255
+    ],
+    [
+     6.158,
+     0.5964175554647144,
+     0.7935416744082345
+    ],
+    [
+     6.357,
+     0.575792485785425,
+     0.7803500427334548
+    ],
+    [
+     6.534,
+     0.5536809245977182,
+     0.7684589944632306
+    ],
+    [
+     6.709915254237287,
+     0.5337247760972166,
+     0.7544126936940284
+    ],
+    [
+     6.878,
+     0.5135828161581627,
+     0.7407379881832707
+    ],
+    [
+     7.044,
+     0.4929949087665837,
+     0.727472037456802
+    ],
+    [
+     7.224,
+     0.4715151064699543,
+     0.7149492772472223
+    ],
+    [
+     7.406,
+     0.45185625627113607,
+     0.7008286574263313
+    ],
+    [
+     7.591,
+     0.431008212865584,
+     0.6876741852773959
+    ],
+    [
+     7.783,
+     0.4108290906388197,
+     0.6741481178700159
+    ],
+    [
+     7.977,
+     0.3915047010293954,
+     0.6593957861097692
+    ],
+    [
+     8.17,
+     0.3716972016797354,
+     0.6453123258147226
+    ],
+    [
+     8.374,
+     0.35285592181054665,
+     0.6302998773735647
+    ],
+    [
+     8.58,
+     0.3337173436396745,
+     0.6154732265616291
+    ],
+    [
+     8.813,
+     0.31394700657772495,
+     0.601352606740738
+    ],
+    [
+     9.054152542372877,
+     0.29417666951577537,
+     0.587157667868158
+    ],
+    [
+     9.31633898305085,
+     0.27507525363261365,
+     0.5723681765820668
+    ],
+    [
+     9.604,
+     0.2562339737634249,
+     0.5573928876667533
+    ],
+    [
+     9.911,
+     0.2373555316065257,
+     0.542343279699751
+    ],
+    [
+     10.247,
+     0.2181054665725222,
+     0.5277395860428821
+    ],
+    [
+     10.635,
+     0.1998959455944108,
+     0.5120954256623685
+    ],
+    [
+     11.071,
+     0.18153777546545766,
+     0.496451265281855
+    ],
+    [
+     11.612457627118644,
+     0.16284514474711062,
+     0.4812158596856304
+    ],
+    [
+     12.246,
+     0.14623360214054779,
+     0.46401099921964994
+    ],
+    [
+     12.987,
+     0.13084841502842914,
+     0.4454683958232693
+    ],
+    [
+     13.969016949152538,
+     0.11654093425991303,
+     0.42581100665155514
+    ],
+    [
+     15.239,
+     0.10319967297186815,
+     0.4052989483854186
+    ],
+    [
+     17.255779661016945,
+     0.09197666208331785,
+     0.3825944780944595
+    ],
+    [
+     20.00530508474578,
+     0.08253744100486826,
+     0.3581435100888113
+    ],
+    [
+     23.940813559322045,
+     0.0764428258203575,
+     0.3303481847571625
+    ],
+    [
+     29.231186440677963,
+     0.07172321528113271,
+     0.3011779569692691
+    ],
+    [
+     36.17527118644067,
+     0.06585157382288453,
+     0.27312251495670914
+    ],
+    [
+     44.34986440677961,
+     0.05823330484224609,
+     0.24685073018468284
+    ],
+    [
+     53.938152542372904,
+     0.048682596900665204,
+     0.22251124075656795
+    ],
+    [
+     64.94067796610167,
+     0.037087963135010595,
+     0.2002155252498978
+    ],
+    [
+     80.02264406779662,
+     0.025976439109591586,
+     0.17743673590724982
+    ],
+    [
+     102.6121186440679,
+     0.01687167862053588,
+     0.15261417264315708
+    ],
+    [
+     143.96796610169497,
+     0.01148314690252332,
+     0.12411281632046375
+    ],
+    [
+     211.83510169491507,
+     0.007729755843769742,
+     0.09397644086061462
+    ],
+    [
+     362.62467796610144,
+     0.005091233416329109,
+     0.06272527962543198
+    ],
+    [
+     748.231661016953,
+     0.0033817681816492623,
+     0.030545130244138085
+    ],
+    [
+     29562.941,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.683,
+     0.11917945668735368,
+     0.8638846568317788
+    ],
+    [
+     5.41977966101695,
+     0.11118956482961091,
+     0.8379473077923526
+    ],
+    [
+     5.876,
+     0.10312534839644728,
+     0.8121957563821486
+    ],
+    [
+     6.279,
+     0.095692890854361,
+     0.7856638549292111
+    ],
+    [
+     6.642677966101699,
+     0.08807462187372254,
+     0.7593549106313403
+    ],
+    [
+     6.973,
+     0.08064216433163626,
+     0.7329716472817807
+    ],
+    [
+     7.318,
+     0.07228064959678918,
+     0.707405893500799
+    ],
+    [
+     7.67679661016949,
+     0.06421643316362555,
+     0.6815428635130616
+    ],
+    [
+     8.03108474576271,
+     0.05685830019696012,
+     0.6549738025342796
+    ],
+    [
+     8.413,
+     0.050057601545951166,
+     0.6279216677195198
+    ],
+    [
+     8.808457627118644,
+     0.04243933256531272,
+     0.6016127234216492
+    ],
+    [
+     9.266644067796609,
+     0.035601471626593335,
+     0.5745605886068894
+    ],
+    [
+     9.809,
+     0.028837935263294808,
+     0.5474712942662852
+    ],
+    [
+     10.434050847457613,
+     0.022334534913969303,
+     0.5200104046672365
+    ],
+    [
+     11.22220338983051,
+     0.01635140659258984,
+     0.4921036007580543
+    ],
+    [
+     12.248389830508472,
+     0.01070273886060426,
+     0.46386236111627216
+    ],
+    [
+     13.52615254237289,
+     0.006429075773904642,
+     0.43424621901824534
+    ],
+    [
+     15.381288135593225,
+     0.0034189304693596936,
+     0.4033666530415072
+    ],
+    [
+     18.43379661016949,
+     0.0015236537961276896,
+     0.37137230128943555
+    ],
+    [
+     22.64571186440674,
+     0.0004831097402356089,
+     0.3384861209170971
+    ],
+    [
+     28.374186440677914,
+     0.0003716228771043145,
+     0.3047081119244918
+    ],
+    [
+     36.85411864406781,
+     0.00029729830168345164,
+     0.27089294340604214
+    ],
+    [
+     47.756,
+     0.00018581143855215726,
+     0.23715209393928133
+    ],
+    [
+     63.21952542372883,
+     0.00011148686313129437,
+     0.2032997658949872
+    ],
+    [
+     86.86833898305086,
+     3.7162287710431455e-05,
+     0.16944743785069302
+    ],
+    [
+     124.93052542372885,
+     3.7162287710431455e-05,
+     0.13555795028055442
+    ],
+    [
+     192.07299999999992,
+     0.0,
+     0.10170562223626027
+    ],
+    [
+     329.5261016949139,
+     0.0,
+     0.06781613466612166
+    ],
+    [
+     679.0111694915258,
+     0.0,
+     0.03392664709598305
+    ],
+    [
+     29562.941,
+     0.0,
+     3.7159525844450226e-05
+    ]
+   ]
+  },
+  "200|count": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.9738305084745806,
+     0.8730672019030628,
+     0.9235114844272653
+    ],
+    [
+     5.548,
+     0.8545941123996432,
+     0.9081245818776481
+    ],
+    [
+     5.977135593220339,
+     0.8363812072554268,
+     0.8924031814465175
+    ],
+    [
+     6.269152542372882,
+     0.8175735950044603,
+     0.8773136103471345
+    ],
+    [
+     6.497,
+     0.7982084448409158,
+     0.8630045343046161
+    ],
+    [
+     6.706,
+     0.7791034790365745,
+     0.8481379617929087
+    ],
+    [
+     6.895,
+     0.7604817127564675,
+     0.83282539210585
+    ],
+    [
+     7.073,
+     0.7413395777579542,
+     0.818144651750539
+    ],
+    [
+     7.238,
+     0.7214168896818317,
+     0.8040957407269754
+    ],
+    [
+     7.41,
+     0.7019402319357716,
+     0.7898981639782948
+    ],
+    [
+     7.554271186440678,
+     0.6832441272673209,
+     0.7743625957035606
+    ],
+    [
+     7.69628813559322,
+     0.6632099316086827,
+     0.7604995168363934
+    ],
+    [
+     7.847,
+     0.6438076122509664,
+     0.7461532743625957
+    ],
+    [
+     7.996,
+     0.6252230151650312,
+     0.7308407046755371
+    ],
+    [
+     8.134338983050846,
+     0.6055605114481118,
+     0.7164572957704601
+    ],
+    [
+     8.276,
+     0.5858608385370205,
+     0.7025570504720137
+    ],
+    [
+     8.425,
+     0.5657151352958668,
+     0.6885453058797294
+    ],
+    [
+     8.573,
+     0.5463499851323224,
+     0.6740503976808147
+    ],
+    [
+     8.721,
+     0.5267246506095747,
+     0.6598899873634133
+    ],
+    [
+     8.881,
+     0.5067276241451085,
+     0.6458410763398499
+    ],
+    [
+     9.036,
+     0.4875854891465953,
+     0.6311603359845388
+    ],
+    [
+     9.203,
+     0.46755129348795715,
+     0.6173715899799301
+    ],
+    [
+     9.359474576271186,
+     0.4484463276836158,
+     0.6023935181743849
+    ],
+    [
+     9.532,
+     0.429750223015165,
+     0.5873782799375604
+    ],
+    [
+     9.712508474576268,
+     0.4109054415700268,
+     0.5721400431130603
+    ],
+    [
+     9.897,
+     0.3924323520666072,
+     0.556753140563443
+    ],
+    [
+     10.082,
+     0.37332738626226586,
+     0.5419609009142942
+    ],
+    [
+     10.289559322033895,
+     0.3539622360987214,
+     0.5273916598528209
+    ],
+    [
+     10.493576271186441,
+     0.33444840915848945,
+     0.513008250947744
+    ],
+    [
+     10.713,
+     0.316235504014273,
+     0.49736118337917196
+    ],
+    [
+     10.958,
+     0.29809693725840025,
+     0.48160261651676206
+    ],
+    [
+     11.226,
+     0.2804787392209337,
+     0.46539805247900096
+    ],
+    [
+     11.509,
+     0.26289771037763904,
+     0.4490448227161228
+    ],
+    [
+     11.834661016949154,
+     0.24464763603925066,
+     0.4333234222849922
+    ],
+    [
+     12.211677966101691,
+     0.22647190008920606,
+     0.4176020218538616
+    ],
+    [
+     12.639,
+     0.20941123996431757,
+     0.40083996134691147
+    ],
+    [
+     13.14,
+     0.1913098424026167,
+     0.38500706162194304
+    ],
+    [
+     13.662728813559319,
+     0.1754014272970562,
+     0.3669813424514978
+    ],
+    [
+     14.388745762711864,
+     0.1603479036574487,
+     0.3481379617929086
+    ],
+    [
+     15.2697627118644,
+     0.1458147487362474,
+     0.32877425109640973
+    ],
+    [
+     16.499118644067813,
+     0.1316532857567648,
+     0.3090388760871181
+    ],
+    [
+     18.390372881355926,
+     0.12053969669937556,
+     0.2862558537129265
+    ],
+    [
+     21.077813559322035,
+     0.11054118346714244,
+     0.2623578384003568
+    ],
+    [
+     25.26349152542372,
+     0.10202943800178411,
+     0.23697316583661637
+    ],
+    [
+     31.227542372881356,
+     0.0936663693131133,
+     0.21143982754775886
+    ],
+    [
+     39.98669491525427,
+     0.08649271483794231,
+     0.18471716345796477
+    ],
+    [
+     52.368406779661,
+     0.0772375854891466,
+     0.1600758195198097
+    ],
+    [
+     69.42877966101695,
+     0.06861433244127267,
+     0.1348026462499071
+    ],
+    [
+     95.0406610169493,
+     0.05924769550996135,
+     0.11027280160558983
+    ],
+    [
+     139.0437627118643,
+     0.04958370502527505,
+     0.08604028841150672
+    ],
+    [
+     218.94072881355933,
+     0.04222420457924472,
+     0.05950345647810897
+    ],
+    [
+     420.36125423728913,
+     0.03419565863812073,
+     0.03363562030773805
+    ],
+    [
+     772.195525423729,
+     0.016168599464763605,
+     0.017765554151490375
+    ],
+    [
+     43852.328,
+     3.716919417187035e-05,
+     0.0
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.631440677966101,
+     0.19751709782931906,
+     0.9210956663941129
+    ],
+    [
+     5.946457627118645,
+     0.19116116562592922,
+     0.8935553408161748
+    ],
+    [
+     6.431474576271187,
+     0.18350431162652395,
+     0.8673158403330112
+    ],
+    [
+     6.785,
+     0.1750297353553375,
+     0.8419311677692708
+    ],
+    [
+     7.090508474576269,
+     0.16640648230746358,
+     0.8166208280680889
+    ],
+    [
+     7.383,
+     0.15715135295866786,
+     0.7921281498550509
+    ],
+    [
+     7.633542372881355,
+     0.14845376152245018,
+     0.7667806437225898
+    ],
+    [
+     7.891559322033896,
+     0.13957032411537318,
+     0.741767635471642
+    ],
+    [
+     8.130576271186442,
+     0.1303895331549212,
+     0.7170519586709284
+    ],
+    [
+     8.374,
+     0.12057686589354742,
+     0.693042444064521
+    ],
+    [
+     8.623,
+     0.11076419863217365,
+     0.6689585965955549
+    ],
+    [
+     8.897627118644065,
+     0.10162057686589354,
+     0.6441314205010035
+    ],
+    [
+     9.179,
+     0.0924026167112697,
+     0.619564409425407
+    ],
+    [
+     9.449,
+     0.08366785608088016,
+     0.5943284025867837
+    ],
+    [
+     9.76,
+     0.07556497175141243,
+     0.5685348992789713
+    ],
+    [
+     10.058694915254236,
+     0.06668153434433541,
+     0.5434847245967442
+    ],
+    [
+     10.405423728813563,
+     0.05787243532560214,
+     0.5183973834832379
+    ],
+    [
+     10.783,
+     0.049843889384478146,
+     0.4925667137441463
+    ],
+    [
+     11.196,
+     0.04122063633660422,
+     0.4673307069055229
+    ],
+    [
+     11.672,
+     0.03356378233719893,
+     0.4410912064223593
+    ],
+    [
+     12.27,
+     0.025646743978590545,
+     0.41507470452687134
+    ],
+    [
+     13.037593220338982,
+     0.018361581920903956,
+     0.38842637329963575
+    ],
+    [
+     13.914,
+     0.012340172465060957,
+     0.3605887162714636
+    ],
+    [
+     15.143830508474574,
+     0.007954207552780255,
+     0.3310414034044451
+    ],
+    [
+     17.134,
+     0.0036425810288432947,
+     0.3014940905374266
+    ],
+    [
+     20.083728813559325,
+     0.0013752601843592031,
+     0.2698282910874898
+    ],
+    [
+     25.35445762711861,
+     0.0007062146892655367,
+     0.23660150152382367
+    ],
+    [
+     33.93116949152542,
+     0.000631876300921796,
+     0.2027800490596893
+    ],
+    [
+     47.4972203389831,
+     0.0005947071067499256,
+     0.16892143016427563
+    ],
+    [
+     69.26025423728811,
+     0.0005575379125780553,
+     0.13506281126886197
+    ],
+    [
+     106.93489830508474,
+     0.00044603033006244426,
+     0.10127852523600683
+    ],
+    [
+     187.31298305084752,
+     0.0002973535533749628,
+     0.06753140563443098
+    ],
+    [
+     418.3383898305087,
+     0.00011150758251561107,
+     0.03382145246413439
+    ],
+    [
+     12787.141,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ]
+  },
+  "200|signed": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.814406779661018,
+     0.8730300327088909,
+     0.9235486508585445
+    ],
+    [
+     5.5601186440677965,
+     0.853776390127862,
+     0.9089050769345127
+    ],
+    [
+     6.029135593220339,
+     0.8335935176925364,
+     0.8951906637924626
+    ],
+    [
+     6.336,
+     0.8132247992863515,
+     0.8817364156693674
+    ],
+    [
+     6.591,
+     0.7924843889384479,
+     0.8685794989965063
+    ],
+    [
+     6.796186440677966,
+     0.7708890871245911,
+     0.8562030773805099
+    ],
+    [
+     6.99,
+     0.7504088611358906,
+     0.8430461607076488
+    ],
+    [
+     7.173,
+     0.7297427891763306,
+     0.8296290790158329
+    ],
+    [
+     7.343,
+     0.7082961641391614,
+     0.8171783245372779
+    ],
+    [
+     7.513,
+     0.6875929229854296,
+     0.8039842414331376
+    ],
+    [
+     7.675,
+     0.6667781742491823,
+     0.7911618226417899
+    ],
+    [
+     7.836,
+     0.6449970264644662,
+     0.7787854010257935
+    ],
+    [
+     7.995305084745763,
+     0.6241822777282189,
+     0.7656284843529324
+    ],
+    [
+     8.149,
+     0.6027728218852215,
+     0.7533263955994945
+    ],
+    [
+     8.302,
+     0.5811775200713648,
+     0.7409128075522189
+    ],
+    [
+     8.458,
+     0.5602512637526018,
+     0.7279417230357541
+    ],
+    [
+     8.609,
+     0.5389533154921201,
+     0.7153794692633614
+    ],
+    [
+     8.776,
+     0.5167261373773416,
+     0.7036348769791124
+    ],
+    [
+     8.946,
+     0.4944989592625632,
+     0.6919646175574221
+    ],
+    [
+     9.105,
+     0.47308950341956585,
+     0.6795138630788672
+    ],
+    [
+     9.277,
+     0.452683615819209,
+     0.6662454471121683
+    ],
+    [
+     9.455,
+     0.43108831400535236,
+     0.6537575262023341
+    ],
+    [
+     9.651,
+     0.4109797799583705,
+     0.6399687801977254
+    ],
+    [
+     9.849,
+     0.38986767766874814,
+     0.6271463614063778
+    ],
+    [
+     10.064,
+     0.3688670829616414,
+     0.6142496097524716
+    ],
+    [
+     10.278525423728818,
+     0.34924174843889383,
+     0.5999033672786739
+    ],
+    [
+     10.512,
+     0.32842699970264644,
+     0.5869322827622092
+    ],
+    [
+     10.766,
+     0.3088016651798989,
+     0.5727347060135286
+    ],
+    [
+     11.047576271186442,
+     0.28891614629794826,
+     0.558537129264848
+    ],
+    [
+     11.362,
+     0.26910496580434135,
+     0.5444882182412845
+    ],
+    [
+     11.7,
+     0.2502230151650312,
+     0.5295844792982978
+    ],
+    [
+     12.075,
+     0.23122955694320546,
+     0.5145692410614733
+    ],
+    [
+     12.554644067796609,
+     0.21283080582812966,
+     0.499033672786739
+    ],
+    [
+     13.056,
+     0.1948037466547725,
+     0.48327510592432915
+    ],
+    [
+     13.682711864406766,
+     0.17633065715135296,
+     0.46773953764959486
+    ],
+    [
+     14.472,
+     0.1584894439488552,
+     0.4517579721995094
+    ],
+    [
+     15.416,
+     0.1428040440083259,
+     0.43350925444138855
+    ],
+    [
+     16.749,
+     0.12778768956289027,
+     0.41470304021407867
+    ],
+    [
+     18.58949152542373,
+     0.11511299435028248,
+     0.3933695086597785
+    ],
+    [
+     21.037,
+     0.10437109723461195,
+     0.3702519884040734
+    ],
+    [
+     24.561338983050863,
+     0.0947814451382694,
+     0.3459079759161525
+    ],
+    [
+     29.37579661016949,
+     0.08567499256616116,
+     0.3211179662528804
+    ],
+    [
+     35.472,
+     0.07753493904252155,
+     0.29539879580762657
+    ],
+    [
+     43.30766101694915,
+     0.06991525423728813,
+     0.2690849624619044
+    ],
+    [
+     53.93484745762712,
+     0.06407969075230449,
+     0.24102430684605664
+    ],
+    [
+     68.16883050847461,
+     0.05802111210228962,
+     0.2131866498178845
+    ],
+    [
+     89.239813559322,
+     0.053783823966696405,
+     0.18352783765702818
+    ],
+    [
+     121.10391525423726,
+     0.04950936663693131,
+     0.1539061919274511
+    ],
+    [
+     175.61266101694918,
+     0.04560660124888492,
+     0.1239128818850814
+    ],
+    [
+     262.08198305084727,
+     0.039213499851323226,
+     0.09640972273842266
+    ],
+    [
+     418.6579830508474,
+     0.03237436812369908,
+     0.06935256076711514
+    ],
+    [
+     657.5057966101704,
+     0.019142134998513232,
+     0.04868802497584182
+    ],
+    [
+     1138.5523050847494,
+     0.0045346416889681836,
+     0.029398647141901435
+    ],
+    [
+     53113.984,
+     3.716919417187035e-05,
+     0.0
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.665966101694903,
+     0.19747992863514718,
+     0.9211328328253922
+    ],
+    [
+     6.033457627118645,
+     0.18974873624739816,
+     0.894967665204787
+    ],
+    [
+     6.560949152542372,
+     0.18060511448111805,
+     0.8702148219727942
+    ],
+    [
+     6.948983050847462,
+     0.17123847754980673,
+     0.8456849773284769
+    ],
+    [
+     7.281508474576269,
+     0.16079393398751116,
+     0.8222329591912585
+    ],
+    [
+     7.588525423728817,
+     0.15105560511448113,
+     0.7980747788597339
+    ],
+    [
+     7.879,
+     0.14035087719298245,
+     0.7749944250353081
+    ],
+    [
+     8.177,
+     0.12960898007731192,
+     0.7517654054857652
+    ],
+    [
+     8.459,
+     0.11983348201011002,
+     0.7277187244480785
+    ],
+    [
+     8.752,
+     0.10834820101100208,
+     0.7052701999554003
+    ],
+    [
+     9.063,
+     0.09712310437109724,
+     0.6825986768750465
+    ],
+    [
+     9.371,
+     0.08619536128456735,
+     0.6595926559131792
+    ],
+    [
+     9.695288135593218,
+     0.07508177222717811,
+     0.6367724671077083
+    ],
+    [
+     10.087661016949154,
+     0.06512042818911686,
+     0.6128372853638594
+    ],
+    [
+     10.487,
+     0.05586529884032114,
+     0.5882702742882628
+    ],
+    [
+     10.938,
+     0.04571810883140053,
+     0.564483758269531
+    ],
+    [
+     11.467711864406782,
+     0.03638864109426108,
+     0.5398795807626552
+    ],
+    [
+     12.088,
+     0.02824858757062147,
+     0.5141604103174013
+    ],
+    [
+     12.87,
+     0.020182872435325603,
+     0.4883297405783097
+    ],
+    [
+     13.936525423728803,
+     0.012488849241748439,
+     0.46209024009514604
+    ],
+    [
+     15.401,
+     0.006764793339280405,
+     0.43395525161673976
+    ],
+    [
+     17.698983050847456,
+     0.003493904252155813,
+     0.4032929458113432
+    ],
+    [
+     20.890440677966108,
+     0.0014495985727029437,
+     0.37144131420501003
+    ],
+    [
+     25.879661016949147,
+     0.0005575379125780553,
+     0.33843752322901954
+    ],
+    [
+     33.0103220338983,
+     0.00037169194171870356,
+     0.304727570058723
+    ],
+    [
+     42.796203389830566,
+     0.00022301516503122213,
+     0.2709804504571471
+    ],
+    [
+     55.625101694915216,
+     0.00022301516503122213,
+     0.23708466513045418
+    ],
+    [
+     75.19444067796609,
+     0.00022301516503122213,
+     0.20318887980376124
+    ],
+    [
+     102.43384745762722,
+     0.0001486767766874814,
+     0.16936742733962684
+    ],
+    [
+     150.26089830508468,
+     0.0001486767766874814,
+     0.1354716420129339
+    ],
+    [
+     243.0781016949152,
+     0.00011150758251561107,
+     0.10161302311752025
+    ],
+    [
+     434.12527118644135,
+     0.00011150758251561107,
+     0.06771723779082732
+    ],
+    [
+     973.4407457627213,
+     0.0,
+     0.0339329517579722
+    ],
+    [
+     39716.117,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ]
+  },
+  "200|signed_mask": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.845203389830509,
+     0.6933169788878977,
+     0.8998736341336505
+    ],
+    [
+     5.721,
+     0.6754014272970562,
+     0.8839292351148442
+    ],
+    [
+     6.152,
+     0.6562964614927148,
+     0.8691369954656953
+    ],
+    [
+     6.459,
+     0.6371171573000297,
+     0.8544562551103843
+    ],
+    [
+     6.735,
+     0.617268807612251,
+     0.8403701776555416
+    ],
+    [
+     6.95428813559322,
+     0.5976434730895034,
+     0.8260611016130232
+    ],
+    [
+     7.169,
+     0.5781668153434434,
+     0.811789192001784
+    ],
+    [
+     7.381,
+     0.5584299732381802,
+     0.7975544488218241
+    ],
+    [
+     7.575,
+     0.5389161462979483,
+     0.7832453727793057
+    ],
+    [
+     7.763355932203391,
+     0.5189934582218257,
+     0.7691221288931837
+    ],
+    [
+     7.958,
+     0.49996283080582815,
+     0.7542927228127555
+    ],
+    [
+     8.144,
+     0.48000297353553373,
+     0.740392477514309
+    ],
+    [
+     8.33540677966102,
+     0.4610466845078799,
+     0.7253772392774845
+    ],
+    [
+     8.522423728813559,
+     0.4411983348201011,
+     0.711328328253921
+    ],
+    [
+     8.715,
+     0.4221305382099316,
+     0.6965360886047721
+    ],
+    [
+     8.934,
+     0.40328575676479334,
+     0.6815951832305062
+    ],
+    [
+     9.144,
+     0.3836975914362177,
+     0.6672489407567085
+    ],
+    [
+     9.348,
+     0.36410942610764196,
+     0.6529770311454695
+    ],
+    [
+     9.57,
+     0.3446327683615819,
+     0.638667955102951
+    ],
+    [
+     9.801,
+     0.3249702646446625,
+     0.6242473797665948
+    ],
+    [
+     10.059542372881355,
+     0.30575379125780555,
+     0.6094923065487252
+    ],
+    [
+     10.333,
+     0.2873550401427297,
+     0.5941425704303873
+    ],
+    [
+     10.615576271186441,
+     0.2690677966101695,
+     0.5783840035679774
+    ],
+    [
+     10.968186440677965,
+     0.25144959857270294,
+     0.5621051066676578
+    ],
+    [
+     11.336,
+     0.2340915848944395,
+     0.5456403776109418
+    ],
+    [
+     11.738,
+     0.2157671721677074,
+     0.530030476473649
+    ],
+    [
+     12.20964406779661,
+     0.19725691347011598,
+     0.5146064074927525
+    ],
+    [
+     12.737,
+     0.17986173059768065,
+     0.49817884486731584
+    ],
+    [
+     13.398,
+     0.16432500743383882,
+     0.4797814613840779
+    ],
+    [
+     14.212694915254236,
+     0.14897413024085637,
+     0.4611982457444436
+    ],
+    [
+     15.329,
+     0.13455248290217067,
+     0.44176020218538614
+    ],
+    [
+     16.807644067796595,
+     0.1193502824858757,
+     0.4230283208206348
+    ],
+    [
+     18.74223728813559,
+     0.1071959559916741,
+     0.4012859585222627
+    ],
+    [
+     21.83657627118641,
+     0.09660273565269105,
+     0.3779826061101613
+    ],
+    [
+     26.116559322033908,
+     0.08753345227475469,
+     0.3531554300156099
+    ],
+    [
+     32.17618644067797,
+     0.07913321439191198,
+     0.32765925815803165
+    ],
+    [
+     40.14250847457629,
+     0.07281445138269402,
+     0.3000817661488144
+    ],
+    [
+     51.30994915254232,
+     0.06738774903360095,
+     0.2716122797888947
+    ],
+    [
+     66.62581355932203,
+     0.062184061849539105,
+     0.24291979484129933
+    ],
+    [
+     89.2661016949154,
+     0.0574264049955397,
+     0.2137813127183528
+    ],
+    [
+     125.0286949152542,
+     0.05289176330657151,
+     0.18441983200773063
+    ],
+    [
+     175.46003389830506,
+     0.04698186143324413,
+     0.15643350925444138
+    ],
+    [
+     259.9974576271187,
+     0.04181534344335415,
+     0.1277038578755668
+    ],
+    [
+     436.10627118643885,
+     0.03802408563782337,
+     0.09759904853935925
+    ],
+    [
+     705.6744406779659,
+     0.026687481415402912,
+     0.07503902475284323
+    ],
+    [
+     1055.000881355934,
+     0.010035682426404995,
+     0.05779380063926262
+    ],
+    [
+     2195.2651186440803,
+     0.0033080582812964614,
+     0.0306251393741173
+    ],
+    [
+     91444.797,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     5.1055254237288175,
+     0.052148379423134106,
+     0.8969746524938675
+    ],
+    [
+     6.231,
+     0.049918227772821885,
+     0.86534601947521
+    ],
+    [
+     6.825,
+     0.046647338685697294,
+     0.8348695458262098
+    ],
+    [
+     7.288,
+     0.04341361879274457,
+     0.8040957407269754
+    ],
+    [
+     7.699,
+     0.03969669937555754,
+     0.7739537649594886
+    ],
+    [
+     8.093,
+     0.03531073446327684,
+     0.74440645209247
+    ],
+    [
+     8.488,
+     0.03155664585191793,
+     0.7142644763249832
+    ],
+    [
+     8.898,
+     0.02739369610466845,
+     0.6845313313015684
+    ],
+    [
+     9.324,
+     0.023825453464168898,
+     0.654166356946406
+    ],
+    [
+     9.792,
+     0.019476657746060066,
+     0.6246190440793875
+    ],
+    [
+     10.326,
+     0.01568539994052929,
+     0.59451423474318
+    ],
+    [
+     10.929,
+     0.012079988105857866,
+     0.564223593250576
+    ],
+    [
+     11.637728813559319,
+     0.009106452572108237,
+     0.5332639559949454
+    ],
+    [
+     12.607,
+     0.006541778174249183,
+     0.5020069872890806
+    ],
+    [
+     13.779050847457604,
+     0.00423728813559322,
+     0.4703411878391437
+    ],
+    [
+     15.581779661016954,
+     0.0025646743978590546,
+     0.4381178919200178
+    ],
+    [
+     18.287389830508474,
+     0.001152245019327981,
+     0.40563443098193713
+    ],
+    [
+     22.879881355932216,
+     0.0005947071067499256,
+     0.37229614212443324
+    ],
+    [
+     29.33047457627116,
+     0.0004088611358905739,
+     0.3385861889541366
+    ],
+    [
+     38.64440677966101,
+     0.00033452274754683316,
+     0.30476473649000224
+    ],
+    [
+     51.682864406779665,
+     0.00022301516503122213,
+     0.2709804504571471
+    ],
+    [
+     70.28905084745745,
+     0.00018584597085935178,
+     0.23712183156173344
+    ],
+    [
+     99.97730508474575,
+     0.0001486767766874814,
+     0.20326321266631978
+    ],
+    [
+     148.39077966101718,
+     0.0001486767766874814,
+     0.16936742733962684
+    ],
+    [
+     231.11410169491504,
+     0.0001486767766874814,
+     0.1354716420129339
+    ],
+    [
+     403.4415254237287,
+     0.0001486767766874814,
+     0.10157585668624099
+    ],
+    [
+     837.7827627118676,
+     7.43383883437407e-05,
+     0.06775440422210659
+    ],
+    [
+     1940.2140677966406,
+     0.0,
+     0.0339329517579722
+    ],
+    [
+     91444.797,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ]
+  },
+  "200|signed_mask_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.758610169491527,
+     0.6934656556645852,
+     0.8997249684085334
+    ],
+    [
+     5.594,
+     0.6746580434136188,
+     0.8846725637404297
+    ],
+    [
+     6.01,
+     0.6563707998810586,
+     0.8692113283282539
+    ],
+    [
+     6.309,
+     0.6361507582515611,
+     0.855385415892366
+    ],
+    [
+     6.561271186440678,
+     0.6165997621171573,
+     0.8410020069872891
+    ],
+    [
+     6.7902881355932205,
+     0.5966399048468629,
+     0.8270645952575634
+    ],
+    [
+     6.992,
+     0.5758994944989593,
+     0.8139448450159815
+    ],
+    [
+     7.187,
+     0.5558281296461492,
+     0.8002675983052108
+    ],
+    [
+     7.379,
+     0.53557091882248,
+     0.7864788523006021
+    ],
+    [
+     7.558,
+     0.5157225691347012,
+     0.7725042741395971
+    ],
+    [
+     7.74,
+     0.49542818911685993,
+     0.7589013602913848
+    ],
+    [
+     7.924,
+     0.4755426702349093,
+     0.7448152828365421
+    ],
+    [
+     8.101,
+     0.45528545941124,
+     0.731249535419609
+    ],
+    [
+     8.28042372881356,
+     0.43599464763603923,
+     0.7165316286330187
+    ],
+    [
+     8.468,
+     0.416294974724948,
+     0.7026313833345722
+    ],
+    [
+     8.656,
+     0.39652096342551296,
+     0.6884709730171709
+    ],
+    [
+     8.865474576271186,
+     0.37696996729110915,
+     0.6738645655244183
+    ],
+    [
+     9.078,
+     0.35738180196253344,
+     0.6595926559131792
+    ],
+    [
+     9.281,
+     0.338016651798989,
+     0.6450605812829852
+    ],
+    [
+     9.487,
+     0.3177966101694915,
+     0.6314576674347729
+    ],
+    [
+     9.720542372881356,
+     0.29843146000594706,
+     0.6168140935107411
+    ],
+    [
+     9.976,
+     0.27880612548319955,
+     0.6026536831933398
+    ],
+    [
+     10.250576271186441,
+     0.2599241748438894,
+     0.5875269456626775
+    ],
+    [
+     10.531593220338982,
+     0.24141391614629795,
+     0.5721400431130603
+    ],
+    [
+     10.861,
+     0.2232753493904252,
+     0.5564929755444882
+    ],
+    [
+     11.219,
+     0.20584299732381803,
+     0.539991080056493
+    ],
+    [
+     11.63064406779661,
+     0.18785310734463276,
+     0.5240095146064075
+    ],
+    [
+     12.109661016949154,
+     0.16919417187035385,
+     0.5087712777819073
+    ],
+    [
+     12.645677966101692,
+     0.1518361581920904,
+     0.4922322158626329
+    ],
+    [
+     13.311,
+     0.13611358905738924,
+     0.4741321638296291
+    ],
+    [
+     14.147,
+     0.12091138864109426,
+     0.455437448896157
+    ],
+    [
+     15.24872881355932,
+     0.10585786500148676,
+     0.43651973537500927
+    ],
+    [
+     16.712237288135594,
+     0.09069283377936366,
+     0.4177878540102579
+    ],
+    [
+     18.566,
+     0.07720041629497472,
+     0.39742064966921875
+    ],
+    [
+     21.223338983050862,
+     0.06433987511150759,
+     0.3763472831338735
+    ],
+    [
+     25.18379661016949,
+     0.05370948557835266,
+     0.35308109715305136
+    ],
+    [
+     30.628762711864432,
+     0.04426851025869759,
+     0.32862558537129266
+    ],
+    [
+     37.88749152542372,
+     0.03694617900683913,
+     0.3020515870066156
+    ],
+    [
+     48.51086440677965,
+     0.03170532262860541,
+     0.2733962684902996
+    ],
+    [
+     62.324016949152586,
+     0.027207850133809098,
+     0.2439976213483981
+    ],
+    [
+     84.17867796610162,
+     0.022598870056497175,
+     0.2147104735003345
+    ],
+    [
+     118.59537288135593,
+     0.019476657746060066,
+     0.18393666840110012
+    ],
+    [
+     171.9023050847458,
+     0.01575973832887303,
+     0.15375752620233404
+    ],
+    [
+     259.0166271186434,
+     0.011745465358311032,
+     0.12387571545380213
+    ],
+    [
+     444.65459322033894,
+     0.008809099018733274,
+     0.09291607819817141
+    ],
+    [
+     894.0012542372903,
+     0.005612548319952423,
+     0.06221660596149558
+    ],
+    [
+     2111.5795423728996,
+     0.0031965506987808503,
+     0.030736638667955105
+    ],
+    [
+     91444.797,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     5.0,
+     0.052074041034790367,
+     0.8970861517877053
+    ],
+    [
+     6.109542372881355,
+     0.049806720190306276,
+     0.8654203523377685
+    ],
+    [
+     6.681,
+     0.046684507879869164,
+     0.8346837136698134
+    ],
+    [
+     7.134,
+     0.04348795718108831,
+     0.8040214078644169
+    ],
+    [
+     7.535,
+     0.0399940529289325,
+     0.7736192670779751
+    ],
+    [
+     7.933,
+     0.035496580434136185,
+     0.7441834535047944
+    ],
+    [
+     8.307627118644065,
+     0.03144513826940232,
+     0.7143016427562625
+    ],
+    [
+     8.70764406779661,
+     0.027468034493012192,
+     0.6843826655764513
+    ],
+    [
+     9.146661016949155,
+     0.023342253939934582,
+     0.6546123541217572
+    ],
+    [
+     9.595677966101691,
+     0.019476657746060066,
+     0.6245818776481082
+    ],
+    [
+     10.134694915254236,
+     0.01590841510556051,
+     0.5942540697242251
+    ],
+    [
+     10.681,
+     0.012228664882545346,
+     0.5641492603880175
+    ],
+    [
+     11.394728813559318,
+     0.008883437407077015,
+     0.533486954582621
+    ],
+    [
+     12.309745762711865,
+     0.006132917038358609,
+     0.502341485170594
+    ],
+    [
+     13.455288135593204,
+     0.003865596193874517,
+     0.47071285215193637
+    ],
+    [
+     15.118,
+     0.0022301516503122213,
+     0.43848955623281055
+    ],
+    [
+     17.76179661016949,
+     0.0009292298542967588,
+     0.40585742956961274
+    ],
+    [
+     21.845322033898324,
+     0.00022301516503122213,
+     0.3726678064372259
+    ],
+    [
+     28.259305084745733,
+     3.716919417187035e-05,
+     0.3389578532669293
+    ],
+    [
+     37.033389830508476,
+     0.0,
+     0.30509923437151565
+    ],
+    [
+     49.44659322033899,
+     0.0,
+     0.27120344904482274
+    ],
+    [
+     66.99306779661003,
+     0.0,
+     0.23730766371812978
+    ],
+    [
+     94.43518644067797,
+     0.0,
+     0.20341187839143685
+    ],
+    [
+     140.51674576271188,
+     0.0,
+     0.1695160930647439
+    ],
+    [
+     217.41110169491503,
+     0.0,
+     0.135620307738051
+    ],
+    [
+     374.04842372881353,
+     0.0,
+     0.10172452241135806
+    ],
+    [
+     787.5737118644118,
+     0.0,
+     0.06782873708466514
+    ],
+    [
+     1852.914000000002,
+     0.0,
+     0.0339329517579722
+    ],
+    [
+     91444.797,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ]
+  },
+  "200|signed_notch": {
+   "drone_vs_busiest": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     3.7799152542372902,
+     0.8731043710972346,
+     0.923474317995986
+    ],
+    [
+     5.431118644067797,
+     0.8528471602735652,
+     0.9098342377164944
+    ],
+    [
+     5.876,
+     0.8330731489741302,
+     0.8957481602616517
+    ],
+    [
+     6.177,
+     0.8118495391019923,
+     0.8830744071954211
+    ],
+    [
+     6.416,
+     0.7910347903657449,
+     0.8702148219727942
+    ],
+    [
+     6.631186440677966,
+     0.7693651501635445,
+     0.8577269010629599
+    ],
+    [
+     6.808,
+     0.7473609872137972,
+     0.8459823087787111
+    ],
+    [
+     6.98922033898305,
+     0.7263603925066905,
+     0.8329368913996879
+    ],
+    [
+     7.152,
+     0.7058801665179899,
+     0.8197799747268267
+    ],
+    [
+     7.31,
+     0.6838016651798989,
+     0.807775217423623
+    ],
+    [
+     7.468271186440678,
+     0.6627267320844484,
+     0.7948784657697168
+    ],
+    [
+     7.632,
+     0.6416517989889979,
+     0.7822047127034862
+    ],
+    [
+     7.78,
+     0.6200193279809694,
+     0.7698282910874897
+    ],
+    [
+     7.928,
+     0.5988700564971752,
+     0.7571545380212592
+    ],
+    [
+     8.082338983050846,
+     0.5777207850133809,
+     0.7442949527986322
+    ],
+    [
+     8.226,
+     0.5551962533452275,
+     0.7329963576897346
+    ],
+    [
+     8.374,
+     0.5343071662206363,
+     0.7200252731732699
+    ],
+    [
+     8.526,
+     0.5132694023193577,
+     0.7072771872444807
+    ],
+    [
+     8.686406779661018,
+     0.49100505501040737,
+     0.6954210956663941
+    ],
+    [
+     8.845,
+     0.4696327683615819,
+     0.6831190069129562
+    ],
+    [
+     9.012,
+     0.44688522152839727,
+     0.6718575782353379
+    ],
+    [
+     9.169,
+     0.4253642581028843,
+     0.6595554894818999
+    ],
+    [
+     9.337,
+     0.40399197145405885,
+     0.6468817364156694
+    ],
+    [
+     9.527,
+     0.38269402319357715,
+     0.6343938155058352
+    ],
+    [
+     9.723,
+     0.362659827534939,
+     0.620530736638668
+    ],
+    [
+     9.921,
+     0.34058132619684806,
+     0.6086003121980228
+    ],
+    [
+     10.142542372881355,
+     0.31998959262563187,
+     0.5952575633687653
+    ],
+    [
+     10.368,
+     0.30047576568539996,
+     0.5809113208949677
+    ],
+    [
+     10.614576271186442,
+     0.27914064823074636,
+     0.5683119006912957
+    ],
+    [
+     10.882,
+     0.25884626821290513,
+     0.5547461532743626
+    ],
+    [
+     11.187,
+     0.23873773416592328,
+     0.5409574072697539
+    ],
+    [
+     11.521,
+     0.21885221528397264,
+     0.5269456626774697
+    ],
+    [
+     11.877288135593218,
+     0.2002304490038656,
+     0.511633092990411
+    ],
+    [
+     12.324,
+     0.18146000594707107,
+     0.49661785475358655
+    ],
+    [
+     12.794677966101691,
+     0.1627267320844484,
+     0.4813424514978072
+    ],
+    [
+     13.392,
+     0.14440231935771633,
+     0.4658068832230729
+    ],
+    [
+     14.125711864406782,
+     0.1258920606601249,
+     0.45038281424217647
+    ],
+    [
+     15.011,
+     0.10849687778768956,
+     0.4339180851854605
+    ],
+    [
+     16.141491525423728,
+     0.09269997026464466,
+     0.4157808667211774
+    ],
+    [
+     17.703762711864403,
+     0.07779512340172465,
+     0.3967888203374712
+    ],
+    [
+     19.785779661016953,
+     0.06504608980077312,
+     0.37564112093956736
+    ],
+    [
+     22.646593220338982,
+     0.054378531073446326,
+     0.35241210139002455
+    ],
+    [
+     26.847440677966105,
+     0.044937555753791256,
+     0.3279565896082658
+    ],
+    [
+     32.435830508474574,
+     0.03772673208444841,
+     0.301271091949751
+    ],
+    [
+     40.180389830508474,
+     0.032151352958667855,
+     0.2729502713149483
+    ],
+    [
+     50.35569491525427,
+     0.027653880463871544,
+     0.2435516241730469
+    ],
+    [
+     64.3731694915254,
+     0.023007731192387748,
+     0.21430164275626254
+    ],
+    [
+     84.39486440677966,
+     0.0188076122509664,
+     0.18460566416412696
+    ],
+    [
+     114.28254237288142,
+     0.015165031222123104,
+     0.15435218910280235
+    ],
+    [
+     166.8641355932202,
+     0.011522450193279809,
+     0.12409871404147774
+    ],
+    [
+     259.3938474576271,
+     0.008065715135295868,
+     0.09365940682375679
+    ],
+    [
+     457.4331864406801,
+     0.0053523639607493305,
+     0.06247677098045046
+    ],
+    [
+     1062.9926949152546,
+     0.003568242640499554,
+     0.030364974355162416
+    ],
+    [
+     53113.984,
+     3.716919417187035e-05,
+     0.0
+    ]
+   ],
+   "drone_vs_random": [
+    [
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     4.538728813559305,
+     0.19736842105263158,
+     0.92124433211923
+    ],
+    [
+     5.907457627118645,
+     0.18982307463574188,
+     0.8948933323422285
+    ],
+    [
+     6.407949152542373,
+     0.1801962533452275,
+     0.8706236527168661
+    ],
+    [
+     6.801,
+     0.17056943205471306,
+     0.846391139522783
+    ],
+    [
+     7.12,
+     0.16068242640499553,
+     0.8223816249163756
+    ],
+    [
+     7.419,
+     0.15005203687184063,
+     0.7991526053668326
+    ],
+    [
+     7.718,
+     0.1400535236396075,
+     0.7752174236229837
+    ],
+    [
+     7.992559322033896,
+     0.129014272970562,
+     0.7523229019549543
+    ],
+    [
+     8.278,
+     0.11886708296164139,
+     0.7286478852300602
+    ],
+    [
+     8.562,
+     0.10953761522450194,
+     0.7040808741544637
+    ],
+    [
+     8.865610169491527,
+     0.0977921498661909,
+     0.681855348249461
+    ],
+    [
+     9.175627118644066,
+     0.08671573000297353,
+     0.6590351594439902
+    ],
+    [
+     9.50164406779661,
+     0.0758623253047874,
+     0.6359919720508437
+    ],
+    [
+     9.858,
+     0.06578947368421052,
+     0.6122054560321118
+    ],
+    [
+     10.260355932203383,
+     0.05649717514124294,
+     0.5875641120939568
+    ],
+    [
+     10.699,
+     0.046610169491525424,
+     0.5637032632126663
+    ],
+    [
+     11.219,
+     0.037169194171870354,
+     0.5391362521370698
+    ],
+    [
+     11.819,
+     0.028657448706512042,
+     0.5137515795733294
+    ],
+    [
+     12.59,
+     0.020443056794528694,
+     0.4881067419906341
+    ],
+    [
+     13.582288135593204,
+     0.013083556348498365,
+     0.46149557719467776
+    ],
+    [
+     15.006779661016953,
+     0.006616116562592923,
+     0.43406675091057756
+    ],
+    [
+     17.084779661016945,
+     0.003047873922093369,
+     0.40373894298669444
+    ],
+    [
+     20.171508474576285,
+     0.0010779066309842403,
+     0.3718129785178027
+    ],
+    [
+     24.693322033898294,
+     0.0001486767766874814,
+     0.3388463539730915
+    ],
+    [
+     31.560627118644067,
+     0.0,
+     0.30509923437151565
+    ],
+    [
+     40.85372881355933,
+     0.0,
+     0.27120344904482274
+    ],
+    [
+     53.0979322033898,
+     0.0,
+     0.23730766371812978
+    ],
+    [
+     71.08637288135593,
+     0.0,
+     0.20341187839143685
+    ],
+    [
+     97.40754237288142,
+     0.0,
+     0.1695160930647439
+    ],
+    [
+     142.8507796610169,
+     0.0,
+     0.135620307738051
+    ],
+    [
+     229.30903389830505,
+     0.0,
+     0.10172452241135806
+    ],
+    [
+     413.0789661016949,
+     0.0,
+     0.06782873708466514
+    ],
+    [
+     940.6992881355966,
+     0.0,
+     0.0339329517579722
+    ],
+    [
+     39716.117,
+     0.0,
+     3.716643127926857e-05
+    ]
+   ]
+  }
+ }
+}

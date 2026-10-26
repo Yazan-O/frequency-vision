@@ -1,0 +1,321 @@
+[
+ {
+  "name": "highcontrastline",
+  "gt_hz": 20,
+  "roi": [
+   315,
+   20,
+   970,
+   675
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 3870133,
+  "signed_hz": 19.92,
+  "signed_snr": 14057.05,
+  "count_hz": 19.92,
+  "count_snr": 21887.25,
+  "map_active_px": 20000,
+  "map_median_hz": 20.0,
+  "map_top_hz": [
+   20,
+   40,
+   120,
+   60,
+   160
+  ]
+ },
+ {
+  "name": "velcro_front",
+  "gt_hz": 21.1,
+  "roi": [
+   310,
+   0,
+   1023,
+   713
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 15931040,
+  "signed_hz": 100.01,
+  "signed_snr": 70142.27,
+  "count_hz": 21.1,
+  "count_snr": 3409.4,
+  "map_active_px": 20000,
+  "map_median_hz": 42.0,
+  "map_top_hz": [
+   21,
+   42,
+   63,
+   84,
+   105
+  ]
+ },
+ {
+  "name": "velcro_side",
+  "gt_hz": 26.3,
+  "roi": [
+   289,
+   5,
+   980,
+   696
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 10096114,
+  "signed_hz": 52.62,
+  "signed_snr": 403696.12,
+  "count_hz": 52.62,
+  "count_snr": 37442.68,
+  "map_active_px": 20000,
+  "map_median_hz": 289.0,
+  "map_top_hz": [
+   26,
+   53,
+   79,
+   105,
+   52
+  ]
+ },
+ {
+  "name": "highcontrastdot",
+  "gt_hz": 19.6,
+  "roi": [
+   184,
+   70,
+   454,
+   340
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 10880810,
+  "signed_hz": 78.58,
+  "signed_snr": 926.82,
+  "count_hz": 19.63,
+  "count_snr": 1851.58,
+  "map_active_px": 20000,
+  "map_median_hz": 39.0,
+  "map_top_hz": [
+   39,
+   20,
+   59
+  ]
+ },
+ {
+  "name": "handspinner",
+  "gt_hz": 4.7,
+  "roi": [
+   127,
+   184,
+   366,
+   423
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 2583494,
+  "signed_hz": 4.65,
+  "signed_snr": 983.81,
+  "count_hz": 4.58,
+  "count_snr": 1505.27,
+  "map_active_px": 17738,
+  "map_median_hz": 10.0,
+  "map_top_hz": [
+   14,
+   9,
+   5,
+   19,
+   10
+  ]
+ },
+ {
+  "name": "spider",
+  "gt_hz": 3.2,
+  "roi": [
+   870,
+   259,
+   1096,
+   485
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 1913454,
+  "signed_hz": 3.23,
+  "signed_snr": 185.41,
+  "count_hz": 3.21,
+  "count_snr": 16136.03,
+  "map_active_px": 953,
+  "map_median_hz": 10.0,
+  "map_top_hz": [
+   3,
+   10,
+   6,
+   19,
+   7
+  ]
+ },
+ {
+  "name": "led",
+  "gt_hz": 2000,
+  "roi": [
+   573,
+   132,
+   708,
+   267
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 17527865,
+  "signed_hz": 2000.0,
+  "signed_snr": 13474846.0,
+  "count_hz": 1999.99,
+  "count_snr": 96661.11,
+  "map_active_px": 5047,
+  "map_median_hz": 1000.0,
+  "map_top_hz": [
+   1000,
+   2000,
+   2,
+   3,
+   4
+  ]
+ },
+ {
+  "name": "screen",
+  "gt_hz": 240,
+  "roi": [
+   597,
+   297,
+   651,
+   351
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 3049516,
+  "signed_hz": 479.97,
+  "signed_snr": 2298663.0,
+  "count_hz": 239.99,
+  "count_snr": 4052993.5,
+  "map_active_px": 2500,
+  "map_median_hz": 240.0,
+  "map_top_hz": [
+   240
+  ]
+ },
+ {
+  "name": "speaker",
+  "gt_hz": 98,
+  "roi": [
+   366,
+   37,
+   997,
+   668
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 1827744,
+  "signed_hz": 97.82,
+  "signed_snr": 128436.43,
+  "count_hz": 195.66,
+  "count_snr": 468835.5,
+  "map_active_px": 8431,
+  "map_median_hz": 196.0,
+  "map_top_hz": [
+   196,
+   294,
+   2,
+   293,
+   3
+  ]
+ },
+ {
+  "name": "motor",
+  "gt_hz": 40,
+  "roi": [
+   314,
+   33,
+   462,
+   181
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 6891413,
+  "signed_hz": 79.95,
+  "signed_snr": 38918.65,
+  "count_hz": 79.95,
+  "count_snr": 622601.94,
+  "map_active_px": 14003,
+  "map_median_hz": 80.0,
+  "map_top_hz": [
+   80,
+   40,
+   120,
+   160,
+   200
+  ]
+ },
+ {
+  "name": "chain_side",
+  "gt_hz": 28.7,
+  "roi": [
+   600,
+   276,
+   825,
+   501
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 3008292,
+  "signed_hz": 28.23,
+  "signed_snr": 35.31,
+  "count_hz": 3.82,
+  "count_snr": 340.19,
+  "map_active_px": 16618,
+  "map_median_hz": 814.0,
+  "map_top_hz": [
+   28,
+   29,
+   14,
+   56,
+   57
+  ]
+ },
+ {
+  "name": "chain_top",
+  "gt_hz": 23,
+  "roi": [
+   746,
+   106,
+   1028,
+   388
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 9833815,
+  "signed_hz": 3.48,
+  "signed_snr": 506.93,
+  "count_hz": 2.67,
+  "count_snr": 4403.71,
+  "map_active_px": 9356,
+  "map_median_hz": 1055.5,
+  "map_top_hz": [
+   22,
+   21,
+   4,
+   3,
+   43
+  ]
+ },
+ {
+  "name": "prophesee_monitoring_40_50hz",
+  "gt_hz": "40 and 50",
+  "roi": [
+   0,
+   0,
+   640,
+   480
+  ],
+  "window_ms": 1000.0,
+  "n_events_window": 6892405,
+  "signed_hz": 99.95,
+  "signed_snr": 40350.95,
+  "count_hz": 79.95,
+  "count_snr": 430380.88,
+  "map_active_px": 20000,
+  "map_median_hz": 80.0,
+  "map_top_hz": [
+   80,
+   40,
+   120,
+   160,
+   200
+  ]
+ }
+]
