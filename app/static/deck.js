@@ -557,7 +557,7 @@ async function slide5() {
   const w = $("winner"); w.append(document.createTextNode(`${wins}/${b.ops.length}`)); w.append(el("small", "", "faster on Graviton4"));
   w.setAttribute("aria-label", `Graviton4 ${b.graviton4.instance} faster than x86 ${b.x86.instance} on ${wins} of ${b.ops.length} OpenCV 5 operations, ${b.graviton4.threads} threads, p50 ms. Source ${b.graviton4.file} and ${b.x86.file}.`);
   b.ops.forEach((o) => {
-    const m = Math.max(o.graviton4_ms, o.x86_ms), r = o.x86_ms / o.graviton4_ms;
+    const m = Math.max(o.graviton4_ms, o.x86_ms), r = o.x86_over_graviton4 || o.x86_ms / o.graviton4_ms;
     const row = el("div", "bbrow"); row.title = `${o.op}: Graviton4 ${fmt(o.graviton4_ms, 3)} ms, x86 ${fmt(o.x86_ms, 3)} ms`;
     const bars = el("div", "bars2"); const g = el("div", "b g4"), x = el("div", "b x86");
     g.style.width = (o.graviton4_ms / m * 100) + "%"; x.style.width = (o.x86_ms / m * 100) + "%";

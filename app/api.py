@@ -217,6 +217,7 @@ def bench():
     return {"status": "ok", "graviton4": {k: v for k, v in pick["graviton4"].items() if k != "rows"},
             "x86": {k: v for k, v in pick["x86"].items() if k != "rows"},
             "ops": [{"op": o, "graviton4_ms": round(pick["graviton4"]["rows"][o]["p50_ms"], 3), "x86_ms": round(pick["x86"]["rows"][o]["p50_ms"], 3),
+                     "x86_over_graviton4": round(pick["x86"]["rows"][o]["p50_ms"] / pick["graviton4"]["rows"][o]["p50_ms"], 2),
                      "graviton4_usd_per_m": pick["graviton4"]["rows"][o]["usd_per_million"], "x86_usd_per_m": pick["x86"]["rows"][o]["usd_per_million"]}
                     for o in ops]}
 

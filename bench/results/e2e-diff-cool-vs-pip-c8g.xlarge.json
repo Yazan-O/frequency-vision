@@ -1,0 +1,17 @@
+{
+ "a": "e2e-pip-graviton4-c8g.xlarge-r1 5.0.0",
+ "b": "e2e-cool-graviton4-c8g.xlarge-r1 5.1.0-dev",
+ "windows": 210,
+ "windows_same_box_count": 210,
+ "box_count_mismatch": [],
+ "boxes_compared": 169,
+ "max_box_coord_diff_px": 0.0,
+ "max_score_diff": 0.0,
+ "max_peak_hz_diff": 0.00010000000000331966,
+ "boxes_peak_hz_diff_over_1hz": 0,
+ "max_snr_rel_diff": 4.912435830073831e-07,
+ "hum_verdict_flips": 0,
+ "fmap_windows_active_pixels_differ": 0,
+ "fmap_windows_hum_pixels_differ": 0,
+ "fmap_max_hum_median_hz_diff": 0.0
+}
