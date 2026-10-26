@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strobe drone hum</title>
+<meta name="description" content="Strobe confirms drones by their propeller hum: OpenCV 5 on AWS Graviton, real FRED event and RGB recordings.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head><body><div class="wrap">
+<nav><a class="mark" href="/">Strobe</a><span><a href="#spectrum">Spectrum</a><a href="#agent">Agent</a><a href="#results">Results</a></span></nav>
+<main>
+<h1 id="headline">A bird and a drone look alike at 30 fps. Only one hums.</h1>
+<div class="readout"><span class="big num" id="hz" aria-live="polite">&nbsp;</span><p id="hzcap" class="cap"></p></div>
+<div class="hero">
+  <figure>
+    <canvas id="rgb" width="1280" height="720" aria-label="RGB video of the drone clip at 30 frames per second, with the drone box"></canvas>
+    <figcaption><span class="label">RGB, 30 fps</span><span class="cap" id="rgbcap"></span>
+      <button id="play" class="btn" aria-pressed="true">Pause video</button></figcaption>
+  </figure>
+  <figure>
+    <div id="cloud" role="img" aria-label="Orbitable 3D point cloud of camera events in x, y and time"><span class="axis" id="axis"></span></div>
+    <canvas id="bars" width="1200" height="172" aria-label="Brighter minus darker event counts over time inside the drone box"></canvas>
+    <figcaption><span class="label">Events, x · y · time</span><span class="cap" id="barscap"></span><span class="cap" id="cloudcap"></span>
+      <span class="seg" role="group" aria-label="Point cloud view"><button class="btn on" data-view="crop" aria-pressed="true">Drone close-up</button><button class="btn" data-view="scene" aria-pressed="false">Whole frame</button></span></figcaption>
+  </figure>
+</div>
+
+<section id="spectrum">
+  <h2>Click a box. Read its hum.</h2>
+  <div class="split">
+    <div>
+      <div class="seg" role="group" aria-label="Clip" id="clipbtns"></div>
+      <div class="frame"><canvas id="pick" width="1280" height="720" aria-label="Frame with clickable boxes"></canvas></div>
+      <label class="label" for="scrub">Frame <span id="scrubv" class="num"></span></label>
+      <input id="scrub" type="range" min="0" max="29" value="15">
+      <div class="label">Boxes</div>
+      <div id="boxbtns" class="boxlist"></div>
+      <p class="cap" id="pickprov"></p>
+    </div>
+    <div>
+      <div class="seg" role="group" aria-label="Event window length" id="winbtns"></div>
+      <svg id="plot" viewBox="0 0 600 320" role="img" aria-label="Event spectrum of the selected box"></svg>
+      <dl class="stats" aria-live="polite">
+        <div><dt class="label">Peak</dt><dd class="num" id="s_peak">–</dd></div>
+        <div><dt class="label">Peak / median</dt><dd class="num" id="s_snr">–</dd></div>
+        <div><dt class="label">Events in box</dt><dd class="num" id="s_n">–</dd></div>
+        <div><dt class="label">Verdict</dt><dd class="num" id="s_v">–</dd></div>
+      </dl>
+      <p class="cap" id="s_src"></p>
+    </div>
+  </div>
+</section>
+
+<section id="agent">
+  <h2>The agent chooses the next look.</h2>
+  <div class="seg" role="group" aria-label="Agent episode" id="epbtns"></div>
+  <p class="cap" id="epcap"></p>
+  <ol id="trace" class="trace"></ol>
+</section>
+
+<section id="results">
+  <h2>Measured, not claimed.</h2>
+  <div class="row2">
+    <div>
+      <h3>False alarms, RGB only vs RGB + events</h3>
+      <div id="fa" class="fa"></div>
+    </div>
+    <div>
+      <h3>OpenCV 5, Graviton4 vs x86, p50 ms</h3>
+      <table id="bench"><thead><tr><th>Operation</th><th>Graviton4</th><th>x86</th><th>x86 / G4</th></tr></thead><tbody></tbody></table>
+      <p class="cap" id="benchcap"></p>
+    </div>
+  </div>
+</section>
+</main>
+<footer><span class="label">Data</span><p class="cap" id="foot">FRED (real event + RGB recording, Apache-2.0), test split, huggingface.co/datasets/GabrieleMagrini/FRED. All boxes, spectra and traces on this page come from files written by the Strobe scripts. <a href="/version">Server build</a></p></footer>
+</div>
+<script type="module" src="/static/app.js"></script>
+</body></html>

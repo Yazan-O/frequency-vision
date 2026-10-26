@@ -153,7 +153,7 @@ def run(iid, script, timeout=3600):
 def bundle(bkt):
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as t:
-        for p in ("app", "pipeline", "agent", "bench", "deploy", "requirements.txt"):
+        for p in ("app", "strobe", "pipeline", "agent", "bench", "deploy", "requirements.txt"):
             if (REPO / p).exists():
                 t.add(REPO / p, arcname=p, filter=lambda x: None if "__pycache__" in x.name or x.name.endswith(".pyc") else x)
     key = f"releases/strobe-{int(time.time())}.tgz"
