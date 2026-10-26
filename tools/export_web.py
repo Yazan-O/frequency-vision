@@ -129,7 +129,9 @@ def export_clip(sl, cid, t0, t1, static, private, title):
         img = cv.resize(read_frame(sl, i), (640, 360), interpolation=cv.INTER_AREA)
         name = f"f{len(frames):03d}.jpg"
         cv.imwrite(str(out / name), img, [cv.IMWRITE_JPEG_QUALITY, 72])
-        boxes = [{"box": b, "kind": "drone", "label": "drone (FRED box)"} for b in gt_boxes(sl, ft)]
+        drones = [(b, spec(sl, ev, b, ft)) for b in gt_boxes(sl, ft)]
+        drones.sort(key=lambda d: -d[1]["snr"])
+        boxes = [{"box": b, "kind": "drone", "label": "drone (FRED box)"} for b, _ in drones]
         for b, label in other_boxes(sl, ft):
             if all(iou(b, o["box"]) == 0 for o in boxes):
                 boxes.append({"box": [round(v, 1) for v in b], "kind": "other", "label": label})
@@ -200,6 +202,9 @@ def main():
     ap.add_argument("--slices", default=str(ROOT / "data" / "fred_slices"))
     ap.add_argument("--clip", action="append", default=[], help="id:t0:t1:title")
     ap.add_argument("--demo", action="append", default=[], help="path.npz:t0:t1:title (build/demo_clips format, t0 and t1 in seconds from the clip start)")
+    ap.add_argument("--merge", action="store_true")
+    ap.add_argument("--drop", action="append", default=[])
+    ap.add_argument("--role", action="append", default=[], help="id=demo|hard|agent")
     ap.add_argument("--traces", nargs="*", default=[])
     ap.add_argument("--agent-results", nargs="*", default=[])
     ap.add_argument("--false-alarms", default=None)
@@ -219,8 +224,16 @@ def main():
         sl = DemoClip(path)
         clips.append(export_clip(sl, Path(path).stem, round(sl.origin + float(t0), 6), round(sl.origin + float(t1), 6), static, private, title))
         print(Path(path).stem, "frames", len(clips[-1]["frames"]), "hum", clips[-1]["hum"], flush=True)
+    if a.merge and (static / "clips.json").exists():
+        new = {c["id"] for c in clips}
+        clips = [c for c in json.loads((static / "clips.json").read_text())["clips"] if c["id"] not in new and c["id"] not in a.drop] + clips
+    roles = dict(r.split("=", 1) for r in a.role)
+    for c in clips:
+        if c["id"] in roles:
+            c["role"] = roles[c["id"]]
     (static / "clips.json").write_text(json.dumps({"clips": clips, "spectrum_source": vision.SOURCE["spectrum"]}))
-    (static / "traces.json").write_text(json.dumps({"episodes": export_traces(a.traces, a.agent_results)}, default=str))
+    if a.traces:
+        (static / "traces.json").write_text(json.dumps({"episodes": export_traces(a.traces, a.agent_results)}, default=str))
     if a.false_alarms:
         (private / "false_alarms.json").write_text(Path(a.false_alarms).read_text())
     size = sum(f.stat().st_size for f in static.rglob("*") if f.is_file())
