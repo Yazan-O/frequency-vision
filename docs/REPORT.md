@@ -15,7 +15,8 @@ Headline results, all on the real FRED dataset (event + RGB drone recordings, Ap
 | **Hum frequencies match an outside source** | DJI Mini 2 **320 Hz** vs 316 Hz; DJI Tello **564 Hz** vs 539 Hz; DJI Mini 3 **245 Hz** vs 223 Hz (PropPulse/DENSE-CUAS, same dataset) | 1,951 / 11,068 / 2,405 test boxes | `results/engine/per_model_youden.json` |
 | Hum score, drone box vs random background (AUC) | **0.917** | 26,911 drone boxes vs 26,909 background patches, 47 test sequences, 100 ms windows | `results/engine/summary.json` |
 | Hum score, drone box vs busiest non-drone patch (AUC) | **0.758** | 26,911 vs 26,909 | same |
-| COOL vs pip OpenCV 5, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster | c8g.xlarge, 6 ops | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
+| COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster; DNN forward 0.92x | c8g.xlarge, 6 ops | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
+| End-to-end confirm step, COOL vs pip, same host | p50 **106.2 vs 98.9 ms** per window: COOL 7% slower because the detector is; frequency map 1.13x faster; outputs identical | 210 FRED windows, 630 timed, 169 boxes | `bench/results/E2E.md`, `bench/results/e2e-*.json` |
 | Agent (Bedrock planner), clean run | **4 of 8** scenarios, **0** false alerts: the same score as the hand-tuned rule planner with **30% fewer tool calls** (12.3 vs 17.4 per episode), and a human approval gate on every critical alert (simulated in this evaluation) | 8 FRED test scenarios fixed before any run | `results/agent/eval_v3/results.json` |
 | Agent finds what the detector missed | the whole-frame frequency map found a **545 Hz** DJI Tello the DNN did not propose | FRED test sequence 142 | `results/agent/eval_v3/traces/bedrock_late_142.jsonl` |
 
@@ -118,7 +119,7 @@ COOL (Cloud-Optimized OpenCV Library) is the OpenCV build sold on AWS Marketplac
 | resize | 0.393 | 0.450 | 0.87x | 0.83x |
 | DNN forward (YOLOX-S) | 234.1 | 254.8 | 0.92x | 0.95x |
 
-Source: `bench/results/cool-graviton4-c8g.xlarge.json` and `bench/results/pip-graviton4-c8g.xlarge-samehost.json`. The ops that carry Frequency Vision's confirm step, the blur in the activity mask, the `dft` and the connected components, are the three where COOL wins. Resize and the DNN are slower under COOL on this host. Cost per call scales with time on the same instance, so the speed ratios are also the EC2 cost ratios; the COOL Marketplace software fee is not included.
+Source: `bench/results/cool-graviton4-c8g.xlarge.json` and `bench/results/pip-graviton4-c8g.xlarge-samehost.json`. COOL speeds up the event engine's own operations: the blur in the activity mask (1.89x), the `dft` (1.54x) and the connected components (1.17x). Resize and the DNN forward pass are slower on this COOL build. Cost per call scales with time on the same instance, so the speed ratios are also the EC2 cost ratios; the COOL Marketplace software fee is not included.
 
 **Output differences, COOL vs pip** (`bench/results/diff-cool-vs-pip-c8g.xlarge.json`):
 
@@ -140,7 +141,16 @@ Source: `bench/results/cool-graviton4-c8g.xlarge.json` and `bench/results/pip-gr
 
 Source: `bench/results/pip-graviton4-c8g.xlarge.json`, `bench/results/pip-x86-c7i.xlarge.json`, table `bench/results/TABLE.md`; hourly on-demand prices from the AWS Pricing API in `bench/results/prices.json`. Cost per call is p50 time times the hourly price. Cross-chip output differences are in `bench/results/diff-graviton4-vs-x86-pip.json`: 1 to 2 grey levels on about 4% of pixels for resize, cvtColor and blur; under 0.2% of range for dft; 4.4e-4 maximum absolute difference in the DNN output; 211 vs 210 connected components.
 
-Put together: on the confirm-step ops, COOL on Graviton4 beats pip OpenCV on Graviton4, which in turn beats pip OpenCV on x86.
+Put together: on the event engine's operations, COOL on Graviton4 beats pip OpenCV on Graviton4, which in turn beats pip OpenCV on x86 on 5 of 6 ops.
+
+**Baseline 3: the end-to-end confirm step, COOL vs pip on the same `c8g.xlarge`** (`bench/results/E2E.md`; per-run files `bench/results/e2e-*.json`, equality check `bench/results/e2e-diff-cool-vs-pip-c8g.xlarge.json`). Each of 210 FRED windows (7 demo clips × 30 frames) runs the detector, a hum check on each proposed box (169 in total) and the full-sensor frequency map; 3 passes per runtime, two runs each, alternating.
+
+| Runtime | p50 ms per window | p95 ms | detector p50 ms | hum checks p50 ms | frequency map p50 ms |
+|---|---|---|---|---|---|
+| COOL 5.1.0-dev, run 1 | 106.2 | 131.2 | 103.3 | 0.83 | 1.85 |
+| pip 5.0.0.93, run 1 | 98.9 | 129.2 | 95.8 | 0.80 | 2.08 |
+
+End to end on 210 real FRED windows (detector, a hum check on each of its 169 boxes, and the full-sensor frequency map), COOL 5.1.0-dev takes p50 106.2 ms per window and pip 5.0.0.93 takes 98.9 ms: the confirm step is 7% slower under COOL. The detector forward pass is most of that time and runs slower under COOL (103.3 vs 95.8 ms). COOL is faster on the event frequency map (1.85 vs 2.08 ms, 1.13x), and the hum checks are equal (0.83 vs 0.80 ms). The outputs are identical: the same 169 boxes, detector scores equal, hum peaks within 0.0001 Hz and no verdict changes. COOL ships 5.1.0-dev and PyPI has no 5.1 wheel, so this comparison cannot separate the COOL build from the 5.0 to 5.1 change. On the live `c8g.medium` (1 vCPU), `POST /api/detect` runs the detector through `cv.dnn` on COOL in about 403 ms per frame (402.5 to 404.6 ms over 5 calls on 2026-10-26).
 
 ## 7. Agent loop
 
@@ -302,7 +312,7 @@ Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-d
 - FRED is one sensor (Prophesee EVK4) in daytime outdoor scenes; other sensors, night and rain are untested.
 - FRED RGB labels lag the events by about 3 frames; we score windows ending at the label time.
 - The agent evaluation covers 8 scenarios; approvals in it are simulated.
-- COOL is slower than pip OpenCV on resize and the DNN forward pass on this host, and its connected-component labels differ slightly (§6).
+- COOL is slower than pip OpenCV on resize and the DNN forward pass on this host, so the end-to-end confirm step is 7% slower under COOL with identical outputs; its connected-component labels differ slightly in the single-op test (§6).
 
 ## 11. Responsible use
 

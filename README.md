@@ -58,7 +58,8 @@ All on FRED, a public dataset of real event + RGB drone recordings (Apache-2.0).
 | False detections removed / true detections lost | **8,790 of 34,796** / 26 of 70,794 | same |
 | Hum score AUC, drone box vs random patch / vs busiest non-drone patch (100 ms) | **0.917** / 0.758 (26,911 drone boxes) | `results/engine/summary.json` |
 | Blade-pass medians over all test boxes vs PropPulse published medians | DJI Mini 2 **320 vs 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
-| COOL vs pip OpenCV 5, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
+| COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster under COOL; DNN forward 0.92x | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
+| End-to-end confirm step, COOL vs pip, same Graviton4 host, 210 FRED windows | p50 **106.2 vs 98.9 ms** per window (COOL 7% slower, the detector dominates); frequency map **1.13x** faster under COOL; outputs identical | `bench/results/E2E.md`, `e2e-*.json` |
 | Graviton4 vs x86 (pip OpenCV 5, 4 vCPUs, 4 threads) | faster on 5 of 6 ops, up to **2.07x** (cvtColor) | `bench/results/pip-graviton4-c8g.xlarge.json`, `pip-x86-c7i.xlarge.json` |
 | Agent, 8 pre-registered FRED scenarios | Bedrock **4 / 8, 0 false alerts**, the same score as the hand-tuned rule planner with **30% fewer tool calls** (12.25 vs 17.38 per episode); critical alerts wait for a human (simulated in the evaluation) | `results/agent/eval_v3/results.json` |
 
@@ -96,7 +97,7 @@ The train-chosen hum rule (score ≥ 3) keeps recall at 0.544 and removes a quar
 
 ![Benchmarks](docs/figures/fig_e_bench.png)
 
-COOL wins on the three ops that carry the confirm step: blur, `dft` and connected components. Resize and the DNN forward pass are slower under COOL on this host. pip OpenCV on Graviton4 beats x86 on 5 of 6 ops; x86 wins the DNN forward pass.
+COOL speeds up the event engine's own operations: blur 1.89x, `dft` 1.54x and connected components 1.17x. Resize and the DNN forward pass are slower on this COOL build. End to end on 210 real FRED windows (detector, a hum check on each of its 169 boxes, and the full-sensor frequency map), COOL 5.1.0-dev takes p50 106.2 ms per window and pip 5.0.0.93 takes 98.9 ms: the confirm step is 7% slower under COOL. The detector forward pass is most of that time and runs slower under COOL (103.3 vs 95.8 ms). COOL is faster on the event frequency map (1.85 vs 2.08 ms, 1.13x), and the hum checks are equal (0.83 vs 0.80 ms). The outputs are identical: the same 169 boxes, detector scores equal, hum peaks within 0.0001 Hz and no verdict changes. COOL ships 5.1.0-dev and PyPI has no 5.1 wheel, so this comparison cannot separate the COOL build from the 5.0 to 5.1 change. pip OpenCV on Graviton4 beats x86 on 5 of 6 ops; x86 wins the DNN forward pass.
 
 ### (f) The agent, and one trace as a timeline
 
@@ -351,6 +352,8 @@ The live endpoint reports the same build on every `GET /version`. COOL vs pip on
 | DNN forward (YOLOX-S) | 234.1 | 254.8 | 0.92x | 0.95x |
 
 Output differences, COOL vs pip (`bench/results/diff-cool-vs-pip-c8g.xlarge.json`): at most 1 grey level for resize, cvtColor and blur; `dft` maximum difference 9e-8 of the output range; DNN 3.3e-5.
+
+**End to end** ([`bench/results/E2E.md`](bench/results/E2E.md)): on 210 real FRED windows (detector, a hum check on each of its 169 boxes, and the full-sensor frequency map), COOL 5.1.0-dev takes p50 106.2 ms per window and pip 5.0.0.93 takes 98.9 ms: the confirm step is 7% slower under COOL. The detector forward pass is most of that time and runs slower under COOL (103.3 vs 95.8 ms). COOL is faster on the event frequency map (1.85 vs 2.08 ms, 1.13x), and the hum checks are equal (0.83 vs 0.80 ms). The outputs are identical: the same 169 boxes, detector scores equal, hum peaks within 0.0001 Hz and no verdict changes. COOL ships 5.1.0-dev and PyPI has no 5.1 wheel, so this comparison cannot separate the COOL build from the 5.0 to 5.1 change. On the live `c8g.medium` (1 vCPU), `POST /api/detect` runs the detector through `cv.dnn` on COOL in about 403 ms per frame (402.5 to 404.6 ms over 5 calls on 2026-10-26).
 
 </details>
 
