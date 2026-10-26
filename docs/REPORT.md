@@ -2,7 +2,7 @@
 
 **Frequency Vision confirms drones by their propeller hum.** An OpenCV 5 DNN detector proposes boxes in normal 30 fps video. Inside each box, the event-camera stream is checked for a blade-pass frequency peak, at hundreds of Hz, that a 30 fps camera cannot see. An agent decides what to look at next: a longer or tighter event window, a whole-frame frequency map, a track, an alert, or a question to a human. Everything runs on AWS Graviton4 with COOL, the cloud-optimized OpenCV 5 build.
 
-A bird and a drone can look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not. The DJI Mini 2 hums at a median 320 Hz over all its FRED test boxes. Some drones hum weakly: the DarwinFPV Cineape20 in our hard-case clip gives no clean peak (§9).
+A bird and a drone can look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not. The DJI Mini 2 in our demo clip hums at a median 316 Hz; its median over all 1,951 FRED test boxes is 320 Hz. Some drones hum weakly: the DarwinFPV Cineape20 in our hard-case clip gives no clean peak (§9).
 
 - Live endpoint: https://100-27-6-111.sslip.io (no login), served by COOL on Graviton4
 - Architecture: `docs/architecture.svg` · Agent loop: `docs/agent_workflow.svg`
@@ -12,7 +12,8 @@ Headline results, all on the real FRED dataset (event + RGB drone recordings, Ap
 | Result | Number | Denominator | Source |
 |---|---|---|---|
 | **The hum check removes a quarter of the detector's false alarms at the same recall** | false alarms per minute **412.7 → 308.4** (−25%); recall 0.544 → 0.544; precision 0.670 → 0.731 | full FRED test split: 47 sequences, 151,768 frames, 84.3 min; 8,790 of 34,796 false detections removed, 26 of 70,794 true ones lost | `results/detector/results_test.json` |
-| **Hum frequencies match an outside source** | DJI Mini 2 **320 Hz** vs 316 Hz; DJI Tello **564 Hz** vs 539 Hz; DJI Mini 3 **245 Hz** vs 223 Hz (PropPulse/DENSE-CUAS, same dataset) | 1,951 / 11,068 / 2,405 test boxes | `results/engine/per_model_youden.json` |
+| High-precision setting: RGB + hum score ≥ 98 | precision **0.815** at recall 0.146; 51.2 false alarms per minute | same test split | same |
+| **Hum frequencies match an outside source** | DJI Mini 2 **320 Hz** (median over all test boxes) vs 316 Hz; DJI Tello **564 Hz** vs 539 Hz; DJI Mini 3 **245 Hz** vs 223 Hz (PropPulse/DENSE-CUAS, same dataset) | 1,951 / 11,068 / 2,405 test boxes | `results/engine/per_model_youden.json` |
 | Hum score, drone box vs random background (AUC) | **0.917** | 26,911 drone boxes vs 26,909 background patches, 47 test sequences, 100 ms windows | `results/engine/summary.json` |
 | Hum score, drone box vs busiest non-drone patch (AUC) | **0.758** | 26,911 vs 26,909 | same |
 | COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster; DNN forward 0.92x | c8g.xlarge, 6 ops | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
@@ -22,7 +23,7 @@ Headline results, all on the real FRED dataset (event + RGB drone recordings, Ap
 
 ## 1. Problem
 
-Small drones near airports, prisons and stadiums are a daily safety problem. The FAA receives "more than 100" reports of drones near airports each month (FAA UAS sightings page, https://www.faa.gov/uas/resources/public_records/uas_sightings_report). In December 2018 drone sightings closed Gatwick's runway for about 33 hours, cancelling about 1,000 flights and affecting about 140,000 passengers (Wikipedia, "Gatwick Airport drone incident"). <!-- src: _runs/2026-10-26_build/L5_research/REPORT.md; Gatwick primaries not opened -->
+Small drones near airports, prisons and stadiums are a daily safety problem. The FAA receives "more than 100" reports of drones near airports each month (FAA UAS sightings page, https://www.faa.gov/uas/resources/public_records/uas_sightings_report). In December 2018 reported drone sightings closed Gatwick's runway for about 33 hours, cancelling about 1,000 flights and affecting about 140,000 passengers (Wikipedia, "Gatwick Airport drone incident").
 
 A camera-based guard has to answer one question fast: is that dot a drone or a bird, a bag, a leaf? At 30 fps a far drone is a few pixels, and its spinning propellers are invisible because the blade-pass rate (hundreds of Hz) is far above the 15 Hz the camera can represent. An event camera reports each pixel's brightness change with microsecond timing, so the propeller's rhythm is directly in the data. Frequency Vision uses that rhythm as a physical signature that a bird does not have.
 
@@ -100,7 +101,7 @@ Region us-east-1, every resource tagged `Project=opencv26`. Code: `deploy/README
 | Benchmarks | `c8g.xlarge` and `c7i.xlarge`, launched per run and terminated | Measurement only |
 | Spend guard | AWS Budget `opencv26-alert` with an email alert | Cost control |
 
-`python deploy/aws.py cool` launches or updates the COOL endpoint through SSM Run Command, and `python deploy/aws.py cool-bench` runs the same-host benchmark. On 2026-10-26 the live `/version` returned OpenCV `5.1.0-dev`, `cv2_file` `/opt/cool/python_3.12/site-packages/cv2/__init__.py`, `cool: true`, `aarch64` and `Custom HAL: YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))`; the drone-box spectrum call took 1.63 ms on the server. <!-- src: _runs/2026-10-26_build/L7_docs/live_spectrum_check_cool.json -->
+`python deploy/aws.py cool` launches or updates the COOL endpoint through SSM Run Command, and `python deploy/aws.py cool-bench` runs the same-host benchmark. On 2026-10-26 the live `/version` returned OpenCV `5.1.0-dev`, `cv2_file` `/opt/cool/python_3.12/site-packages/cv2/__init__.py`, `cool: true`, `aarch64` and `Custom HAL: YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))`; the drone-box spectrum call took 1.63 ms on the server.
 
 ## 6. COOL on Graviton
 
@@ -303,7 +304,7 @@ Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-d
 | Hot pixels | Constant-rate pixels look like a hum | 2 false alerts in an early agent run (`results/agent/dev_runs/eval_v1/results.json`) | Sensor defects; fixed with a hot-pixel mask (0 false alerts since) |
 | Known-frequency clips off the stated rate | Peak at a multiple, or wrong | ON-minus-OFF: 3 of 12 EEPPR clips (chain top wrong; velcro front 4.7 times, dot 4.0 times) | Non-sinusoidal motion with strong harmonics |
 
-<!-- src for the 2,806 false-peak breakdown: _runs/2026-10-26_build/L1_engine/REPORT.md -->
+
 
 ## 10. Limitations
 

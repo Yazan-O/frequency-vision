@@ -31,7 +31,7 @@ Frequency Vision's own code is Apache-2.0 (`LICENSE`). It uses the following.
 | onnxslim | 0.1.98 | MIT | Export |
 | opencv-python-headless | 4.12.0.88 | Apache-2.0 | Data preparation in the training environment |
 
-Detector weights: fine-tuned from Ultralytics YOLOv8n pretrained weights (AGPL-3.0, Ultralytics). The trained ONNX file is not committed to this repository. Anyone redistributing it follows the Ultralytics licence terms.
+Detector weights: trained with Ultralytics (AGPL-3.0), fine-tuned from its YOLOv8n pretrained weights. The trained weights are not distributed: they are not in this repository or the Docker image, and our own instances copy the ONNX file from a private S3 bucket at deploy time. Anyone who redistributes them follows the Ultralytics licence terms.
 
 ## Vendored code
 
