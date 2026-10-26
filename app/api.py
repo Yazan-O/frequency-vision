@@ -142,3 +142,33 @@ def results():
     fa = DATA / "false_alarms.json"
     return {"false_alarms": json.loads(fa.read_text()) if fa.exists() else {"status": "pending"}, "bench": bench(),
             "live_spectrum": freq is not None}
+
+
+@router.get("/summary")
+def summary():
+    cs = list(clips().values())
+    hero = next((c for c in cs if c.get("hum") and c["hum"].get("median_hz")), cs[0])
+    tr = json.loads((STATIC / "traces.json").read_text())["episodes"]
+    return {
+        "name": "Strobe",
+        "claim": "Strobe confirms drones by their propeller hum: an RGB detector proposes boxes, the event-camera stream inside each box is checked for a blade-pass frequency peak (150-1000 Hz) that a 30 fps camera cannot see, and an agent chooses the next look, alert, or human approval. OpenCV 5 on AWS Graviton.",
+        "measured_hum": {"clip": hero["id"], "fred_sequence": hero["seq"], "drone": hero["classes"], **(hero["hum"] or {}),
+                         "method": "median strobe.freq.box_spectrum peak over the FRED-box event windows that pass the hum test",
+                         "source": "app/static/data/clips.json, written by tools/export_web.py"},
+        "hum_test": {"band_hz": list(freq.BAND) if freq else [150.0, 1000.0], "clear_score": getattr(freq, "CLEAR_SNR", None),
+                     "ambiguous_score": getattr(freq, "AMBIGUOUS_SNR", None), "local_hz": getattr(freq, "LOCAL_HZ", None),
+                     "fs_hz": getattr(freq, "FS", None), "min_events": getattr(freq, "MIN_EVENTS", None), "module": "strobe.freq",
+                     "score": "peak power / median power within +-local_hz of the peak; thresholds chosen by lane L1 on FRED training data"},
+        "math": ["30 fps sampling sees at most 15 Hz; a blade-pass f aliases to |f - k*30|", "event counts binned at 1/fs_hz s see up to fs_hz/2",
+                 "X(f) = sum_t x(t) w(t) exp(-i 2 pi f t), x = ON minus OFF events in the box, w = Hanning, computed with cv.dft",
+                 "frequency resolution 1/T for a window of T s: the agent's request_window lengthens T when a spectrum is ambiguous",
+                 "OpenCV 5 calls: calcHist, dft, connectedComponentsWithStats, dnn"],
+        "clips": [{"id": c["id"], "title": c["title"], "fred_sequence": c["seq"], "drone": c["drone"], "provenance": c["provenance"], "source": c["source"]} for c in cs],
+        "agent_episodes": [{"episode": e["episode"], "planner": e["planner"], "model": e["model"], "score_vs_fred": e["score"], "trace_file": e["file"]} for e in tr],
+        "approval": "POST /api/approve records approve or reject on the server only; nothing external is triggered. The approval inside recorded runs came from an automatic operator stand-in marked SIMULATED.",
+        "results": results(),
+        "slides": ["the hum: 30 fps RGB vs event rhythm and the measured Hz", "x-y-time event cloud on the drone", "live event spectrum, drone box vs no-drone box",
+                   "agent steps with human approval", "false alarms and Graviton4 vs x86 OpenCV 5 benchmark"],
+        "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
+                   "approve": "POST /api/approve {episode, step, decision}", "results": "/api/results", "health": "/health", "version": "/version"},
+    }

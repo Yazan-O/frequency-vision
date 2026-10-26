@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.api import STATIC, router
+from app.api import STATIC, router, summary
 
 app = FastAPI()
 STARTED = time.time()
@@ -17,7 +17,12 @@ app.mount("/static", StaticFiles(directory=STATIC.parent), name="static")
 
 @app.get("/", include_in_schema=False)
 def index():
-    return FileResponse(STATIC.parent / "index.html", headers={"Cache-Control": "no-cache"})
+    return FileResponse(STATIC.parent / "deck.html", headers={"Cache-Control": "no-cache"})
+
+
+@app.get("/about", include_in_schema=False)
+def about():
+    return summary()
 
 
 @app.get("/health")
