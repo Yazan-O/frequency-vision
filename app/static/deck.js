@@ -87,6 +87,16 @@ function slide1() {
     const clip = cur.clip, img = cur.imgs[cur.i], fr = clip.frames[cur.i];
     if (!(img && img.complete && img.naturalWidth)) return;
     ctx.drawImage(img, 0, 0, cv.width, cv.height);
+    const dt = cur.det;
+    if (dt && dt.clip === clip.id && dt.frame === cur.i) {
+      const sx = cv.width / clip.width, sy = cv.height / clip.height;
+      ctx.lineWidth = 6; ctx.strokeStyle = HUM;
+      dt.boxes.forEach(([x0, y0, x1, y1], j) => {
+        ctx.strokeRect(x0 * sx, y0 * sy, (x1 - x0) * sx, (y1 - y0) * sy);
+        txt(ctx, `drone ${dt.scores[j].toFixed(2)}`, x0 * sx, Math.max(30, y0 * sy - 12), { font: "600 28px 'JetBrains Mono', monospace", color: HUM, back: "#000" });
+      });
+      return;
+    }
     const db = fr.boxes.find((b) => b.kind === "drone");
     if (!db) return;
     const sx = cv.width / clip.width, sy = cv.height / clip.height, [x0, y0, x1, y1] = db.box;
@@ -107,8 +117,22 @@ function slide1() {
   requestAnimationFrame(tick);
   const btn = $("play");
   const sync = () => { btn.setAttribute("aria-label", playing ? "Pause video" : "Play video"); btn.replaceChildren(icon(playing ? "i-pause" : "i-play")); };
-  btn.addEventListener("click", () => { playing = !playing; sync(); draw(); });
+  btn.addEventListener("click", () => { playing = !playing; cur.det = null; $("detout").textContent = ""; sync(); draw(); });
   sync();
+  const dbtn = $("det"), out = $("detout");
+  dbtn.addEventListener("click", async () => {
+    playing = false; sync();
+    const clip = cur.clip, frame = cur.i;
+    dbtn.disabled = true; out.textContent = "running OpenCV dnn on the server…";
+    try {
+      const r = await fetch("/api/detect", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clip.id, frame }) });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || r.status);
+      cur.det = d;
+      out.textContent = `${d.boxes.length} box${d.boxes.length === 1 ? "" : "es"} · ${d.latency_ms} ms · OpenCV ${d.opencv}${d.cool ? " (COOL)" : ""} dnn`;
+    } catch (e) { cur.det = null; out.textContent = `detector unavailable: ${e.message}`; }
+    dbtn.disabled = false; draw();
+  });
   const scope = $("scope");
   let t0 = performance.now();
   const sweep = (now) => {
@@ -127,7 +151,7 @@ function applySlide1() {
   $("hzbig").setAttribute("aria-label", HZ ? `${model}, FRED sequence ${c.seq}: median ${h.median_hz} Hz; ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test; one blade pass every ${(1000 / HZ).toFixed(1)} ms` : `${model}, FRED sequence ${c.seq}: ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test`);
   $("sr-hum").textContent = HZ ? `Measured blade-pass frequency inside the drone box, FRED sequence ${c.seq} (${model}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with box_spectrum.`
     : `Hard case, FRED sequence ${c.seq} (${model}): ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms pass the hum test, so no blade-pass frequency is claimed.`;
-  cur.imgs = loadFrames(c); cur.i = Math.floor(c.frames.length / 2);
+  cur.imgs = loadFrames(c); cur.i = Math.floor(c.frames.length / 2); cur.det = null; $("detout").textContent = "";
   if (!c._bound) { c._bound = true; cur.imgs.forEach((im) => im.addEventListener("load", () => { if (cur.clip === c) cur.drawVideo(); })); }
   cur.drawVideo();
 }

@@ -96,7 +96,9 @@
       <figure class="card">
         <div class="tag"><svg class="ic"><use href="#i-camera"/></svg><span>30 fps camera</span><button class="prov" data-prov aria-label="Data source"><svg class="ic"><use href="#i-data"/></svg></button></div>
         <div class="media"><canvas id="rgb" width="1280" height="720" aria-label="RGB video of the drone at 30 frames per second, with a zoomed view of the drone in which the blades are a blur"></canvas>
-        <button id="play" class="iconbtn onmedia" aria-label="Pause video"><svg class="ic"><use href="#i-pause"/></svg></button></div>
+        <button id="play" class="iconbtn onmedia" aria-label="Pause video"><svg class="ic"><use href="#i-pause"/></svg></button>
+        <button id="det" class="onmedia detb" aria-label="Run the drone detector live on the server on this frame">run detector live</button>
+        <output id="detout" class="detout" aria-live="polite"></output></div>
       </figure>
       <figure class="card">
         <div class="tag"><svg class="ic"><use href="#i-events"/></svg><span>event camera</span></div>
