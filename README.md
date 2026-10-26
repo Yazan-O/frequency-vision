@@ -1,26 +1,214 @@
-# Hertz
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/figures/logo-dark.svg">
+    <img src="docs/figures/logo.svg" alt="Frequency Vision: an eye whose iris is a ring of spectrum bars, a sine wave, the word Vision and a 321 Hz readout" width="520">
+  </picture>
+</p>
 
-Hertz confirms drones by their propeller hum: an OpenCV 5 detector proposes a box, the event camera inside that box shows a 200 to 750 Hz blade-pass peak that 30 fps video cannot see, and an agent on AWS Graviton4 with COOL decides the next look, the alert, or the question to a human. The name is the unit of what it listens for: a propeller hums at hundreds of hertz.
+<h3 align="center">A bird and a drone look the same at 30 fps. Only one of them hums at 321 Hz.</h3>
 
-**On the full FRED test split, the hum check cuts the detector's false alarms by 25% at the same recall, and the hum frequencies it measures match an independent published estimate (DJI Mini 2: 320 Hz vs 316 Hz).**
+<p align="center">
+  <b>On 84.3 minutes of real FRED test video, checking each detector box for a propeller hum cuts false alarms by 25% at the same recall</b><br>
+  (412.7 → 308.4 false alarms per minute, recall 0.544 → 0.544, 47 test sequences, every frame).
+</p>
 
-- Live endpoint: https://100-27-6-111.sslip.io (no login), served by COOL on Graviton4
-- Technical report: [`docs/REPORT.md`](docs/REPORT.md)
-- Architecture: [`docs/architecture.svg`](docs/architecture.svg) · Agent loop: [`docs/agent_workflow.svg`](docs/agent_workflow.svg)
-- Video: [X] <!-- fill with the video URL -->
+<p align="center">
+  <a href="https://github.com/opencv/opencv/tree/5.x"><img alt="OpenCV 5" src="https://img.shields.io/badge/OpenCV-5.x-5C3EE8?logo=opencv&logoColor=white"></a>
+  <a href="#cool-proof"><img alt="AWS Graviton4 + COOL" src="https://img.shields.io/badge/AWS-Graviton4%20%2B%20COOL-FF9900?logo=amazonwebservices&logoColor=white"></a>
+  <a href="https://100-27-6-111.sslip.io"><img alt="live demo" src="https://img.shields.io/badge/live%20demo-online-FF5A1F"></a>
+  <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
+  <a href=".github/workflows/ci.yml"><img alt="tests passing" src="https://img.shields.io/badge/tests-39%20passed-brightgreen"></a>
+</p>
 
-![Architecture](docs/architecture.png)
+<p align="center">
+  <a href="https://100-27-6-111.sslip.io"><b>▶&nbsp;&nbsp;Try it live: 100-27-6-111.sslip.io</b></a>&nbsp;&nbsp;·&nbsp;&nbsp;no login, served by COOL on Graviton4
+</p>
 
-## Try it in 90 seconds
+<table>
+<tr>
+<td width="33%"><a href="docs/figures/fig_a_alias.png"><img src="docs/figures/fig_a_alias.png" alt="321 Hz sampled at 30 fps looks like 9 Hz"></a><br><sub><b>The problem.</b> 321 Hz at 30 fps shows up as 9 Hz.</sub></td>
+<td width="33%"><a href="docs/figures/fig_b_events.png"><img src="docs/figures/fig_b_events.png" alt="FRED event cloud and spectrum, drone box vs non-drone patch"></a><br><sub><b>The signal.</b> Events in the drone box peak at 314.3 Hz (score 3,013). The busiest non-drone patch scores 8.</sub></td>
+<td width="33%"><a href="docs/figures/fig_d_detector.png"><img src="docs/figures/fig_d_detector.png" alt="False alarms per minute vs recall for every filter rule"></a><br><sub><b>The result.</b> −25% false alarms, 26 of 70,794 true detections lost.</sub></td>
+</tr>
+</table>
 
-1. Open https://100-27-6-111.sslip.io. Each slide has a one-line headline. Slide 1 plays a real FRED clip of a DJI Mini 2: at 30 fps the propellers are a blur.
-2. Use the clip picker to switch drones: DJI Mini 2 (321 Hz), DJI Tello EDU (565 Hz), DarwinFPV Cineape20 (a hard case with no clean peak) and DJI Mini 3 (211 Hz, next to a flickering patch).
-3. Slide 2 shows the drone as raw events in x, y and time, with a no-drone patch beside it.
-4. Slide 3 computes the spectrum live on the server with COOL's OpenCV 5 (`calcHist` + `dft`). The drone box peaks at the blade-pass frequency; the no-drone box stays flat.
-5. Slide 5 replays the agent on a real FRED sequence, including the human approval step. Press approve or reject; the server records your answer and triggers nothing external.
-6. Slide 6 shows the measured results.
+<p align="center">
+  <a href="https://100-27-6-111.sslip.io"><img src="docs/figures/live_demo.gif" alt="Recording of the live page: clip picker, the hum, events in 3D, the spectrum, the maths and the agent" width="880"></a><br>
+  <sub>The live page, recorded 2026-10-26: real FRED clips, the hum at 30 fps vs events, the x-y-t event cloud, the spectrum computed on the server, the maths and the agent loop.</sub>
+</p>
 
-The same check from a terminal:
+## What it does
+
+Frequency Vision confirms drones by their propeller hum, in three moves:
+
+1. **Look.** An OpenCV 5 DNN detector (YOLOv8n, `cv.dnn.ENGINE_NEW`) proposes boxes in normal 30 fps video.
+2. **Listen.** Inside each box, the event-camera stream becomes a 10 kHz time series. `cv.calcHist` + `cv.dft` find the blade-pass peak at 150 to 1,000 Hz, which a 30 fps camera cannot represent.
+3. **Decide.** An agent on Amazon Bedrock chooses the next measurement (a longer window, a tighter box, a whole-frame frequency map, a track), raises an alert, or asks a human. A deterministic guard enforces the evidence and approval rules.
+
+Everything runs in OpenCV 5. The live endpoint is COOL, the cloud-optimized OpenCV 5 build, on an AWS Graviton4 `c8g.medium`.
+
+## Results at a glance
+
+All on FRED, a public dataset of real event + RGB drone recordings (Apache-2.0). Thresholds were chosen on train sequences and reported on the 47 test sequences.
+
+| Result | Number | Source |
+|---|---|---|
+| False alarms per minute, RGB detector vs RGB + hum (151,768 frames, 84.3 min) | **412.7 → 308.4 (−25%)**, recall 0.544 → 0.544, precision 0.670 → 0.731, mAP@0.5 0.505 → 0.516 | `results/detector/results_test.json` |
+| False detections removed / true detections lost | **8,790 of 34,796** / 26 of 70,794 | same |
+| Hum score AUC, drone box vs random patch / vs busiest non-drone patch (100 ms) | **0.917** / 0.758 (26,911 drone boxes) | `results/engine/summary.json` |
+| Blade-pass medians vs PropPulse published medians | DJI Mini 2 **320 vs 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
+| COOL vs pip OpenCV 5, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
+| Graviton4 vs x86 (pip OpenCV 5, 4 vCPUs, 4 threads) | faster on 5 of 6 ops, up to **2.07x** (cvtColor) | `bench/results/pip-graviton4-c8g.xlarge.json`, `pip-x86-c7i.xlarge.json` |
+| Agent, 8 pre-registered FRED scenarios | Bedrock **4 / 8, 0 false alerts**, 12.25 mean tool calls vs 17.38 for the rule planner (also 4 / 8) | `results/agent/eval_v3/results.json` |
+
+Every number, with its denominator, is in [`docs/REPORT.md`](docs/REPORT.md).
+
+## Figures
+
+Every figure is drawn by [`docs/figures/make_figures.py`](docs/figures/make_figures.py) from committed result files and the committed FRED event slices in `app/data/`. Run `python docs/figures/make_figures.py` to redraw them.
+
+### (a) Why 30 fps cannot see the hum
+
+![Aliasing](docs/figures/fig_a_alias.png)
+
+The Mini 2 in FRED sequence 210 hums at a median 320.7 Hz (`app/static/data/clips.json`). Sampled at 30 fps, it folds to |320.7 − 11 × 30| = 9.3 Hz. The middle panel is the real ON-minus-OFF event signal in that drone's box: about 32 blade-pass cycles pass between 3 RGB frames.
+
+### (b) The event cloud and its spectrum
+
+![Events](docs/figures/fig_b_events.png)
+
+40 ms of FRED events in x, y and time. The drone box (3,037 events) is a periodic stripe. The busiest same-size patch without a drone (1,004 events) is scatter. Over 100 ms, `freq.box_spectrum` gives the drone box a 314.3 Hz peak with score 3,013 and the patch a score of 8. The live `/api/spectrum` call in [Try it from a terminal](#try-it-from-a-terminal) returns the same 314.3 Hz.
+
+### (c) Hum per drone model vs an independent estimate
+
+![Per model](docs/figures/fig_c_models.png)
+
+Four of five medians land within 10% of PropPulse / DENSE-CUAS on the same dataset. The fast DarwinFPV Cineape20 has weak, scattered peaks, and its wide spread shows it.
+
+### (d) False alarms vs recall for every rule
+
+![Detector](docs/figures/fig_d_detector.png)
+
+The train-chosen hum rule (score ≥ 3) keeps recall at 0.544 and removes a quarter of false alarms. Stricter thresholds trade recall for precision along a clean curve, up to precision 0.815 at score ≥ 98.
+
+### (e) COOL vs pip, Graviton4 vs x86
+
+![Benchmarks](docs/figures/fig_e_bench.png)
+
+COOL wins on the three ops that carry the confirm step: blur, `dft` and connected components. Resize and the DNN forward pass are slower under COOL on this host. pip OpenCV on Graviton4 beats x86 on 5 of 6 ops; x86 wins the DNN forward pass.
+
+### (f) The agent, and one trace as a timeline
+
+![Agent](docs/figures/fig_f_agent.png)
+
+### (g) Known-frequency validation
+
+![Known frequency](docs/figures/fig_g_known_freq.png)
+
+On 12 EEPPR clips with stated frequencies (1 s window), 7 land within 3% (LED 2,000 Hz, screen 240 Hz, four patterns at 3 to 21 Hz, hand spinner 4.58 vs 4.7 Hz). Three read exactly twice the stated rate because each cycle makes two edges. The two chain clips are non-sinusoidal and read wrong.
+
+### (h) Hum score ROC
+
+<img src="docs/figures/fig_h_roc.png" alt="ROC of the hum score, drone vs random and drone vs busiest patch" width="460">
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph DATA["FRED dataset, Apache-2.0"]
+        RGB["RGB frames<br/>30 fps"]
+        EV["Event stream<br/>1280x720, µs timing"]
+    end
+    subgraph AWS["AWS us-east-1"]
+        subgraph COOL["COOL on Graviton4 c8g.medium, always on"]
+            CAD["Caddy<br/>HTTPS"] --> API["FastAPI + uvicorn"]
+            API --> ENG["OpenCV 5 engine<br/>COOL 5.1.0-dev, KleidiCV HAL"]
+            ENG --> DET["cv.dnn ENGINE_NEW<br/>YOLOv8n proposer"]
+            ENG --> FRQ["calcHist + dft<br/>hum score per box"]
+            ENG --> MAP["dft DFT_ROWS<br/>per-pixel frequency map"]
+            ENG --> TRK["KalmanFilter track"]
+            AGT["Agent runner + guard"] -->|"MCP tools"| ENG
+        end
+        BR["Amazon Bedrock<br/>Claude Sonnet 4.6, Converse API"]
+        S3[("S3<br/>traces, bundles, bench")]
+        CW["CloudWatch<br/>logs, metrics, auto-recover"]
+    end
+    RGB --> DET
+    EV --> FRQ
+    EV --> MAP
+    AGT <-->|"tool calls as JSON"| BR
+    AGT --> S3
+    API --> CW
+    USER["Browser<br/>live page + approve / reject"] <-->|"HTTPS"| CAD
+```
+
+The drawn version with the benchmark-only instances is [`docs/architecture.svg`](docs/architecture.svg).
+
+## The agent loop
+
+```mermaid
+flowchart TD
+    P["Perceive<br/>JSON results of the last tool calls"] --> D{"Planner decides<br/>Bedrock, rule or fixed"}
+    D --> G["Guard checks the call<br/>schema, causal clock, window 20 to 1,000 ms,<br/>budgets: 24 steps, 30 s compute, 3 alerts"]
+    G -->|"rejected, reason returned"| P
+    G -->|"ok"| T["Run tool in OpenCV 5<br/>detect_frame · box_spectrum · request_window<br/>frequency_map · track"]
+    T --> V{"Verdict"}
+    V -->|"ambiguous"| W["request_window<br/>longer or tighter window"]
+    V -->|"none"| F["new frame or frequency_map"]
+    V -->|"hum"| K["track, re-check at the new position"]
+    W --> P
+    F --> P
+    K --> H{"Critical?"}
+    H -->|"yes"| A["ask_human<br/>approval on the same box within 0.5 s"]
+    A -->|"approved"| R["raise_alert<br/>needs a hum on the same box within 1.5 s"]
+    A -->|"rejected"| P
+    H -->|"no"| R
+    R --> E["finish"]
+```
+
+After **ambiguous**, the Bedrock planner asked for a new window 6 of 9 times. After **none**, it moved to a new frame (6) or searched the whole frame with `frequency_map` (3). After **hum**, it tracked (3) or asked a human (1). Source: `results/agent/eval_v3/results.json`, `summary.bedrock.next_tool_after_verdict`. The drawn version is [`docs/agent_workflow.svg`](docs/agent_workflow.svg).
+
+## One real trace: `bedrock_late_142`
+
+FRED test sequence 142: a DJI Tello EDU enters at 26.0 s and the DNN never proposes it. Source: [`results/agent/eval_v3/traces/bedrock_late_142.jsonl`](results/agent/eval_v3/traces/bedrock_late_142.jsonl).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as Bedrock planner
+    participant G as Guard
+    participant CV as OpenCV 5 tools
+    participant H as Operator (SIMULATED in eval)
+    B->>G: detect_frame t=24.0
+    G->>CV: ok
+    CV-->>B: 0 boxes
+    B->>G: detect_frame t=25.5
+    G->>CV: ok
+    CV-->>B: 0 boxes
+    B->>G: detect_frame t=27.0
+    G->>CV: ok
+    CV-->>B: 0 boxes
+    B->>G: frequency_map 26.7 to 27.0 s, whole frame
+    G->>CV: ok
+    CV-->>B: 1 hum spot [116,461,136,479], 545 Hz
+    B->>G: box_spectrum on the spot, 200 ms
+    G->>CV: ok
+    CV-->>B: hum 542.6 Hz, score 495, 9,281 events
+    B->>G: track 27.0 to 27.5 s
+    CV-->>B: held, moved 42 px
+    B->>G: box_spectrum at the tracked box
+    CV-->>B: hum 508.9 Hz, score 835
+    B->>G: track 27.5 to 28.0 s
+    CV-->>B: held, moved 63 px
+    B->>H: ask_human, critical
+    H-->>B: approved (automatic stand-in, SIMULATED)
+    B->>G: raise_alert critical [225,448,245,466]
+    G-->>B: ok, evidence and approval present
+    B->>G: finish drone_alerted
+    Note over B,CV: 11 steps, 18.0 s wall time, 0 guard rejections
+```
+
+## Try it from a terminal
 
 ```bash
 curl -s https://100-27-6-111.sslip.io/version
@@ -29,73 +217,224 @@ curl -s -X POST https://100-27-6-111.sslip.io/api/spectrum \
   -d '{"clip":"clear_210","box":[226,324,320,376],"t":20.5,"window_ms":100}'
 ```
 
-`/version` reports `"cool": true`, OpenCV `5.1.0-dev` loaded from `/opt/cool`, `aarch64` and the KleidiCV 0.7.0 HAL. The spectrum call returns the Mini 2's peak: on 2026-10-26 it gave 314.3 Hz with a score of 3,013 from 3,781 events, computed in 1.6 ms on the Graviton4 `c8g.medium`.
+`/version` reports `"cool": true`, OpenCV `5.1.0-dev` loaded from `/opt/cool`, `aarch64` and the KleidiCV 0.7.0 HAL. On 2026-10-26 the spectrum call returned the Mini 2's peak at 314.3 Hz with a score of 3,013 from 3,781 events, computed in 1.6 ms on the server.
 
-Clip frequencies: `app/static/data/clips.json`.
+## Technical deep dive
 
-## Measured on FRED (real event + RGB drone recordings)
+<details>
+<summary><b>The maths: Nyquist, the DFT, the score, and why the agent asks for longer windows</b></summary>
 
-| Result | Number | Source |
+**Nyquist and aliasing.** A camera sampling at $f_s$ represents frequencies up to $f_s/2$. At 30 fps that is 15 Hz. A blade-pass tone at $f$ folds to
+
+$$f_{\text{alias}} = \left| f - k f_s \right|,\quad k = \operatorname{round}(f/f_s)$$
+
+For the Mini 2, $|320.7 - 11 \cdot 30| = 9.3$ Hz. The hum is gone before any model sees it. An event camera timestamps each brightness change in microseconds, so the engine bins events at $f_s = 10$ kHz and the Nyquist limit becomes 5 kHz.
+
+**The signal.** Inside a box, over a window of length $T$, ON and OFF events are binned separately with `cv.calcHist`:
+
+$$x[n] = N_{\text{ON}}[n] - N_{\text{OFF}}[n],\quad n = 0, \dots, N-1,\quad N = T f_s$$
+
+ON-minus-OFF follows the blade edge better than raw counts (drone vs busiest AUC 0.689 vs 0.643 at 100 ms). An Otsu activity mask plus `connectedComponentsWithStats` keeps only the propeller blob (0.753), and a ±6 Hz notch at multiples of 100 Hz removes mains flicker (0.758).
+
+**The DFT.** The mean is removed, a Hann window $w[n]$ applied (`cv.createHanningWindow`), the series zero-padded to an optimal length $M \ge 4N$ (`cv.getOptimalDFTSize`, `cv.copyMakeBorder`), and transformed with `cv.dft`:
+
+$$X[k] = \sum_{n=0}^{N-1} w[n]\,x[n]\,e^{-2\pi i k n / M},\qquad P[k] = |X[k]|^2,\qquad f_k = k f_s / M$$
+
+**The score.** The peak is judged against its own neighbourhood, so a box that is busy everywhere does not win by volume:
+
+$$\text{score} = \max_{f_k \in [150,\,1000]\ \text{Hz}} \frac{P[k]}{\operatorname{median}_{|f_j - f_k| \le 100\ \text{Hz}} P[j]}$$
+
+`cv.minMaxLoc` picks the peak and a parabolic fit on $\log P$ refines it between bins. Thresholds were chosen on FRED train: **score ≥ 98** is a clear hum (5% false alarms on the busiest patch in train), **score ≥ 7.9** is ambiguous (best Youden index).
+
+**Resolution, and why the agent asks for longer windows.** Zero-padding interpolates the spectrum but does not sharpen it. The true resolution is
+
+$$\Delta f = \frac{1}{T}$$
+
+| Window $T$ | $\Delta f$ | Drone vs random AUC | Drone vs busiest AUC |
+|---|---|---|---|
+| 20 ms | 50 Hz | 0.758 | 0.702 |
+| 50 ms | 20 Hz | 0.861 | 0.753 |
+| **100 ms** | **10 Hz** | **0.917** | **0.758** |
+| 200 ms | 5 Hz | 0.938 | 0.727 |
+
+A steady tone's peak power grows with $T^2$ while broadband noise power grows with $T$, so a longer window lifts a real hum out of the floor. An ambiguous verdict therefore earns a `request_window` with a longer $T$; the trace records `resolution_hz: 5.0` at 200 ms. A drone that changes throttle smears across bins in long windows, so the guard caps $T$ at 1,000 ms and the agent can tighten the box instead. AUCs: `results/engine/summary.json`.
+
+</details>
+
+<details>
+<summary><b>OpenCV 5 API used, and what is new in 5.x</b></summary>
+
+| Stage | OpenCV 5 API | New in 5.x? |
 |---|---|---|
-| False alarms per minute, RGB detector alone vs RGB + hum (47 test sequences, every frame, 84.3 min) | **412.7 vs 308.4 (−25%)**, recall 0.544 vs 0.544, precision 0.670 vs 0.731, mAP@0.5 0.505 vs 0.516 | `results/detector/results_test.json` |
-| False detections removed by the hum check | 8,790 of 34,796, while losing 26 of 70,794 true detections | same |
-| Blade-pass medians, Hertz vs published PropPulse estimate | DJI Mini 2 320 vs 316 Hz, DJI Tello 564 vs 539 Hz, DJI Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
-| Hum score, drone box vs random background, AUC (26,911 vs 26,909 test boxes) | 0.917 | `results/engine/summary.json` |
-| COOL vs pip OpenCV 5, same Graviton4 host, 4 threads | GaussianBlur 1.89x, dft 1.54x, connectedComponentsWithStats 1.17x faster; resize 0.87x, DNN 0.92x | `bench/results/cool-graviton4-c8g.xlarge.json`, `bench/results/pip-graviton4-c8g.xlarge-samehost.json` |
-| Agent, 8 pre-registered FRED scenarios, clean run | Bedrock planner 4 of 8, 0 false alerts, 30% fewer steps than the rule planner (also 4 of 8); fixed schedule 3 of 8. Approval is SIMULATED in the evaluation | `results/agent/eval_v3/results.json` |
+| Load detector | `cv.dnn.readNetFromONNX(np.uint8 buffer, cv.dnn.ENGINE_NEW)` | **Yes**: `ENGINE_NEW` graph engine |
+| Detector pre/post | `cv.dnn.Image2BlobParams`, `blobFromImageWithParams`, `DNN_PMODE_LETTERBOX`, `cv.dnn.NMSBoxes` | No |
+| Events to time series | `cv.calcHist` (1-D, relative int32 µs) | No |
+| Polarity signal | `cv.subtract`, `cv.mean` | No |
+| Spectrum | `cv.createHanningWindow`, `cv.getOptimalDFTSize`, `cv.copyMakeBorder`, `cv.dft(DFT_COMPLEX_OUTPUT)`, `cv.split`, `cv.magnitude` | No |
+| Peak pick | `cv.minMaxLoc` on the floor-whitened spectrum | No |
+| Per-pixel frequency map | `cv.reduce(REDUCE_AVG)`, `cv.repeat`, `cv.multiply`, `cv.dft(DFT_ROWS)`, up to 20,000 pixels in one call | No |
+| Activity mask in a box | `cv.calcHist` (2-D), `cv.GaussianBlur`, `cv.normalize`, `cv.threshold(THRESH_OTSU)`, `cv.connectedComponentsWithStats` | No |
+| Event blobs (fallback proposer) | `cv.GaussianBlur`, `cv.threshold`, `cv.morphologyEx(MORPH_CLOSE)`, `cv.connectedComponentsWithStats`, `cv.dilate` | No |
+| Tracking | `cv.KalmanFilter`, `cv.moments` | No |
+| 64-bit integer Mats | `CV_64S` | **Yes**: 64-bit integer types |
+| Proof of build | `cv.getBuildInformation`, `cv.__file__` | KleidiCV HAL is **new in 5.x** |
 
-Every number, its denominator and its source file are in [`docs/REPORT.md`](docs/REPORT.md).
+The ONNX detector in OpenCV 5.0.0 matches PyTorch to 4.6e-4 on box coordinates and 7.5e-7 on scores (`results/detector/check_strobe_drone_yolov8n_960x544.json`). The full table with reasons is in [`docs/REPORT.md`](docs/REPORT.md) §4.
 
-## Run locally
+</details>
 
-Python 3.12 or 3.13. All dependencies are pinned; locally Hertz uses pip OpenCV 5.0.0.
+<details>
+<summary><b>An OpenCV 5.0.0 defect we found: int64 arrays silently truncated</b></summary>
+
+The Python binding turns a NumPy `int64` array into 32-bit values by keeping the low 32 bits, with no error. Event timestamps are microseconds since an epoch and do not fit in 32 bits.
 
 ```bash
-pip install -r requirements-dev.txt
-uvicorn app.main:app --port 8080
-```
-
-Open http://127.0.0.1:8080. The demo clips ship in `app/data` and `app/static/data`, so no download is needed.
-
-## Tests
-
-```bash
-pytest -q
 python tools/int64_repro.py
 ```
 
-`pytest -q` runs 39 tests: the hum engine, the endpoint, the agent guard, and injected planner and tool failures. CI runs them on x86 and Arm (`.github/workflows/ci.yml`). `tools/int64_repro.py` reproduces the OpenCV 5.0.0 int64 truncation we found ([`docs/UPSTREAM_ISSUE_int64.md`](docs/UPSTREAM_ISSUE_int64.md)).
+Output on Windows 11, OpenCV 5.0.0, NumPy 2.4.6, Python 3.13.5:
 
-The agent runs offline with the deterministic planners:
+```
+input int64         [1700000000000001, 1700000000000050, 5000000000000]
+cv.minMaxLoc        (404635649.0, 658067456.0) expected (5000000000000.0, 1700000000000050.0)
+cv.add CV_64S       [809271298, 809271396, 1316134912] expected [3400000000000002, 3400000000000100, 10000000000000]
+float64 workaround correct: True | int64 input silently wrong: True
+```
+
+The engine subtracts each window's start and passes relative int32 microseconds (`hertz/freq.py`, `_rel_us`). Upstream issue draft: [`docs/UPSTREAM_ISSUE_int64.md`](docs/UPSTREAM_ISSUE_int64.md). Other 5.0.0 traps handled: `readNetFromONNX(bytes)` crashes (pass a `np.uint8` buffer), and the default `findHomography` is not USAC (pass `cv.USAC_MAGSAC`).
+
+</details>
+
+<details id="cool-proof">
+<summary><b>COOL proof: the workload runs on COOL's OpenCV</b></summary>
+
+Captured through SSM on the benchmark instance (`bench/results/cool-proof-c8g.xlarge.json`):
+
+```
+opencv          5.1.0-dev
+cv2_file        /opt/cool/python_3.12/site-packages/cv2/__init__.py
+machine         aarch64
+instance_type   c8g.xlarge
+ami_id          ami-033e481a24f94c8cb
+product_codes   aajkmdd4qo3r7yhqg61a7aah9
+baseline        SVE NEON FP16 NEON_DOTPROD NEON_FP16 NEON_BF16
+custom_hal      YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))
+```
+
+The live endpoint reports the same build on every `GET /version`. COOL vs pip on the same `c8g.xlarge`, p50 ms:
+
+| Op | pip, 4 threads | COOL, 4 threads | COOL speed, 4 threads | COOL speed, 1 thread |
+|---|---|---|---|---|
+| GaussianBlur | 0.388 | 0.205 | **1.89x** | **2.33x** |
+| dft 512×512 | 1.450 | 0.940 | **1.54x** | **1.16x** |
+| connectedComponentsWithStats | 0.895 | 0.765 | **1.17x** | 1.02x |
+| cvtColor | 0.080 | 0.081 | 0.99x | 1.01x |
+| resize | 0.393 | 0.450 | 0.87x | 0.83x |
+| DNN forward (YOLOX-S) | 234.1 | 254.8 | 0.92x | 0.95x |
+
+Output differences, COOL vs pip (`bench/results/diff-cool-vs-pip-c8g.xlarge.json`): at most 1 grey level for resize, cvtColor and blur; `dft` maximum difference 9e-8 of the output range; DNN 3.3e-5.
+
+</details>
+
+<details>
+<summary><b>Reproduce</b></summary>
+
+Python 3.12 or 3.13, pinned dependencies, pip OpenCV 5.0.0 locally. The demo clips ship in `app/data` and `app/static/data`, so the app needs no download.
+
+```bash
+pip install -r requirements-dev.txt
+pytest -q
+python tools/int64_repro.py
+uvicorn app.main:app --port 8080
+python docs/figures/make_figures.py
+```
+
+Hum engine on FRED (Linux, builds the Prophesee ECF decoder):
+
+```bash
+sh hertz/ecf/build.sh
+python hertz/fred_claim.py <fred_test_root> <out_test> <seq ids...>
+python hertz/fred_claim.py <fred_train_root> <out_train> <seq ids...>
+python hertz/fred_claim_report.py <out_test> <out_train> summary.json table.csv
+python hertz/known_freq.py <eeppr_dir> <monitoring_40_50hz.hdf5> known_freq.json
+```
+
+Detector and full pipeline:
+
+```bash
+sh eval/get_fred_eval_data.sh
+python eval/run_eval.py --onnx <model.onnx> --trainval_root <dir> --test_root <dir> --out <dir>
+python eval/event_only.py --trainval_root <dir> --test_root <dir> --out <dir>
+```
+
+Agent (`--planners rule,fixed` runs offline; the Bedrock planner needs Bedrock access in us-east-1):
 
 ```bash
 pip install -r hertz/agent/requirements.txt
+python eval/export_fred_slices.py ...
 python eval/agent_eval.py --planners rule,fixed --out runs/agent
 ```
 
-This needs the FRED event slices from `eval/export_fred_slices.py`. The Bedrock planner (`--planners bedrock`) needs AWS credentials with Bedrock access in us-east-1.
+AWS: `python deploy/aws.py cool` launches or updates the COOL endpoint, and `python deploy/aws.py cool-bench` runs the same-host benchmark. See [`deploy/README.md`](deploy/README.md) and [`docs/REPORT.md`](docs/REPORT.md) §12.
 
-## Deploy on AWS
+</details>
 
-See [`deploy/README.md`](deploy/README.md). The live endpoint runs on COOL:
+<details>
+<summary><b>Repo map</b></summary>
 
-```bash
-python deploy/aws.py cool
-python deploy/aws.py cool-bench
-```
+| Path | What |
+|---|---|
+| `hertz/freq.py` | The hum engine: `box_spectrum`, `frequency_map`, activity mask, score |
+| `hertz/detect.py` | OpenCV 5 DNN detector (`ENGINE_NEW`, letterbox, NMS) |
+| `hertz/agent/` | Tools, guard, planners (Bedrock, rule, fixed), runner, MCP server, fault injection |
+| `hertz/ecf/` | Prophesee ECF decoder build (Apache-2.0) for FRED events |
+| `hertz/fred_claim*.py`, `hertz/known_freq.py` | Engine evaluation on FRED and on known-frequency clips |
+| `app/` | FastAPI app, live page (`app/static`), demo event slices (`app/data`) |
+| `eval/` | Detector training and export, full-pipeline eval, event-only baseline, agent eval, frozen scenarios |
+| `bench/` | Benchmark runner, comparisons, price lookup; results in `bench/results/` |
+| `deploy/` | AWS launch and update (`aws.py`), instance provisioning |
+| `results/` | Every reported number: `detector/`, `engine/`, `agent/eval_v3/` with traces |
+| `tests/` | 39 tests: engine, endpoint, guard, injected planner and tool faults |
+| `tools/` | `int64_repro.py`, web export |
+| `docs/` | Report, Devpost text, diagrams, figures and their script |
 
-`cool` launches or updates a Graviton4 instance from the COOL Marketplace AMI and serves the app from COOL's OpenCV. `cool-bench` measures COOL against pip OpenCV 5 on the same instance.
+</details>
 
-## Reproduce the evaluation and benchmarks
+<details>
+<summary><b>Scope and responsible use</b></summary>
 
-- Hum engine on FRED: `hertz/fred_claim.py`, then `hertz/fred_claim_report.py` (report §8.2, results in `results/engine/`).
-- Known-frequency check: `hertz/known_freq.py` (EEPPR is GPL-3.0 and is downloaded at run time, never committed).
-- Detector training and full pipeline: `eval/train_detector/`, `eval/check_onnx.py`, `eval/get_fred_eval_data.sh`, `eval/run_eval.py`, `eval/event_only.py` (report §8.3, results in `results/detector/`).
-- Agent: `eval/export_fred_slices.py`, `eval/agent_eval.py`, scenarios fixed in `eval/scenarios.json` (report §8.4, results and traces in `results/agent/`).
-- Benchmarks: `python deploy/aws.py cool-bench`, `python deploy/aws.py bench ...`, `bench/table.py`, `bench/compare.py`; results in `bench/results/` (report §6).
+**What it is built for.** Frequency Vision confirms detector proposals. The hum is a confirmation signal, not a finder: event-only detection on FRED reaches AP 0.066, so the RGB detector proposes and the agent gathers more windows on ambiguous boxes. The tested setting is FRED: one Prophesee EVK4 sensor in daytime outdoor scenes. Distant drones (box ≤ 30 px) give too few events for a peak, so the agent holds them as unconfirmed (0 of 2 distant scenarios for every planner). Fast FPV drones such as the Cineape20 give weak, scattered peaks. Mains-driven lights flicker at multiples of 100 Hz; the notch and the whole-frame frequency map handle them, since one frequency filling the whole scene means flicker. The agent evaluation covers 8 fixed scenarios with SIMULATED approval; on the live page a person presses approve or reject.
 
-Full commands are in report §12.
+**Responsible use.**
+- Detection and alerting only. It never intercepts, jams or follows a person.
+- A critical alert needs a human's approval, enforced by the guard in code, not by the prompt.
+- The confirm step uses event timing inside a box, not appearance. The planner receives JSON numbers (boxes, Hz, scores), never images.
+- All data shown is the public FRED dataset. Simulated approval is labelled SIMULATED in every trace.
+- Thresholds are set on train data with an explicit false-alarm target, because a false drone alarm can halt a runway.
+- The endpoint has no SSH, HTTPS only, a least-privilege IAM role, guard-capped agent budgets, and an approval endpoint with input validation and a size cap.
 
-## Licence
+Failure cases with numbers: [`docs/REPORT.md`](docs/REPORT.md) §9.
 
-Apache-2.0, see [`LICENSE`](LICENSE). Third-party code, models and data and their licences are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). FRED is used under Apache-2.0 per its Hugging Face card. The detector was trained with Ultralytics (AGPL-3.0) in a separate training environment; Hertz's runtime uses only OpenCV.
+</details>
+
+<details>
+<summary><b>Prior work and how this differs</b></summary>
+
+- **PropPulse / DENSE-CUAS** (github.com/cweekiat/dense-cuas): detects the blade-pass rhythm in FRED events, event-only, with RGB as a rival. Frequency Vision uses RGB to propose and events to confirm inside the box, adds an agent that chooses the next look, and runs in OpenCV 5 on Arm. Its per-model medians are our independent check (figure c).
+- **DDHF** (arXiv:2603.08386): event-only drone detection on a GPU; reports failures on edge-on rotors and on wheel spokes and fences. Frequency Vision runs on CPU and pairs the event check with an RGB proposal and a whole-frame frequency map that separates a rotor from scene-wide periodic texture.
+- **Stewart et al., event-based virtual fence** (doi:10.1145/3546790.3546800): detects drones crossing a virtual boundary from the propeller signature. Frequency Vision confirms detector proposals box by box and lets an agent choose the next measurement.
+
+We found no prior system that combines an RGB proposer, an event-frequency confirmation inside the box, and an agent that chooses the next measurement.
+
+</details>
+
+<details>
+<summary><b>Licences</b></summary>
+
+Apache-2.0, see [`LICENSE`](LICENSE). Third-party code, models and data are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). FRED is used under Apache-2.0 per its Hugging Face card. EEPPR is GPL-3.0 and is downloaded at run time, never committed. The Prophesee sample recording is CC0. The detector was trained with Ultralytics (AGPL-3.0) in a separate training environment; the runtime uses only OpenCV.
+
+</details>
+
+---
+
+Technical report: [`docs/REPORT.md`](docs/REPORT.md) · Architecture: [`docs/architecture.svg`](docs/architecture.svg) · Agent loop: [`docs/agent_workflow.svg`](docs/agent_workflow.svg) · The code package is `hertz`.
