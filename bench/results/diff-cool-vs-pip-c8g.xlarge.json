@@ -1,0 +1,60 @@
+{
+ "base": "D:\\PHD_Take2\\opencv2026\\repo\\bench\\results\\pip-graviton4-c8g.xlarge-samehost.npz",
+ "other": "D:\\PHD_Take2\\opencv2026\\repo\\bench\\results\\cool-graviton4-c8g.xlarge.npz",
+ "rows": [
+  {
+   "op": "GaussianBlur",
+   "status": "differs",
+   "max_abs": 1.0,
+   "mean_abs": 4.593460648148148e-05,
+   "max_rel_to_range": 0.004149377593360996,
+   "frac_elems_diff": 4.593460648148148e-05,
+   "frac_elems_diff_gt1": 0.0
+  },
+  {
+   "op": "connectedComponentsWithStats",
+   "status": "differs",
+   "max_abs": 342977.0,
+   "mean_abs": 325.0976303317536,
+   "max_rel_to_range": 0.7250011097699922,
+   "frac_elems_diff": 0.0018957345971563982,
+   "frac_elems_diff_gt1": 0.0009478672985781991
+  },
+  {
+   "op": "cvtColor",
+   "status": "differs",
+   "max_abs": 1.0,
+   "mean_abs": 4.774305555555556e-05,
+   "max_rel_to_range": 0.004081632653061225,
+   "frac_elems_diff": 4.774305555555556e-05,
+   "frac_elems_diff_gt1": 0.0
+  },
+  {
+   "op": "dft",
+   "status": "differs",
+   "max_abs": 2.03466796875,
+   "mean_abs": 0.8105669665490041,
+   "max_rel_to_range": 8.748586964008932e-08,
+   "frac_elems_diff": 0.9992141723632812,
+   "frac_elems_diff_gt1": 0.3693656921386719
+  },
+  {
+   "op": "dnn_forward",
+   "status": "differs",
+   "max_abs": 3.2782554626464844e-05,
+   "mean_abs": 6.132438847673019e-08,
+   "max_rel_to_range": 8.805332791309066e-06,
+   "frac_elems_diff": 0.9031904761904762,
+   "frac_elems_diff_gt1": 0.0
+  },
+  {
+   "op": "resize",
+   "status": "differs",
+   "max_abs": 1.0,
+   "mean_abs": 3.824869791666667e-05,
+   "max_rel_to_range": 0.004032258064516129,
+   "frac_elems_diff": 3.824869791666667e-05,
+   "frac_elems_diff_gt1": 0.0
+  }
+ ]
+}

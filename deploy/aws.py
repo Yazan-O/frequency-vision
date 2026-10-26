@@ -261,7 +261,7 @@ def main():
     elif a.cmd == "cool-bench":
         i = find(a.name) or sys.exit(f"no instance {a.name}: run `cool` first")
         t = i["InstanceType"]
-        bench(a.name, f"cool-graviton4-{t}", a.out, py="/opt/cool/venvs/python_3.12/bin/python", terminate=False)
+        bench(a.name, f"cool-graviton4-{t}", a.out, py="/usr/local/bin/coolpy", terminate=False)
         bench(a.name, f"pip-graviton4-{t}-samehost", a.out, terminate=not a.keep)
         subprocess.run([sys.executable, str(REPO / "bench" / "compare.py"), os.path.join(a.out, f"pip-graviton4-{t}-samehost.npz"),
                         os.path.join(a.out, f"cool-graviton4-{t}.npz"), "--out", os.path.join(a.out, f"diff-cool-vs-pip-{t}.json")], check=True)

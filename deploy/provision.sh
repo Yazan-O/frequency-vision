@@ -28,8 +28,14 @@ if [ "$MODE" = cool ]; then
   [ -x $COOL/bin/python ] || { echo "COOL venv $COOL missing: not a COOL AMI"; exit 3; }
   grep -viE '^(opencv|numpy)' requirements.txt > /tmp/req-cool.txt
   $COOL/bin/pip install -q -r /tmp/req-cool.txt
-  PY=$COOL/bin/python
-  ENVX="Environment=LD_LIBRARY_PATH=/opt/cool/cpp_sdk/lib:/opt/ffmpeg/lib"
+  cat > /usr/local/bin/coolpy <<'W'
+#!/bin/bash
+export PYTHONPATH=/opt/cool/python_3.12/site-packages${PYTHONPATH:+:$PYTHONPATH}
+export LD_LIBRARY_PATH=/opt/cool/cpp_sdk/lib:/opt/ffmpeg/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+exec /opt/cool/venvs/python_3.12/bin/python "$@"
+W
+  chmod +x /usr/local/bin/coolpy
+  PY=/usr/local/bin/coolpy
 fi
 $PY -c "import cv2,platform;print('cv2',cv2.__version__,cv2.__file__,platform.machine())"
 

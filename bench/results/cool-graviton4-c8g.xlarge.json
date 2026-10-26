@@ -1,0 +1,160 @@
+{
+ "meta": {
+  "label": "cool-graviton4-c8g.xlarge",
+  "host": "ip-172-31-30-90",
+  "instance_type": "c8g.xlarge",
+  "instance_id": "i-0ac2fc8911b040475",
+  "ami": "ami-033e481a24f94c8cb",
+  "machine": "aarch64",
+  "cpu_count": 4,
+  "python": "3.12.3",
+  "opencv": "5.1.0-dev",
+  "cv2_file": "/opt/cool/python_3.12/site-packages/cv2/__init__.py",
+  "numpy": "2.5.1",
+  "build": [
+   "Baseline:                    SVE NEON FP16 NEON_DOTPROD NEON_FP16 NEON_BF16",
+   "Dispatched code generation:",
+   "Parallel framework:            pthreads",
+   "Custom HAL:                  YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))"
+  ],
+  "image": "https://raw.githubusercontent.com/opencv/opencv/4.x/samples/data/fruits.jpg",
+  "size": "1280x720",
+  "onnx": "/var/tmp/bench/model.onnx",
+  "price_usd_hour": 0.15952,
+  "time_utc": "2026-10-26T17:30:31Z"
+ },
+ "rows": [
+  {
+   "op": "resize",
+   "threads": 1,
+   "p50_ms": 1.2598850000244965,
+   "p95_ms": 1.2767884000453478,
+   "mean_ms": 1.2609980800013432,
+   "throughput_per_s": 792.7176925753481,
+   "cpu_pct": 24.77242789297963,
+   "iters": 200,
+   "usd_per_million": 0.05589771935978245
+  },
+  {
+   "op": "cvtColor",
+   "threads": 1,
+   "p50_ms": 0.27422100001217586,
+   "p95_ms": 0.286601249956675,
+   "mean_ms": 0.27695669999900474,
+   "throughput_per_s": 3606.3557403802242,
+   "cpu_pct": 22.53972337737637,
+   "iters": 200,
+   "usd_per_million": 0.012286949569328765
+  },
+  {
+   "op": "GaussianBlur",
+   "threads": 1,
+   "p50_ms": 0.6355740000003607,
+   "p95_ms": 0.6490071500309114,
+   "mean_ms": 0.6356491849982149,
+   "throughput_per_s": 1572.2853265486517,
+   "cpu_pct": 25.54963655641559,
+   "iters": 200,
+   "usd_per_million": 0.028182614416671515
+  },
+  {
+   "op": "dft",
+   "threads": 1,
+   "p50_ms": 1.2343380000174875,
+   "p95_ms": 1.2510071499775677,
+   "mean_ms": 1.2354831550013046,
+   "throughput_per_s": 809.0921045611543,
+   "cpu_pct": 25.284128267536083,
+   "iters": 200,
+   "usd_per_million": 0.05476646090267453
+  },
+  {
+   "op": "connectedComponentsWithStats",
+   "threads": 1,
+   "p50_ms": 2.9229919999806953,
+   "p95_ms": 2.934100750044877,
+   "mean_ms": 2.923217719998945,
+   "throughput_per_s": 342.02339652769604,
+   "cpu_pct": 24.79669624825797,
+   "iters": 200,
+   "usd_per_million": 0.1295557893435601
+  },
+  {
+   "op": "dnn_forward",
+   "threads": 1,
+   "p50_ms": 800.6365450000317,
+   "p95_ms": 802.7385814000098,
+   "mean_ms": 801.0057621500039,
+   "throughput_per_s": 1.248426503599818,
+   "cpu_pct": 24.999740734586357,
+   "iters": 20,
+   "usd_per_million": 35.4935680901845
+  },
+  {
+   "op": "resize",
+   "threads": 4,
+   "p50_ms": 0.4498650000073212,
+   "p95_ms": 0.46212829997784866,
+   "mean_ms": 0.45092697500024315,
+   "throughput_per_s": 2216.2681930967906,
+   "cpu_pct": 99.73206868935546,
+   "iters": 200,
+   "usd_per_million": 0.01999356903155083
+  },
+  {
+   "op": "cvtColor",
+   "threads": 4,
+   "p50_ms": 0.08053099998051039,
+   "p95_ms": 0.08630139996341768,
+   "mean_ms": 0.08102046000004748,
+   "throughput_per_s": 12316.43128942983,
+   "cpu_pct": 92.37323467072483,
+   "iters": 200,
+   "usd_per_million": 0.003597723242213811
+  },
+  {
+   "op": "GaussianBlur",
+   "threads": 4,
+   "p50_ms": 0.20501549997220536,
+   "p95_ms": 0.23218425002653476,
+   "mean_ms": 0.206068939999966,
+   "throughput_per_s": 4845.993714014126,
+   "cpu_pct": 96.91987428028263,
+   "iters": 200,
+   "usd_per_million": 0.009143864752231896
+  },
+  {
+   "op": "dft",
+   "threads": 4,
+   "p50_ms": 0.9403434999910587,
+   "p95_ms": 0.9540330500271921,
+   "mean_ms": 0.9398376750010584,
+   "throughput_per_s": 1063.2074432815543,
+   "cpu_pct": 58.47640938048585,
+   "iters": 200,
+   "usd_per_million": 0.041676825525549695
+  },
+  {
+   "op": "connectedComponentsWithStats",
+   "threads": 4,
+   "p50_ms": 0.7647799999972449,
+   "p95_ms": 0.7761794500339647,
+   "mean_ms": 0.7648259450004957,
+   "throughput_per_s": 1306.8536810876694,
+   "cpu_pct": 99.64759318293478,
+   "iters": 200,
+   "usd_per_million": 0.03390671178599874
+  },
+  {
+   "op": "dnn_forward",
+   "threads": 4,
+   "p50_ms": 254.80352700000708,
+   "p95_ms": 255.84257309996872,
+   "mean_ms": 254.99356105,
+   "throughput_per_s": 3.92162774022204,
+   "cpu_pct": 99.8054259886509,
+   "iters": 20,
+   "usd_per_million": 11.29916301250007
+  }
+ ]
+}
