@@ -1,9 +1,13 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Hertz drone hum</title>
-<meta name="description" content="Hertz confirms drones by their propeller hum: OpenCV 5 on AWS Graviton, real FRED event and RGB recordings. Machine-readable summary at /api/summary.">
+<title>Frequency Vision</title>
+<meta name="description" content="Frequency Vision confirms drones by their propeller hum: OpenCV 5 on AWS Graviton, real FRED event and RGB recordings. Machine-readable summary at /api/summary.">
+<meta name="application-name" content="Frequency Vision">
 <link rel="alternate" type="application/json" href="/api/summary" title="Machine-readable summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/deck.css">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
+<link rel="preload" href="/data/clips.json" as="fetch" crossorigin>
+<link rel="preload" href="/data/traces.json" as="fetch" crossorigin>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -12,6 +16,8 @@
     <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.6"/></symbol>
     <symbol id="i-events" viewBox="0 0 24 24"><path d="M3 20h18M3 20V4"/><circle cx="7" cy="15" r="1.1"/><circle cx="9" cy="9" r="1.1"/><circle cx="12" cy="14" r="1.1"/><circle cx="14" cy="7" r="1.1"/><circle cx="17" cy="12" r="1.1"/><circle cx="19.5" cy="6" r="1.1"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M3 18l2-1 2 1 2-2 2 1 1-12 1 12 2-1 2 1 2-1 2 1"/></symbol>
+    <symbol id="i-sine" viewBox="0 0 24 24"><path d="M2 12c2.5-7 5-7 7.5 0s5 7 7.5 0 4-6 5-4"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12c3-5 6.5-7 10-7s7 2 10 7c-3 5-6.5 7-10 7s-7-2-10-7z"/><circle cx="12" cy="12" r="3.4"/></symbol>
     <symbol id="i-agent" viewBox="0 0 24 24"><circle cx="6" cy="12" r="3"/><path d="M9 12h3l4-5h4M12 12l4 5h4M18 5l2 2-2 2M18 15l2 2-2 2"/></symbol>
     <symbol id="i-human" viewBox="0 0 24 24"><circle cx="10" cy="7" r="3.2"/><path d="M3 21c0-4.4 3.1-7 7-7 1.6 0 3 .4 4.2 1.2"/><path d="M14.5 18.5l2.3 2.3 4.7-4.8"/></symbol>
     <symbol id="i-alert" viewBox="0 0 24 24"><path d="M6 17v-6a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21.5h4"/></symbol>
@@ -27,6 +33,7 @@
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></symbol>
     <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 4.5v15M17 4.5v15"/></symbol>
+    <symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 3v5h5"/></symbol>
     <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></symbol>
     <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></symbol>
     <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 3h10v5a5 5 0 0 1-10 0zM7 5H3v2a4 4 0 0 0 4 4M17 5h4v2a4 4 0 0 1-4 4M12 13v4M9 17h6v4H9z"/></symbol>
@@ -36,6 +43,9 @@
     <symbol id="i-net" viewBox="0 0 24 24"><circle cx="4" cy="6" r="1.8"/><circle cx="4" cy="18" r="1.8"/><circle cx="12" cy="4" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="20" r="1.8"/><circle cx="20" cy="12" r="1.8"/><path d="M5.6 6.8l4.8 4.4M5.6 6l4.6-1.6M5.6 17.2l4.8-4.4M5.6 18l4.6 1.6M13.8 4.6l4.6 6.4M13.8 12h4.4M13.8 19.4l4.6-6.4"/></symbol>
     <symbol id="i-drone" viewBox="0 0 24 24"><circle cx="5" cy="5" r="3"/><circle cx="19" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="M7.2 7.2l2.8 2.8M16.8 7.2L14 10M7.2 16.8L10 14M16.8 16.8L14 14"/><rect x="9.5" y="9.5" width="5" height="5"/></symbol>
     <symbol id="i-nodrone" viewBox="0 0 24 24"><circle cx="5" cy="5" r="3"/><circle cx="19" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M2 22L22 2"/></symbol>
+    <symbol id="i-late" viewBox="0 0 24 24"><circle cx="5" cy="17" r="2.4"/><circle cx="13" cy="17" r="2.4"/><path d="M7 15.5l2-2 2 2M9 13.5v-2"/><circle cx="18" cy="7" r="4"/><path d="M18 5v2l1.4 1"/></symbol>
+    <symbol id="i-rule" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"/><path d="M17 10l2 2-2 2"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12"/><circle cx="9.5" cy="12.5" r="1.3"/><circle cx="14.5" cy="12.5" r="1.3"/><path d="M12 7V4M10 16h4M2 12h3M19 12h3"/></symbol>
     <g id="prop">
       <circle r="27" class="disc"/>
       <path class="arc" d="M0 -24A24 24 0 0 1 20.8 12"/>
@@ -57,7 +67,13 @@
 </svg>
 
 <header class="bar">
-  <a class="mark" href="#s1" data-go="0" aria-label="Hertz, first slide"><svg class="mini" viewBox="30 30 180 180" aria-hidden="true"><use href="#drone-art"/></svg><span>Hertz</span></a>
+  <a class="mark" href="#s1" data-go="0" aria-label="Frequency Vision, first slide">
+    <canvas class="eye" id="eye" width="96" height="64" aria-hidden="true"></canvas>
+    <canvas class="sine" id="sine" width="64" height="40" aria-hidden="true"></canvas>
+    <span class="word" aria-hidden="true">Vision</span>
+    <span class="hzc num" id="hzc" aria-live="polite"></span>
+    <span class="sr-only">Frequency Vision</span>
+  </a>
   <nav class="steps" aria-label="Slides">
     <button data-go="0" aria-label="Slide 1: the hum"><svg class="ic"><use href="#i-wave"/></svg></button>
     <button data-go="1" aria-label="Slide 2: events in 3D"><svg class="ic"><use href="#i-cube"/></svg></button>
@@ -67,28 +83,24 @@
     <button data-go="5" aria-label="Slide 6: results"><svg class="ic"><use href="#i-trophy"/></svg></button>
   </nav>
 </header>
-<div class="clipbar" role="group" aria-label="Drone clip" id="clipbar"><svg class="ic lead" aria-hidden="true"><use href="#i-drone"/></svg></div>
+<div class="clipbar" role="group" aria-label="Drone clip" id="clipbar"></div>
 
 <main class="deck" id="deck">
   <section class="slide s1" id="s1" aria-label="The hum">
     <div class="hook">
       <svg class="hero-drone" viewBox="20 20 200 200" role="img" aria-label="Quadcopter drone with spinning propellers"><use href="#drone-art"/></svg>
-      <div class="hook-text">
-        <h1 id="headline">A 30 fps camera cannot see the propellers.</h1>
-        <div class="hz"><svg class="ic big"><use href="#i-wave"/></svg><span id="hz" class="num">&nbsp;</span><span class="hzsub" id="hzsub"></span></div>
-      </div>
+      <h1 id="headline"></h1>
+      <div class="hz" id="hzbig"><svg class="ic big" aria-hidden="true"><use href="#i-wave"/></svg><span id="hz" class="num"></span></div>
     </div>
     <div class="pair">
       <figure class="card">
         <div class="tag"><svg class="ic"><use href="#i-camera"/></svg><span>30 fps camera</span><button class="prov" data-prov aria-label="Data source"><svg class="ic"><use href="#i-data"/></svg></button></div>
-        <div class="media"><canvas id="rgb" width="1280" height="720" aria-label="RGB video of the drone at 30 frames per second, with a zoomed view of the drone"></canvas>
+        <div class="media"><canvas id="rgb" width="1280" height="720" aria-label="RGB video of the drone at 30 frames per second, with a zoomed view of the drone in which the blades are a blur"></canvas>
         <button id="play" class="iconbtn onmedia" aria-label="Pause video"><svg class="ic"><use href="#i-pause"/></svg></button></div>
-        <figcaption class="cap">the box is the drone; the inset zooms in: the blades are a blur</figcaption>
       </figure>
       <figure class="card">
-        <div class="tag"><svg class="ic"><use href="#i-events"/></svg><span>event camera, same box</span><span class="tick num" id="period"></span></div>
-        <div class="media"><canvas id="scope" width="1280" height="720" aria-label="Brighter minus darker event counts on the drone, one bar per half millisecond, with ticks at the measured blade-pass period"></canvas></div>
-        <figcaption class="cap" id="cap-scope"></figcaption>
+        <div class="tag"><svg class="ic"><use href="#i-events"/></svg><span>event camera</span></div>
+        <div class="media"><canvas id="scope" width="1280" height="720" aria-label="Brighter minus darker event counts on the drone, one bar per half millisecond over 40 ms, with orange ticks at the measured blade-pass period"></canvas></div>
       </figure>
     </div>
   </section>
@@ -96,27 +108,23 @@
   <section class="slide s2" id="s2" aria-label="Events in 3D">
     <h2 class="hl" id="hl2"></h2>
     <div class="tools">
-      <div class="legend" aria-hidden="true"><span><i class="dot on"></i>pixel got brighter</span><span><i class="dot off"></i>pixel got darker</span><span><i class="dot hum"></i>one blade pass</span></div>
+      <div class="legend" aria-hidden="true"><span><i class="dot on"></i>brighter</span><span><i class="dot off"></i>darker</span><span><i class="dot hum"></i>blade pass</span></div>
       <div class="seg" role="group" aria-label="Point cloud view">
-        <button class="btn on" data-view="crop" aria-pressed="true"><svg class="ic"><use href="#i-drone"/></svg>drone box</button>
-        <button class="btn" data-view="duo" aria-pressed="false"><svg class="ic"><use href="#i-duo"/></svg>vs no drone</button>
-        <button class="btn" data-view="scene" aria-pressed="false"><svg class="ic"><use href="#i-frame"/></svg>whole frame</button>
+        <button class="btn on" data-view="crop" aria-pressed="true" aria-label="Drone box"><svg class="ic"><use href="#i-drone"/></svg><span>drone</span></button>
+        <button class="btn" data-view="duo" aria-pressed="false" aria-label="Drone box versus a same-size patch with no drone"><svg class="ic"><use href="#i-duo"/></svg><span>vs empty</span></button>
+        <button class="btn" data-view="scene" aria-pressed="false" aria-label="Whole frame"><svg class="ic"><use href="#i-frame"/></svg><span>frame</span></button>
       </div>
-      <button class="prov" data-prov aria-label="Data source"><svg class="ic"><use href="#i-data"/></svg></button>
     </div>
     <div class="stage">
       <div id="cloud" role="img" aria-label="Orbitable 3D point cloud of camera events in x, y and time on the drone"></div>
       <div class="labels" id="cloudlabels" aria-hidden="true"></div>
     </div>
-    <div class="strip">
-      <canvas id="bars" width="1600" height="160" aria-label="Brighter minus darker event counts over time inside the drone box"></canvas>
-      <div class="cap row2"><span>brighter minus darker pixels in the drone box, per 0.5 ms</span><span id="cap-bars"></span></div>
-    </div>
+    <div class="strip"><canvas id="bars" width="1600" height="160" aria-label="Brighter minus darker event counts over time inside the drone box, per 0.5 ms"></canvas></div>
   </section>
 
   <section class="slide s3" id="s3" aria-label="Spectrum, drone versus no drone">
-    <h2 class="hl" id="hl3">One box, one spectrum. A drone hums as one tall spike; a patch with no drone stays flat.</h2>
-    <div class="seg win" role="group" aria-label="Event window length" id="winbtns"><svg class="ic lead" aria-hidden="true"><use href="#i-clock"/></svg><span class="lead num">window</span></div>
+    <h2 class="hl" id="hl3">A drone hums as one tall spike. Empty sky stays flat.</h2>
+    <div class="seg win" role="group" aria-label="Event window length" id="winbtns"><svg class="ic lead" aria-hidden="true"><use href="#i-clock"/></svg></div>
     <div class="duo">
       <div class="side" data-side="drone"></div>
       <div class="side" data-side="bg"></div>
@@ -124,55 +132,55 @@
   </section>
 
   <section class="slide sm" id="s4" aria-label="The math">
-    <h2 class="hl" id="hl4">Why 30 fps misses the hum, and how the spike is measured and scored.</h2>
-    <div class="mgrid">
-      <div class="mp">
-        <div class="tag"><svg class="ic"><use href="#i-camera"/></svg><span>30 fps</span><span class="vs">vs</span><svg class="ic"><use href="#i-events"/></svg><span>0.1 ms event bins</span><span class="vs" id="nyqwho"></span></div>
+    <h2 class="hl">Why 30 fps misses the hum, and how the spike is scored.</h2>
+    <div class="mtabs seg" role="tablist" aria-label="Math panel" id="mtabs"></div>
+    <div class="mgrid" id="mgrid">
+      <div class="mp on" role="tabpanel" data-p="0">
+        <div class="tag"><svg class="ic"><use href="#i-camera"/></svg><span>30 fps</span><span class="vs">vs</span><svg class="ic"><use href="#i-events"/></svg><span>events</span></div>
         <canvas id="nyq" width="960" height="400" aria-label="A propeller spinning at the measured rate, seen continuously as a blur and sampled at 30 fps as a slow wagon-wheel crawl, above a log frequency axis with the 15 Hz camera limit, the 5 kHz event limit, the true blade-pass rate and its alias"></canvas>
-        <div class="fx" id="fx-nyq"></div>
       </div>
-      <div class="mp">
-        <div class="tag"><svg class="ic"><use href="#i-wave"/></svg><span>Fourier</span><span class="seg ft" id="ftbtns"></span></div>
+      <div class="mp" role="tabpanel" data-p="1">
+        <div class="tag"><svg class="ic"><use href="#i-wave"/></svg><span>cv.dft</span><span class="seg ft" id="ftbtns"></span></div>
         <canvas id="ft" width="960" height="400" aria-label="Brighter minus darker event counts on the drone over 40 ms, the Hanning window, and the spectrum from cv.dft with its peak"></canvas>
-        <div class="fx">X(f) = &Sigma;<sub>t</sub> x(t)&middot;w(t)&middot;e<sup>&minus;i2&pi;ft</sup></div>
       </div>
-      <div class="mp">
+      <div class="mp" role="tabpanel" data-p="2">
         <div class="tag"><svg class="ic"><use href="#i-sigma"/></svg><span>score</span></div>
         <canvas id="snr" width="960" height="400" aria-label="Zoom on the drone spectrum peak with the local median floor within 100 Hz, and a log score gauge with the ambiguous and hum thresholds, the drone box score and the no-drone box score"></canvas>
-        <div class="fx">score = P(f<sub>peak</sub>) / median<sub>&plusmn;100 Hz</sub> P</div>
       </div>
-      <div class="mp">
+      <div class="mp" role="tabpanel" data-p="3">
         <div class="tag"><svg class="ic"><use href="#i-clock"/></svg><span>window</span><span id="mwinv" class="num">T</span><input type="range" id="mwin" min="0" max="5" value="2" aria-label="Event window length"></div>
-        <canvas id="mwplot" width="960" height="250" aria-label="Live drone-box spectrum for the chosen window length"></canvas>
-        <div class="fx">&Delta;f = 1/T</div>
-        <div class="chain" id="chain" aria-label="Real agent steps: spectrum checks per box with window length, score and verdict"></div>
+        <canvas id="mwplot" width="960" height="400" aria-label="Live drone-box spectrum for the chosen window length"></canvas>
       </div>
     </div>
     <div class="cvrow" id="cvrow" aria-label="OpenCV 5 calls used, in order"></div>
   </section>
 
   <section class="slide s4" id="s5" aria-label="Agent steps">
-    <h2 class="hl">The agent looks, listens, follows, and asks a human before it raises an alert.</h2>
+    <h2 class="hl">The agent looks, listens, then asks you before it alerts.</h2>
     <div class="agent-top">
       <div class="seg" role="group" aria-label="Agent episode" id="epbtns"></div>
-      <div class="score" id="score"></div>
-      <button id="aplay" class="iconbtn" aria-label="Pause"><svg class="ic"><use href="#i-pause"/></svg></button>
+      <button id="replay" class="btn play" aria-label="Replay the agent steps"><svg class="ic"><use href="#i-play"/></svg><span>Play</span></button>
     </div>
-    <div class="flow" id="flow"></div>
-    <div class="stepcard" id="stepcard" aria-live="polite"></div>
-    <div class="dots" id="stepdots" role="group" aria-label="Agent steps"></div>
+    <div class="loop" id="loop" aria-hidden="true">
+      <div class="st" data-st="look"><span class="ring"><svg class="ic"><use href="#i-eye"/></svg></span><b>look</b></div>
+      <svg class="arrow" viewBox="0 0 60 12"><path d="M2 6h52M48 1l6 5-6 5"/></svg>
+      <div class="st" data-st="listen"><span class="ring"><svg class="ic"><use href="#i-sine"/></svg></span><b>listen</b></div>
+      <svg class="arrow" viewBox="0 0 60 12"><path d="M2 6h52M48 1l6 5-6 5"/></svg>
+      <div class="st" data-st="decide"><span class="ring"><svg class="ic"><use href="#i-human"/></svg></span><b>decide</b></div>
+    </div>
+    <ol class="cards" id="cards" aria-label="Recorded agent steps"></ol>
   </section>
 
   <section class="slide s5" id="s6" aria-label="Results">
-    <h2 class="hl">Every drone model has its own hum; the hard case has none. All numbers measured on real recordings.</h2>
+    <h2 class="hl">Each drone model hums at its own pitch.</h2>
     <div class="clips" id="clipcards"></div>
     <div class="res">
       <div class="fa">
-        <div class="tag"><svg class="ic"><use href="#i-alert"/></svg><span>false alarms</span></div>
+        <div class="tag"><svg class="ic"><use href="#i-alert"/></svg><span id="fatag">false alarms</span></div>
         <div class="fapair" id="fa"></div>
       </div>
       <div class="bench">
-        <div class="tag"><svg class="ic"><use href="#i-chip"/></svg><span>OpenCV 5 · p50 ms</span></div>
+        <div class="tag"><svg class="ic"><use href="#i-chip"/></svg><span>OpenCV 5 speed</span></div>
         <div class="win5" id="winner"></div>
         <div id="benchbars" class="bb"></div>
         <div class="bkey"><span><i class="sw g4"></i>Graviton4</span><span><i class="sw x86"></i>x86</span></div>
@@ -189,17 +197,18 @@
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
 <section class="sr-only" id="readme" aria-label="Text description for screen readers and agents">
-  <h2>Hertz: drone confirmation by propeller hum</h2>
-  <p>Hertz confirms drones by their propeller hum. A normal 30 fps camera proposes objects. Inside each box, the event camera stream is checked for a blade-pass frequency peak at hundreds of Hz, which a 30 fps camera cannot see. An agent decides what to look at next: re-check a box with a longer or tighter event window, track it, raise an alert, or ask a human. Everything runs in OpenCV 5 on AWS Graviton.</p>
+  <h2>Frequency Vision: drone confirmation by propeller hum</h2>
+  <p>Frequency Vision confirms drones by their propeller hum. A normal 30 fps camera proposes objects. Inside each box, the event camera stream is checked for a blade-pass frequency peak at hundreds of Hz, which a 30 fps camera cannot see. An agent decides what to look at next: re-check a box with a longer or tighter event window, track it, raise an alert, or ask a human. Everything runs in OpenCV 5 on AWS Graviton.</p>
+  <p>Logo: an eye whose iris is a ring of spectrum bars; one bar flares at the selected clip's measured propeller frequency, a sine wave runs faster for higher frequencies, and a counter shows the measured frequency in Hz.</p>
   <p id="sr-hum"></p>
-  <p>Clip picker: the drone clips are FRED test sequences 210 (DJI Mini 2), 129 (DJI Tello EDU), 20 (DarwinFPV cineape20, a hard case with no clean peak) and 34 (DJI Mini 3 next to a flickering patch). The no-drone side is always FRED sequence 138. Picking a clip re-runs slides 1 to 4 on it.</p>
-  <p>Slide 1: the 30 fps RGB video with the annotated drone box and a zoomed view where no rotor is visible, next to a bar strip of brighter-minus-darker event counts inside the drone box, one bar per 0.5 ms, with ticks at the measured blade-pass period.</p>
-  <p>Slide 2: an orbitable x-y-time point cloud of the events in 40 ms on the drone, with x, y and time axes labelled. Black points: a pixel got brighter. Grey points: darker. The orange lines are one per measured blade pass. The "vs no drone" view stacks a same-size patch from the no-drone clip under it.</p>
-  <p>Slide 3: the event spectrum of a box in the drone clip next to a box in a clip with no drone, computed live on the server by hertz.freq.box_spectrum (OpenCV 5 calcHist and dft) for each click. The shaded band is the propeller band, 150 to 1000 Hz. Power is shown relative to the band median on a log scale. A box hums when its band peak stands far above the local spectral floor and it holds enough events.</p>
-  <p id="sr-math">Slide 4, the math. (1) Sampling: a 30 fps camera only sees frequencies up to its Nyquist limit of 15 Hz; a propeller blade-pass rate of several hundred Hz folds (aliases) to a slow apparent rate, the wagon-wheel effect. Events binned at 0.1 ms (10 kHz) see up to 5 kHz. (2) Fourier transform: the brighter-minus-darker event count inside the box over time, multiplied by a Hanning window, goes through cv.dft; the power spectrum shows the blade-pass peak. X(f) = sum over t of x(t) w(t) exp(-i 2 pi f t). (3) Score: the peak power divided by the median power within plus or minus 100 Hz of it. Thresholds from lane L1, chosen on FRED training data: ambiguous above 7.9, hum above 98. (4) Frequency resolution is 1/T for a window of T seconds, so a longer window sharpens the peak; this is why the agent asks for a longer window (request_window) when a spectrum is ambiguous. (5) OpenCV 5 calls in order: calcHist (event binning), dft (spectrum), connectedComponentsWithStats (event blobs and masks), dnn (RGB detector).</p>
+  <p id="sr-clips"></p>
+  <p>Slide 1: the 30 fps RGB video with the annotated drone box and a zoomed view where no rotor is visible, next to a bar strip of brighter-minus-darker event counts inside the drone box, one bar per 0.5 ms over 40 ms, with orange ticks at the measured blade-pass period.</p>
+  <p>Slide 2: an orbitable x-y-time point cloud of the events in 40 ms on the drone, with x, y and time axes labelled. Black points: a pixel got brighter (ON event). Grey points: darker (OFF event). The orange lines are one per measured blade pass. The "vs empty" view stacks a same-size patch from the no-drone clip (FRED sequence 138) under it. The strip below is the same brighter-minus-darker count per 0.5 ms.</p>
+  <p>Slide 3: the event spectrum of a box in the drone clip next to a box in a clip with no drone, computed live on the server by box_spectrum (OpenCV 5 calcHist and dft) for each click. The shaded band is the propeller band, 150 to 1000 Hz. Power is shown relative to the band median on a log scale. A box hums when its band peak stands at least 98 times above the local spectral floor and it holds at least 200 events. Window buttons set the event window length. Thumbnails pick the frame and box.</p>
+  <p id="sr-math">Slide 4, the math, in four panels (tabs on narrow screens). (1) Sampling: a 30 fps camera only sees frequencies up to its Nyquist limit of 15 Hz; a propeller blade-pass rate of several hundred Hz folds (aliases) to a slow apparent rate, the wagon-wheel effect: f_alias = |f - k*30|. Events binned at 0.1 ms (10 kHz) see up to 5 kHz. (2) Fourier transform: the brighter-minus-darker event count inside the box over time, multiplied by a Hanning window, goes through cv.dft; the power spectrum shows the blade-pass peak. X(f) = sum over t of x(t) w(t) exp(-i 2 pi f t). (3) Score: the peak power divided by the median power within plus or minus 100 Hz of it. Thresholds chosen on FRED training data: ambiguous above 7.9, hum above 98. (4) Frequency resolution is 1/T for a window of T seconds, so a longer window sharpens the peak; this is why the agent asks for a longer window (request_window) when a spectrum is ambiguous. (5) OpenCV 5 calls in order: calcHist (event binning), dft (spectrum), connectedComponentsWithStats (event blobs and masks), dnn (RGB detector).</p>
   <p id="sr-math-live"></p>
-  <p>Slide 5: the agent's recorded steps from lane L4's evaluation traces: perception tools (detect_frame, box_spectrum, request_window, frequency_map, track), the human approval request, the alert, and the finish. The Approve and Reject buttons record a decision on the server only; nothing external is triggered. The approval inside the recorded run came from an automatic stand-in for the operator, marked SIMULATED in the trace.</p>
-  <p>Slide 6: one card per drone clip with the measured median blade-pass frequency and how many 100 ms windows passed the hum test; false alarms with RGB only versus RGB plus events (pending until the evaluation file exists); and the OpenCV 5 benchmark on AWS Graviton4 c8g.xlarge versus x86 c7i.xlarge, p50 milliseconds at 4 threads, from bench/results.</p>
+  <p>Slide 5: the agent's recorded steps from the evaluation traces (eval_v3), as a loop of look, listen and decide. Each step is a card: look (detect_frame, track), listen (box_spectrum, request_window, frequency_map) with the measured peak in Hz, coloured orange when it passes the hum test, outlined when ambiguous, grey when there is no hum; decide (ask_human, raise_alert, finish). Episodes: a drone (FRED 210), a drone that appears late (FRED 142), no drone (FRED 138), each planned by Claude Sonnet 4.6 on Amazon Bedrock, and a fixed-rule baseline on FRED 210. Nothing plays until you press Play. The Approve and Reject buttons record a decision on the server only; nothing external is triggered. The approval inside the recorded run came from an automatic stand-in for the operator, marked SIMULATED in the trace.</p>
+  <p>Slide 6: one card per drone clip with the measured median blade-pass frequency and the share of 100 ms windows that pass the hum test; false alarms over 84.3 minutes of FRED test video with the RGB detector alone versus RGB plus the hum check; and the OpenCV 5 benchmark on AWS Graviton4 c8g.xlarge versus x86 c7i.xlarge, p50 milliseconds at 4 threads, from bench/results.</p>
   <p>Data: FRED (real event + RGB recording, Apache-2.0 per its Hugging Face card), test split, huggingface.co/datasets/GabrieleMagrini/FRED. Nothing on this page is simulated except the operator stand-in noted above.</p>
   <p>Machine-readable summary: <a href="/api/summary">/api/summary</a>. Server build: <a href="/version">/version</a>.</p>
 </section>

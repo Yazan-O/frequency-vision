@@ -70,14 +70,14 @@ def spectrum(r: SpecReq):
         m = (f >= freq.BAND[0]) & (f <= freq.BAND[1])
         med = float(np.median(p[m])) or 1.0
         k = f <= FMAX
-        return {"mode": "live", "source": "hertz.freq.box_spectrum (OpenCV 5 calcHist + dft)", "compute_ms": round(ms, 2),
+        return {"mode": "live", "source": "freq.box_spectrum (OpenCV 5 calcHist + dft)", "compute_ms": round(ms, 2),
                 "window_ms": win, "peak_hz": round(out["peak_hz"], 1), "snr": round(out["snr"], 2), "n_events": int(out["n_events"]),
                 "clear": out["clear"], "df": round(float(f[1] - f[0]), 3), "power": np.round((p[k] / med).astype(np.float64), 3).tolist(),
                 "band": list(freq.BAND), "clear_snr": freq.CLEAR_SNR}
     s = precomputed(r.clip)["spectra"].get(f"{r.frame}_{r.box_index}")
     if s is None:
         raise HTTPException(503, "live spectrum unavailable and no precomputed spectrum for this box")
-    return {"mode": "precomputed", "source": "precomputed by tools/export_web.py with hertz.freq", "window_ms": 100.0,
+    return {"mode": "precomputed", "source": "precomputed by tools/export_web.py with freq.box_spectrum", "window_ms": 100.0,
             "band": [150.0, 1000.0], "clear_snr": 15.0, **s}
 
 
@@ -147,13 +147,14 @@ def results():
 @router.get("/summary")
 def summary():
     cs = list(clips().values())
-    hero = next((c for c in cs if c.get("hum") and c["hum"].get("median_hz")), cs[0])
+    demo = [c for c in cs if c.get("role") in ("demo", "hard")] or cs
+    hero = max((c for c in demo if c.get("hum") and c["hum"].get("median_hz") and c["cloud"].get("crop")), key=lambda c: c["cloud"]["crop"]["n_events"], default=cs[0])
     tr = json.loads((STATIC / "traces.json").read_text())["episodes"]
     return {
-        "name": "Hertz",
-        "claim": "Hertz confirms drones by their propeller hum: an RGB detector proposes boxes, the event-camera stream inside each box is checked for a blade-pass frequency peak (150-1000 Hz) that a 30 fps camera cannot see, and an agent chooses the next look, alert, or human approval. OpenCV 5 on AWS Graviton.",
+        "name": "Frequency Vision",
+        "claim": "Frequency Vision confirms drones by their propeller hum: an RGB detector proposes boxes, the event-camera stream inside each box is checked for a blade-pass frequency peak (150-1000 Hz) that a 30 fps camera cannot see, and an agent chooses the next look, alert, or human approval. OpenCV 5 on AWS Graviton.",
         "measured_hum": {"clip": hero["id"], "fred_sequence": hero["seq"], "drone": hero["classes"], **(hero["hum"] or {}),
-                         "method": "median hertz.freq.box_spectrum peak over the FRED-box event windows that pass the hum test",
+                         "method": "median freq.box_spectrum peak over the FRED-box event windows that pass the hum test",
                          "source": "app/static/data/clips.json, written by tools/export_web.py"},
         "hum_test": {"band_hz": list(freq.BAND) if freq else [150.0, 1000.0], "clear_score": getattr(freq, "CLEAR_SNR", None),
                      "ambiguous_score": getattr(freq, "AMBIGUOUS_SNR", None), "local_hz": getattr(freq, "LOCAL_HZ", None),
@@ -163,13 +164,20 @@ def summary():
                  "X(f) = sum_t x(t) w(t) exp(-i 2 pi f t), x = ON minus OFF events in the box, w = Hanning, computed with cv.dft",
                  "frequency resolution 1/T for a window of T s: the agent's request_window lengthens T when a spectrum is ambiguous",
                  "OpenCV 5 calls: calcHist, dft, connectedComponentsWithStats, dnn"],
-        "clips": [{"id": c["id"], "title": c["title"], "fred_sequence": c["seq"], "drone": c["drone"], "provenance": c["provenance"], "source": c["source"],
+        "clips": [{"id": c["id"], "title": c["title"], "fred_sequence": c["seq"], "drone": c["drone"], "role": c.get("role"), "provenance": c["provenance"], "source": c["source"],
                    "hum": {k: v for k, v in (c.get("hum") or {}).items() if k != "by_class"} or None} for c in cs],
+        "clip_roles": {"demo": "clip picker: FRED test segments where every 100 ms window of the drone box passes the hum test", "hard": "clip picker, marked hard case: a drone with no clean peak",
+                       "agent": "used by the recorded agent episode only", None: "no-drone reference"},
         "agent_episodes": [{"episode": e["episode"], "planner": e["planner"], "model": e["model"], "score_vs_fred": e["score"], "trace_file": e["file"]} for e in tr],
         "approval": "POST /api/approve records approve or reject on the server only; nothing external is triggered. The approval inside recorded runs came from an automatic operator stand-in marked SIMULATED.",
         "results": results(),
-        "slides": ["the hum: 30 fps RGB vs event rhythm and the measured Hz", "x-y-time event cloud on the drone", "live event spectrum, drone box vs no-drone box",
-                   "agent steps with human approval", "false alarms and Graviton4 vs x86 OpenCV 5 benchmark"],
+        "slides": [
+            {"title": "the hum", "shows": "30 fps RGB video with a zoom on the drone (blades are a blur) next to the brighter-minus-darker event count in the drone box, one bar per 0.5 ms over 40 ms, with orange ticks one blade pass apart; the big number is the clip's median blade-pass frequency"},
+            {"title": "events in 3D", "shows": "orbitable x-y-time point cloud of 40 ms of events on the drone; black = pixel got brighter (ON), grey = darker (OFF); orange lines one blade pass apart; 'vs empty' stacks a same-size patch from the no-drone clip"},
+            {"title": "spectrum", "shows": "live spectrum of a drone box next to a no-drone box for a chosen event window; shaded band 150-1000 Hz is the propeller band; power relative to the band median, log scale"},
+            {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
+            {"title": "agent", "shows": "recorded eval_v3 agent steps as cards in a look -> listen -> decide loop; listen cards are orange when the hum test passes, dashed when ambiguous; the human approval card records Approve or Reject on the server only; nothing plays until Play is pressed"},
+            {"title": "results", "shows": "measured median blade-pass frequency per drone clip with the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
                    "approve": "POST /api/approve {episode, step, decision}", "results": "/api/results", "health": "/health", "version": "/version"},
     }

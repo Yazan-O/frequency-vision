@@ -15,14 +15,23 @@ if (reduce) document.querySelectorAll("svg").forEach((s) => s.pauseAnimations &&
 
 const [clipsDoc, tracesDoc] = await Promise.all([fetch("/data/clips.json").then((r) => r.json()), fetch("/data/traces.json").then((r) => r.json())]);
 const clips = clipsDoc.clips;
-const droneClips = clips.filter((c) => c.drone && c.cloud.crop);
+const hzOf = (c) => (c.hum && c.hum.median_hz) || null;
+const roled = clips.filter((c) => c.role === "demo" || c.role === "hard");
+const droneClips = (roled.length ? roled : clips.filter((c) => c.drone && c.cloud.crop)).filter((c) => c.cloud.crop)
+  .sort((a, b) => (a.role === "hard") - (b.role === "hard") || (hzOf(a) || 1e9) - (hzOf(b) || 1e9));
 const bg = clips.find((c) => !c.drone) || clips[clips.length - 1];
 const modelOf = (c) => (c.hum && c.hum.model) || (c.classes && c.classes[0]) || "drone";
-const shortName = (c) => modelOf(c).replace(/^(DJI|DarwinFPV)\s+/, "");
-const hzOf = (c) => (c.hum && c.hum.median_hz) || null;
+const shortName = (c) => modelOf(c).replace(/^(DJI|DarwinFPV|Betafpv)\s+/i, "");
 const cur = { clip: null, crop: null, HZ: null, imgs: null, i: 0 };
 const bufs = {};
 const bufOf = (src) => bufs[src] || (bufs[src] = fetch("/" + src).then((r) => r.arrayBuffer()).then((b) => new Uint16Array(b)));
+const summaryP = fetch("/api/summary").then((r) => r.json());
+const specCache = new Map();
+const fetchSpec = (body) => {
+  const k = JSON.stringify(body);
+  if (!specCache.has(k)) specCache.set(k, fetch("/api/spectrum", { method: "POST", headers: { "Content-Type": "application/json" }, body: k }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).catch((e) => { specCache.delete(k); throw e; }));
+  return specCache.get(k);
+};
 
 const tip = $("tip");
 function tipOn(b, text) {
@@ -111,16 +120,13 @@ function slide1() {
 
 function applySlide1() {
   const c = cur.clip, HZ = cur.HZ, h = c.hum || {}, model = modelOf(c);
-  $("headline").textContent = HZ ? `A 30 fps camera cannot see the propellers. The event camera counts them: ${Math.round(HZ)} blade passes a second.`
-    : `A 30 fps camera cannot see the propellers. On this ${model} the event camera finds no steady hum either.`;
-  $("hz").textContent = HZ ? `${Math.round(HZ)} Hz` : "no clean hum";
-  $("hzsub").textContent = HZ ? `${model}, FRED seq ${c.seq}: median of the ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms that pass the hum test`
-    : `${model}, FRED seq ${c.seq}: ${h.n_clear} of ${h.n_windows} windows pass the hum test`;
-  $("period").textContent = HZ ? `one blade pass = ${(1000 / HZ).toFixed(1)} ms` : "";
-  $("cap-scope").textContent = HZ ? `brighter minus darker pixels in the box, per 0.5 ms, over ${c.cloud.ms} ms. Orange ticks: one per blade pass`
-    : `brighter minus darker pixels in the box, per 0.5 ms, over ${c.cloud.ms} ms. No steady rhythm`;
-  $("sr-hum").textContent = HZ ? `Measured blade-pass frequency inside the drone box, FRED sequence ${c.seq} (${model}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with hertz.freq.box_spectrum.`
-    : `FRED sequence ${c.seq} (${model}): ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms pass the hum test, so no blade-pass frequency is claimed.`;
+  $("headline").textContent = HZ ? `A 30 fps camera sees a blur. The event camera hears the ${shortName(c)} at ${Math.round(HZ)} Hz.`
+    : `Hard case: this ${shortName(c)} gives no clean hum.`;
+  $("hz").textContent = HZ ? `${Math.round(HZ)} Hz` : "no peak";
+  $("hz").classList.toggle("none", !HZ);
+  $("hzbig").setAttribute("aria-label", HZ ? `${model}, FRED sequence ${c.seq}: median ${h.median_hz} Hz; ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test; one blade pass every ${(1000 / HZ).toFixed(1)} ms` : `${model}, FRED sequence ${c.seq}: ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test`);
+  $("sr-hum").textContent = HZ ? `Measured blade-pass frequency inside the drone box, FRED sequence ${c.seq} (${model}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with box_spectrum.`
+    : `Hard case, FRED sequence ${c.seq} (${model}): ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms pass the hum test, so no blade-pass frequency is claimed.`;
   cur.imgs = loadFrames(c); cur.i = Math.floor(c.frames.length / 2);
   if (!c._bound) { c._bound = true; cur.imgs.forEach((im) => im.addEventListener("load", () => { if (cur.clip === c) cur.drawVideo(); })); }
   cur.drawVideo();
@@ -233,9 +239,8 @@ async function slide2() {
 
 function applySlide2() {
   const c = cur.clip, HZ = cur.HZ;
-  $("hl2").textContent = HZ ? `Each dot is one pixel change. Time runs left to right. The propellers make the stripes: ${Math.round(HZ)} a second.`
-    : `Each dot is one pixel change. Time runs left to right. No stripes here: this ${modelOf(c)} gives no clean hum.`;
-  $("cap-bars").textContent = HZ ? `orange ticks every ${(1000 / HZ).toFixed(1)} ms = ${Math.round(HZ)} Hz · 0 to ${c.cloud.ms} ms` : `0 to ${c.cloud.ms} ms`;
+  $("hl2").textContent = HZ ? `Each dot is a pixel change. The propellers draw ${Math.round(HZ)} stripes a second.`
+    : `Each dot is a pixel change. No stripes: no steady hum.`;
   drawRhythm($("bars"), { dark: false, head: null });
   if (S.started) S.show(S.view);
 }
@@ -253,16 +258,16 @@ function slide3() {
     const isDrone = host.dataset.side === "drone";
     const st = { clip: null, frame: 0, box: 0, req: 0, played: false };
     const head = el("div", "head");
-    head.append(icon(isDrone ? "i-drone" : "i-nodrone"), el("span", "who", isDrone ? "drone box" : "no drone"));
-    const verdict = el("span", "verdict", "…"); const score = el("span", "score2");
-    const prov = el("button", "prov"); prov.append(icon("i-data"));
+    head.append(icon(isDrone ? "i-drone" : "i-nodrone"));
+    const verdict = el("span", "verdict", "…"); const score = { set textContent(v) { verdict.title = v; } };
+    const prov = el("button", "prov"); prov.append(icon("i-data")); prov.setAttribute("aria-label", "Data source");
     tipOn(prov, () => `${st.clip.provenance} · ${st.clip.title} · seq ${st.clip.seq}`);
-    head.append(verdict, score, prov);
+    head.append(verdict, prov);
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 600 300"); svg.setAttribute("class", "spec"); svg.setAttribute("role", "img");
     const row = el("div", "thumbrow");
     const thumb = el("div", "thumb"); const cv = el("canvas"); cv.width = 640; cv.height = 360; cv.setAttribute("aria-label", "Frame with clickable boxes"); thumb.append(cv);
-    const right = el("div"); right.style.flex = "1"; right.style.minWidth = "0";
+    const right = el("div", "right");
     const boxes = el("div", "boxbtns"); const range = el("input"); range.type = "range"; range.min = 0;
     range.setAttribute("aria-label", "Frame");
     right.append(boxes, range); row.append(thumb, right);
@@ -305,15 +310,13 @@ function slide3() {
       if (!b) { verdict.textContent = "–"; score.textContent = "no box in this frame"; svg.innerHTML = ""; return; }
       const id = ++st.req;
       try {
-        const r = await fetch("/api/spectrum", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clip.id, box: b.box, t: f.t, window_ms: spec.win, frame: st.frame, box_index: st.box }) });
-        if (!r.ok) throw new Error(r.status);
-        const d = await r.json();
+        const d = await fetchSpec({ clip: clip.id, box: b.box, t: f.t, window_ms: spec.win, frame: st.frame, box_index: st.box });
         if (id !== st.req) return;
         st.data = d;
         verdict.className = "verdict" + (d.clear ? " hum" : "");
-        verdict.replaceChildren(icon(d.clear ? "i-wave" : "i-x"), document.createTextNode(d.clear ? `${Math.round(d.peak_hz)} Hz hum` : "no hum"));
+        verdict.replaceChildren(icon(d.clear ? "i-wave" : "i-x"), document.createTextNode(d.clear ? `${Math.round(d.peak_hz)} Hz` : "no hum"));
         score.textContent = `score ${fmt(d.snr, 0)} (hum ≥ ${d.clear_snr}) · ${d.n_events.toLocaleString()} events`;
-        score.title = `peak ${d.peak_hz} Hz, ${d.mode === "live" ? `computed live in ${d.compute_ms} ms by ${d.source}` : d.source}`;
+        verdict.title += ` · peak ${d.peak_hz} Hz, ${d.mode === "live" ? `computed live in ${d.compute_ms} ms by ${d.source}` : d.source}`;
         svg.setAttribute("aria-label", `${isDrone ? "Drone" : "No-drone"} clip box spectrum: ${d.clear ? "hums at " + Math.round(d.peak_hz) + " Hz" : "no hum"}, peak score ${fmt(d.snr, 1)}, ${d.n_events} events, ${d.window_ms} ms window, ${d.mode}`);
         animateSpec(svg, d, current === 2 || st.played);
         st.played = st.played || current === 2;
@@ -338,9 +341,8 @@ function animateSpec(svg, d, animate) {
   const Y = (v) => T + (1 - (Math.log10(Math.max(v, 0.1)) + 1) / 5) * (H - T - B);
   let s = `<rect class="band" x="${X(150)}" y="${T}" width="${X(1000) - X(150)}" height="${H - T - B}"/>`;
   [1, 10, 100, 1000].forEach((v) => { s += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#ECECEC"/><text x="${L - 5}" y="${Y(v) + 4}" text-anchor="end">${v >= 1000 ? "1k" : v}</text>`; });
-  [0, 300, 600, 900, 1200].forEach((f) => { s += `<text x="${X(f)}" y="${H - 24}" text-anchor="middle">${f}</text>`; });
-  s += `<text class="ax" x="${(L + W - R) / 2}" y="${H - 7}" text-anchor="middle">frequency, Hz · shaded: propeller band 150 to 1000 Hz</text>`;
-  s += `<text class="ax" transform="translate(11 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle">power ÷ band median</text>`;
+  [0, 300, 600, 900, 1200].forEach((f) => { s += `<text x="${f === 1200 ? W - R : X(f)}" y="${H - 24}" text-anchor="${f === 1200 ? "end" : "middle"}">${f}</text>`; });
+  s += `<text x="${W - R}" y="${H - 7}" text-anchor="end">Hz</text>`;
   s += `<path class="curve${d.clear ? " hum" : ""}" d=""/>`;
   svg.innerHTML = s;
   const path = svg.querySelector("path");
@@ -362,97 +364,50 @@ function animateSpec(svg, d, animate) {
   requestAnimationFrame(step);
 }
 
-const NODES = [
-  { id: "look", icon: "i-camera", tools: ["detect_frame"] },
-  { id: "listen", icon: "i-wave", tools: ["box_spectrum", "request_window", "frequency_map", "event_map"] },
-  { id: "follow", icon: "i-track", tools: ["track"] },
-  { id: "ask", icon: "i-human", tools: ["ask_human"] },
-  { id: "alert", icon: "i-alert", tools: ["raise_alert"] },
-  { id: "done", icon: "i-flag", tools: ["finish"] },
-];
-const nodeOf = (tool) => NODES.findIndex((n) => n.tools.includes(tool)) >= 0 ? NODES.findIndex((n) => n.tools.includes(tool)) : 1;
+const STAGE = { detect_frame: "look", track: "look", box_spectrum: "listen", request_window: "listen", frequency_map: "listen", event_map: "listen", ask_human: "decide", raise_alert: "decide", finish: "decide" };
+const TOOL_ICON = { detect_frame: "i-camera", track: "i-track", box_spectrum: "i-sine", request_window: "i-clock", frequency_map: "i-events", event_map: "i-events", ask_human: "i-human", raise_alert: "i-alert", finish: "i-flag" };
+const epKind = (ep) => { const c = clips.find((x) => x.id === ep.episode); return /^late/.test(ep.episode) ? "late" : (c ? !c.drone : /^background/.test(ep.episode)) ? "none" : "drone"; };
+const EP_LABEL = { drone: "drone", late: "late drone", none: "no drone" };
+const EP_ICON = { drone: "i-drone", late: "i-late", none: "i-nodrone" };
+const agent = { ep: null, timer: null, run: false, shown: false };
 
-function brief(r) {
-  const x = r.result || {};
-  if (r.guard && r.guard !== "ok") return { what: "blocked", sub: r.guard };
-  if (x.error) return { what: "error", sub: x.error };
-  switch (r.tool) {
-    case "detect_frame": return { what: `${x.detections.length} box${x.detections.length === 1 ? "" : "es"}`, sub: `t = ${x.t} s` };
-    case "box_spectrum": case "request_window": return { what: `${Math.round(x.peak_hz)} Hz · ${x.verdict}`, sub: `${fmt(x.snr, 1)}× · ${x.window_ms} ms · ${x.n_events.toLocaleString()} ev` };
-    case "frequency_map": return { what: `${x.hum_pixels} / ${x.active_pixels} px hum`, sub: `${x.dominant_hz} Hz dominant` };
-    case "track": return { what: `${fmt(x.displacement_px, 0)} px moved`, sub: x.lost ? "lost" : `${x.steps} steps` };
-    case "ask_human": return { what: "approve?", sub: `${r.args.severity}` };
-    case "raise_alert": return { what: `alert · ${x.severity}`, sub: `#${x.alert_id}` };
-    case "finish": return { what: x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : x.verdict, sub: "" };
-    default: return { what: r.tool, sub: "" };
+function cardFor(r, k, steps) {
+  const x = r.result || {}, stage = STAGE[r.tool] || "listen", li = el("li", stage);
+  li.dataset.st = stage; li.style.setProperty("--d", `${k * 45}ms`);
+  if (r.tool === "ask_human") return askCard(r, k, steps, li);
+  const top = el("div", "top"); top.append(icon(TOOL_ICON[r.tool] || "i-wave"), el("span", "n", String(r.step)));
+  let v = r.tool, w = null, cls = "";
+  if (r.guard && r.guard !== "ok") { v = "blocked"; cls = "nohum"; }
+  else if (x.error) { v = "error"; cls = "nohum"; }
+  else switch (r.tool) {
+    case "detect_frame": { const n = (x.detections || []).length; v = `${n} box${n === 1 ? "" : "es"}`; cls = n ? "" : "nohum"; break; }
+    case "box_spectrum": case "request_window":
+      v = `${Math.round(x.peak_hz)} Hz`; w = [r.tool === "request_window" ? "i-clock" : null, `${x.window_ms} ms`];
+      cls = x.verdict === "hum" ? "hum" : x.verdict === "ambiguous" ? "maybe" : "nohum"; break;
+    case "frequency_map": case "event_map": v = x.dominant_hz ? `${Math.round(x.dominant_hz)} Hz` : "no hum"; cls = x.hum_pixels ? "maybe" : "nohum"; break;
+    case "track": v = x.lost ? "lost" : `${Math.round(x.displacement_px)} px`; w = ["i-track", "followed"]; break;
+    case "raise_alert": v = "alert"; cls = "alert"; break;
+    case "finish": v = x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict); cls = "fin"; break;
   }
+  if (cls) li.classList.add(cls);
+  li.append(top, el("span", "v", v));
+  if (w) { const s = el("span", "w"); if (w[0]) s.append(icon(w[0])); s.append(document.createTextNode(w[1])); li.append(s); }
+  const verdict = x.verdict ? `, verdict ${x.verdict}${x.snr != null ? `, score ${fmt(x.snr, 1)}` : ""}${x.n_events != null ? `, ${x.n_events} events` : ""}` : "";
+  li.setAttribute("aria-label", `Step ${r.step}, ${stage}: ${r.tool}, ${v}${w ? ", " + w[1] : ""}${verdict}`);
+  li.title = `step ${r.step} · ${r.tool} · ${v}${verdict}`;
+  li.tabIndex = 0;
+  li.addEventListener("click", () => focusCard(k));
+  return li;
 }
 
-const agent = { ep: null, i: 0, playing: !reduce, timer: null };
-function slide4() {
-  const eps = tracesDoc.episodes || [];
-  const bar = $("epbtns"), flow = $("flow");
-  if (!eps.length) { $("stepcard").append(el("div", "what", "pending")); return; }
-  flow.replaceChildren(...NODES.map((n) => { const d = el("div", "node"); const ring = el("div", "ring"); ring.append(icon(n.icon)); d.append(ring, el("span", "name", n.id), el("span", "count", "")); return d; }));
-  eps.forEach((ep) => {
-    const clip = clips.find((c) => c.id === ep.episode);
-    const b = el("button", "btn"); b.append(icon(clip && clip.drone ? "i-drone" : "i-nodrone"), document.createTextNode(ep.planner));
-    b.setAttribute("aria-label", `Episode ${ep.episode}, ${ep.planner} planner${ep.model ? " " + ep.model : ""}`);
-    b.addEventListener("click", () => pickEp(ep, b));
-    bar.append(b);
-  });
-  $("aplay").addEventListener("click", () => { agent.playing = !agent.playing; syncPlay(); if (agent.playing) schedule(); });
-  const first = Math.max(0, eps.findIndex((e) => e.episode === droneClips[0].id));
-  pickEp(eps[first], bar.children[first]);
-}
-function syncPlay() { const b = $("aplay"); b.setAttribute("aria-label", agent.playing ? "Pause" : "Play"); b.replaceChildren(icon(agent.playing ? "i-pause" : "i-play")); }
-function pickEp(ep, btn) {
-  [...$("epbtns").children].forEach((o) => o.setAttribute("aria-pressed", String(o === btn)));
-  agent.ep = ep; agent.steps = ep.rows.filter((r) => r.kind === "step"); agent.i = 0;
-  const sc = ep.score, score = $("score");
-  score.replaceChildren();
-  if (sc) {
-    const a = el("span", "good"); a.append(icon("i-check"), document.createTextNode(sc.true_alerts));
-    const b = el("span", "bad"); b.append(icon("i-x"), document.createTextNode(sc.false_alerts));
-    score.append(a, b);
-    score.setAttribute("aria-label", `Scored against FRED boxes: ${sc.true_alerts} true alerts, ${sc.false_alerts} false alerts, ${sc.success ? "success" : "fail"}`);
-    score.title = `${sc.true_alerts} true / ${sc.false_alerts} false alerts vs FRED boxes · ${sc.steps} steps · ${sc.wall_s} s`;
-  }
-  $("stepdots").replaceChildren(...agent.steps.map((r, k) => {
-    const b = el("button"); b.append(icon(NODES[nodeOf(r.tool)].icon)); b.setAttribute("aria-label", `Step ${r.step}: ${r.tool}`);
-    b.addEventListener("click", () => { agent.playing = false; syncPlay(); showStep(k); });
-    return b;
-  }));
-  syncPlay(); showStep(0); schedule();
-}
-function schedule() {
-  clearTimeout(agent.timer);
-  if (!agent.playing || current !== 4) return;
-  agent.timer = setTimeout(() => { showStep(agent.i + 1 >= agent.steps.length ? 0 : agent.i + 1); schedule(); }, agent.i + 1 >= agent.steps.length ? 3200 : 1700);
-}
-function showStep(k) {
-  agent.i = k;
-  const steps = agent.steps, r = steps[k];
-  const counts = NODES.map(() => 0);
-  steps.slice(0, k + 1).forEach((s) => counts[nodeOf(s.tool)]++);
-  const ni = nodeOf(r.tool);
-  [...$("flow").children].forEach((n, j) => {
-    n.classList.toggle("seen", counts[j] > 0); n.classList.toggle("now", j === ni);
-    n.querySelector(".count").textContent = counts[j] ? `×${counts[j]}` : "";
-  });
-  [...$("stepdots").children].forEach((b, j) => { b.classList.toggle("seen", j < k); b.classList.toggle("now", j === k); b.setAttribute("aria-current", String(j === k)); });
-  const card = $("stepcard"), bf = brief(r);
-  const body = el("div"); body.append(el("div", "what", bf.what), el("div", "sub", `${r.tool} · ${bf.sub}`));
-  const sr = el("span", "sr-only", `Step ${r.step} of ${steps.length}: ${r.tool}. ${r.why || ""} Result: ${bf.what}.`); body.append(sr);
-  if (r.tool === "ask_human") body.append(approval(r));
-  card.replaceChildren(icon(NODES[ni].icon, "ic bigic"), body, el("span", "stepn", `${r.step}/${steps.length}`));
-}
-function approval(r) {
-  const box = el("div", "approve");
-  const rec = el("span", "rec");
-  rec.title = r.result ? `In the recorded run: ${r.result.responder}` : "";
+function askCard(r, k, steps, li) {
+  const prior = steps.slice(0, k).reverse().find((s) => s.result && s.result.verdict === "hum");
+  const hz = prior ? Math.round(prior.result.peak_hz) : null;
+  li.classList.add("ask");
+  const top = el("div", "top"); top.append(icon("i-human"), el("span", "n", String(r.step)));
+  const q = el("div", "q", hz ? `Drone humming at ${hz} Hz. Raise the alert?` : "Raise the alert?");
+  const acts = el("div", "acts"), rec = el("span", "rec");
   const send = async (decision) => {
-    agent.playing = false; syncPlay(); clearTimeout(agent.timer);
     try {
       const res = await fetch("/api/approve", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ episode: agent.ep.episode, step: r.step, decision }) });
       if (!res.ok) throw new Error(res.status);
@@ -463,26 +418,90 @@ function approval(r) {
     } catch (e) { rec.textContent = "offline"; }
   };
   const a = el("button", "btn yes"); a.append(icon("i-check"), document.createTextNode("Approve")); a.addEventListener("click", () => send("approve"));
-  const j = el("button", "btn"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
-  box.append(icon("i-human"), a, j, rec);
-  return box;
+  const j = el("button", "btn no"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
+  acts.append(a, j, rec);
+  li.append(top, q, acts);
+  li.setAttribute("aria-label", `Step ${r.step}, decide: the agent asks a human (severity ${r.args && r.args.severity}). In the recorded run: ${r.result ? r.result.responder : "no answer"}. Your Approve or Reject is recorded on the server only.`);
+  li.title = r.args && r.args.question ? r.args.question : "";
+  return li;
+}
+
+function focusCard(k) {
+  const items = [...$("cards").children];
+  items.forEach((c, j) => c.classList.toggle("now", j === k));
+  const st = items[k] ? items[k].dataset.st : null;
+  document.querySelectorAll("#loop .st").forEach((s) => s.classList.toggle("on", s.dataset.st === st));
+}
+
+function stopPlay() {
+  clearTimeout(agent.timer); agent.run = false;
+  const b = $("replay"); b.classList.remove("running"); b.replaceChildren(icon("i-play"), el("span", "", "Play")); b.setAttribute("aria-label", "Play the agent steps one by one");
+}
+
+function play() {
+  if (agent.run) { stopPlay(); [...$("cards").children].forEach((c) => { c.style.visibility = ""; }); focusCard(-1); return; }
+  agent.run = true;
+  const b = $("replay"); b.classList.add("running"); b.replaceChildren(icon("i-pause"), el("span", "", "Stop")); b.setAttribute("aria-label", "Stop the replay");
+  const items = [...$("cards").children];
+  $("cards").classList.remove("anim");
+  items.forEach((c) => { c.style.visibility = "hidden"; });
+  let k = 0;
+  const step = () => {
+    if (!agent.run) return;
+    items[k].style.visibility = ""; focusCard(k);
+    if (!reduce) items[k].animate([{ opacity: 0, transform: "translateY(14px) scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 380, easing: "cubic-bezier(.2,.8,.2,1)" });
+    k += 1;
+    if (k < items.length) agent.timer = setTimeout(step, reduce ? 300 : 750); else stopPlay();
+  };
+  step();
+}
+
+function slide4() {
+  const eps = tracesDoc.episodes || [];
+  const bar = $("epbtns");
+  if (!eps.length) { $("cards").append(el("li", "nohum", "pending")); return; }
+  eps.forEach((ep) => {
+    const kind = epKind(ep), rule = ep.planner === "rule", sc = ep.score;
+    const b = el("button", "btn"); b.append(icon(rule ? "i-rule" : EP_ICON[kind]), el("span", "", rule ? "rules only" : EP_LABEL[kind]));
+    b.setAttribute("aria-label", `${rule ? "Fixed-rule baseline" : `Agent planned by ${ep.model || ep.planner}`}, ${EP_LABEL[kind]} episode (${ep.episode})${sc ? `: ${sc.true_alerts} true alerts, ${sc.false_alerts} false alerts against FRED boxes, ${sc.steps} steps` : ""}`);
+    b.title = `${rule ? "fixed rules" : ep.model || ep.planner} · ${ep.episode}${sc ? ` · ${sc.true_alerts} true / ${sc.false_alerts} false alerts` : ""}`;
+    b.addEventListener("click", () => pickEp(ep, b));
+    bar.append(b);
+  });
+  $("replay").addEventListener("click", play);
+  stopPlay();
+  const first = Math.max(0, eps.findIndex((e) => e.planner !== "rule" && epKind(e) === "drone"));
+  pickEp(eps[first], bar.children[first]);
+}
+
+function pickEp(ep, btn) {
+  stopPlay();
+  [...$("epbtns").children].forEach((o) => o.setAttribute("aria-pressed", String(o === btn)));
+  agent.ep = ep;
+  const steps = ep.rows.filter((r) => r.kind === "step");
+  const host = $("cards");
+  host.classList.remove("anim"); void host.offsetWidth; host.classList.add("anim");
+  host.replaceChildren(...steps.map((r, k) => cardFor(r, k, steps)));
+  focusCard(-1);
 }
 
 function clipCards() {
   const host = $("clipcards");
   host.replaceChildren(...droneClips.map((c) => {
-    const b = el("button", "cc"), HZ = hzOf(c), h = c.hum || {};
-    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}: ${HZ ? "median " + HZ + " Hz" : "no clean peak"}, ${h.n_clear} of ${h.n_windows} windows pass the hum test. Show this clip.`);
+    const HZ = hzOf(c), h = c.hum || {}, b = el("button", "cc" + (HZ ? "" : " hard"));
+    b.dataset.clip = c.id;
+    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}${HZ ? "" : ", hard case"}: ${HZ ? "median " + HZ + " Hz" : "no clean peak"}, ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test. Show this clip.`);
+    b.title = `${modelOf(c)} · FRED seq ${c.seq} · ${h.n_clear}/${h.n_windows} windows pass`;
     const cv = el("canvas"); cv.width = 320; cv.height = 180; const ctx = cv.getContext("2d");
     const fi = Math.floor(c.frames.length / 2), f = c.frames[fi], img = loadFrames(c)[fi];
     const paint = () => {
       ctx.drawImage(img, 0, 0, cv.width, cv.height);
       const sx = cv.width / c.width, sy = cv.height / c.height;
-      f.boxes.filter((x) => x.kind === "drone").forEach(({ box: [x0, y0, x1, y1] }) => { ctx.lineWidth = 2; ctx.strokeStyle = HZ ? HUM : "#fff"; ctx.strokeRect(x0 * sx - 3, y0 * sy - 3, (x1 - x0) * sx + 6, (y1 - y0) * sy + 6); });
+      f.boxes.filter((x) => x.kind === "drone").slice(0, 1).forEach(({ box: [x0, y0, x1, y1] }) => { ctx.lineWidth = 3; ctx.strokeStyle = HZ ? HUM : "#fff"; ctx.strokeRect(x0 * sx - 4, y0 * sy - 4, (x1 - x0) * sx + 8, (y1 - y0) * sy + 8); });
     };
     if (img.complete && img.naturalWidth) paint(); else img.addEventListener("load", paint);
-    b.append(cv, el("span", "model", `${modelOf(c)} · seq ${c.seq}`), el("span", "v" + (HZ ? "" : " none"), HZ ? `${Math.round(HZ)} Hz` : "no clean peak"),
-      el("span", "n", `${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test`));
+    const meter = el("span", "meter"); const fill = el("i"); fill.style.width = `${h.n_windows ? (100 * h.n_clear / h.n_windows) : 0}%`; meter.append(fill);
+    b.append(cv, el("span", "model", HZ ? shortName(c) : `hard · ${shortName(c)}`), el("span", "v" + (HZ ? "" : " none"), HZ ? `${Math.round(HZ)} Hz` : "no peak"), meter);
     b.addEventListener("click", () => { setClip(c); go(0); });
     return b;
   }));
@@ -492,18 +511,26 @@ async function slide5() {
   clipCards();
   const d = await fetch("/api/results").then((r) => r.json()).catch(() => null);
   const f = d && d.false_alarms, fa = $("fa");
-  const cell = (ics, label, v) => {
-    const c = el("div", "facell"); const who = el("div", "who"); ics.forEach((i) => who.append(icon(i)));
-    c.setAttribute("aria-label", `${label}: ${v}`);
+  const ok = f && f.rgb_only && f.rgb_event;
+  const mins = ok && /([\d.]+) min/.exec(f.rgb_only.note || "");
+  if (mins) $("fatag").textContent = `false alarms · ${Math.round(+mins[1])} min of test video`;
+  const cell = (ics, label, v, good) => {
+    const c = el("div", "facell" + (good ? " good" : "")); const who = el("div", "who"); ics.forEach((i) => who.append(icon(i))); who.append(el("span", "", label));
+    c.setAttribute("aria-label", `${label}: ${v} false alarms`);
     c.append(who, el("div", "v" + (v === "pending" ? " pending" : ""), v)); return c;
   };
-  const ok = f && f.rgb_only && f.rgb_event;
-  fa.append(cell(["i-camera"], "RGB only", ok ? String(f.rgb_only.false_alarms) : "pending"), cell(["i-camera", "i-wave"], "RGB plus events", ok ? String(f.rgb_event.false_alarms) : "pending"));
+  if (ok) {
+    const a = f.rgb_only.false_alarms, b2 = f.rgb_event.false_alarms, drop = el("div", "fadrop");
+    drop.append(icon("i-right"), el("span", "", `−${Math.round(100 * (1 - b2 / a))}%`));
+    drop.setAttribute("aria-label", `${Math.round(100 * (1 - b2 / a))}% fewer false alarms with the hum check${f.rgb_only.recall === f.rgb_event.recall ? `, at the same recall ${f.rgb_event.recall}` : ""}. ${f.rgb_event.note}. Source: ${f.source}`);
+    fa.append(cell(["i-camera"], "RGB", a.toLocaleString()), drop, cell(["i-camera", "i-sine"], "+ hum", b2.toLocaleString(), true));
+    fa.title = `${f.rgb_only.note}; ${f.rgb_event.note}. ${f.source}`;
+  } else fa.append(cell(["i-camera"], "RGB", "pending"), el("span"), cell(["i-camera", "i-sine"], "+ hum", "pending"));
   const b = d && d.bench, bb = $("benchbars");
   if (!b || b.status !== "ok") { bb.append(el("div", "win5", "pending")); return; }
   const short = { connectedComponentsWithStats: "components", dnn_forward: "DNN", GaussianBlur: "blur", cvtColor: "cvtColor", resize: "resize", dft: "DFT" };
   const wins = b.ops.filter((o) => o.graviton4_ms < o.x86_ms).length;
-  const w = $("winner"); w.append(document.createTextNode(`${wins}/${b.ops.length}`)); const sm = el("small", "", "faster on Graviton4"); w.append(sm);
+  const w = $("winner"); w.append(document.createTextNode(`${wins}/${b.ops.length}`)); w.append(el("small", "", "faster on Graviton4"));
   w.setAttribute("aria-label", `Graviton4 ${b.graviton4.instance} faster than x86 ${b.x86.instance} on ${wins} of ${b.ops.length} OpenCV 5 operations, ${b.graviton4.threads} threads, p50 ms. Source ${b.graviton4.file} and ${b.x86.file}.`);
   b.ops.forEach((o) => {
     const m = Math.max(o.graviton4_ms, o.x86_ms), r = o.x86_ms / o.graviton4_ms;
@@ -518,11 +545,9 @@ async function slide5() {
 }
 function growBars() { document.querySelectorAll(".bbrow .b").forEach((b) => { b.style.transform = "scaleX(1)"; }); }
 
-async function getSpec(clip, frame, box, win) {
+function getSpec(clip, frame, box, win) {
   const f = clip.frames[frame], b = f.boxes[box];
-  const r = await fetch("/api/spectrum", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clip.id, box: b.box, t: f.t, window_ms: win, frame, box_index: box }) });
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
+  return fetchSpec({ clip: clip.id, box: b.box, t: f.t, window_ms: win, frame, box_index: box });
 }
 function firstBox(clip, kind) {
   const mid = Math.floor(clip.frames.length / 2);
@@ -548,8 +573,8 @@ function specPlot(ctx, d, box, opt) {
   let first = true;
   d.power.forEach((p, k) => { const f = k * d.df; if (f < f0 || f > f1) return; const x = X(f), y = Y(p); if (first) ctx.moveTo(x, y); else ctx.lineTo(x, y); first = false; });
   ctx.stroke();
-  (opt.ticks || [0, 300, 600, 900, 1200]).forEach((f) => txt(ctx, String(f), X(f), y1 + 22, { align: "center" }));
-  txt(ctx, "Hz", x1, y1 + 22, { align: "right" });
+  const tk = opt.ticks || [0, 300, 600, 900, 1200];
+  tk.forEach((f, j) => txt(ctx, j === tk.length - 1 ? `${f} Hz` : String(f), j === tk.length - 1 ? x1 : X(f), y1 + 22, { align: j === tk.length - 1 ? "right" : "center" }));
   if (d.peak_hz > 0) {
     const pv = d.power[Math.round(d.peak_hz / d.df)] || 1, px = X(d.peak_hz), py = Y(pv), right = px < x1 - 150;
     if (d.clear) { ctx.save(); ctx.shadowColor = HUM; ctx.shadowBlur = 22; ctx.fillStyle = HUM; ctx.beginPath(); ctx.arc(px, py, 8, 0, 7); ctx.fill(); ctx.restore(); }
@@ -559,26 +584,31 @@ function specPlot(ctx, d, box, opt) {
 }
 
 const M = { init: false, ready: false, clipId: null };
+function mathTabs() {
+  const tabs = $("mtabs"), panels = [...document.querySelectorAll("#mgrid .mp")];
+  [["i-camera", "30 fps"], ["i-wave", "dft"], ["i-sigma", "score"], ["i-clock", "window"]].forEach(([ic, lab], j) => {
+    const b = el("button", "btn"); b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(j === 0)); b.append(icon(ic), el("span", "", lab));
+    b.addEventListener("click", () => { [...tabs.children].forEach((o, k) => o.setAttribute("aria-selected", String(k === j))); panels.forEach((p, k) => p.classList.toggle("on", k === j)); });
+    tabs.append(b);
+  });
+}
 async function slideMath() {
+  if (!M.initP) M.initP = summaryP.then((sm) => { const ht = sm.hum_test; M.fs = ht.fs_hz; M.amb = ht.ambiguous_score; M.clear = ht.clear_score; M.local = ht.local_hz; });
+  await M.initP;
   if (!M.init) {
     M.init = true;
-    const sm = await fetch("/api/summary").then((r) => r.json());
-    const ht = sm.hum_test;
-    M.fs = ht.fs_hz; M.amb = ht.ambiguous_score; M.clear = ht.clear_score; M.local = ht.local_hz;
-    ["x(t)", "·w(t)", "|X(f)|²"].forEach((lab, j) => { const b = el("button", "btn", lab); b.addEventListener("click", () => { M.stage = j; M.ftHold = performance.now() + 8000; drawFt(); }); $("ftbtns").append(b); });
-    const ops = [["i-hist", "calcHist"], ["i-wave", "dft"], ["i-blobs", "connectedComponentsWithStats"], ["i-net", "dnn"]];
+    ["x(t)", "·w(t)", "|X(f)|²"].forEach((lab, j) => { const b = el("button", "btn", lab); b.addEventListener("click", () => { M.stage = j; drawFt(); }); $("ftbtns").append(b); });
+    const ops = [["i-hist", "calcHist"], ["i-wave", "dft"], ["i-blobs", "connectedComponents"], ["i-net", "dnn"]];
     const row = $("cvrow");
     ops.forEach(([ic, n], j) => { if (j) row.append(el("span", "arr", "→")); const o = el("span", "op"); o.append(icon(ic), document.createTextNode("cv." + n)); row.append(o); });
     M.opEls = [...row.querySelectorAll(".op")];
     $("mwin").addEventListener("input", () => { clearTimeout(M.wt); M.wt = setTimeout(drawWin, 120); });
-    M.stage = 0;
+    M.stage = 2;
     const t0 = performance.now();
     const loop = (now) => {
       if (current === 3 && M.ready) {
         const t = (now - t0) / 1000;
         drawNyq(reduce ? 0 : t);
-        if (!reduce && !(M.ftHold > now)) { const st = Math.floor(t / 2.4) % 3; if (st !== M.stage) { M.stage = st; drawFt(); } }
-        M.opEls.forEach((o, j) => o.classList.toggle("lit", reduce ? true : Math.floor(t / 0.8) % (M.opEls.length + 1) >= j + 1));
       }
       requestAnimationFrame(loop);
     };
@@ -588,10 +618,8 @@ async function slideMath() {
   M.ready = false; M.clipId = cur.clip.id;
   const clip = cur.clip, ref = cur.HZ ? clip : droneClips.find((c) => hzOf(c)), HZ = hzOf(ref);
   M.hz = HZ; M.refName = `${shortName(ref)} · ${Math.round(HZ)} Hz`;
-  $("nyqwho").textContent = cur.HZ ? "" : `(${M.refName}, this clip has no clean hum)`;
   const k = Math.round(HZ / 30), alias = Math.abs(HZ - k * 30);
   M.alias = alias;
-  $("fx-nyq").innerHTML = `f<sub>alias</sub> = |f &minus; k&middot;30| = |${Math.round(HZ)} &minus; ${k}&middot;30| = ${alias.toFixed(1)} Hz &nbsp;&middot;&nbsp; f<sub>Nyq</sub> = f<sub>s</sub>/2 : 15 Hz vs ${M.fs / 2000} kHz`;
   const [hf, hb] = firstBox(clip, "drone"), bgb = firstBox(bg, "other");
   M.hf = hf; M.hb = hb;
   const fCloud = clip.frames.findIndex((f) => f.t === clip.cloud.t_end);
@@ -603,7 +631,6 @@ async function slideMath() {
   for (let i = 0; i < cb.length / 4; i++) sig[Math.min(N - 1, Math.floor(cb[4 * i + 2] / (clip.cloud.ms * 1000) * N))] += cb[4 * i + 3] ? 1 : -1;
   M.sig = sig; M.N = N; M.smax = Math.max(...sig.map(Math.abs)) || 1;
   $("sr-math-live").textContent = `Live numbers for ${modelOf(clip)}, FRED sequence ${clip.seq}: ${cur.HZ ? `measured blade-pass ${HZ} Hz aliases at 30 fps to ${alias.toFixed(1)} Hz (k = ${k})` : `no clean hum; the aliasing panel uses ${M.refName}`}. Event bins of ${1e3 / M.fs} ms give a Nyquist limit of ${M.fs / 2} Hz. Drone box score at 100 ms: ${fmt(d100.snr, 1)} (hum above ${M.clear}); no-drone box score: ${dbg ? fmt(dbg.snr, 1) : "n/a"} (ambiguous above ${M.amb}).`;
-  chain(clip);
   M.ready = true;
   drawFt(); drawSnr(); drawWin();
 }
@@ -618,6 +645,7 @@ function drawNyq(t) {
   blades(nc, 470, 130, R, th(Math.floor(t * 30) / 30), 0.9, INK);
   [[170, 130], [470, 130]].forEach(([x, y]) => { nc.fillStyle = "#2a2a2a"; nc.beginPath(); nc.arc(x, y, 12, 0, 7); nc.fill(); });
   txt(nc, `${Math.round(HZ)} Hz`, 640, 110, { font: "500 30px 'JetBrains Mono', monospace", color: HUM });
+  if (!cur.HZ) txt(nc, `(${M.refName})`, 640, 60, { font: "400 16px 'JetBrains Mono', monospace" });
   txt(nc, `${alias.toFixed(1)} Hz`, 640, 170, { font: "500 30px 'JetBrains Mono', monospace", color: INK });
   txt(nc, "real propeller", 170, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
   txt(nc, "what 30 fps sees", 470, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
@@ -629,8 +657,7 @@ function drawNyq(t) {
   txt(nc, "30 fps sees ≤15 Hz", ax0, ay - 42, { font: "500 16px 'JetBrains Mono', monospace", color: "#444" });
   txt(nc, `events see ≤${M.fs / 2000} kHz`, logx(M.fs / 2, ax0, ax1), ay - 42, { font: "500 16px 'JetBrains Mono', monospace", color: "#444", align: "right" });
   nc.strokeStyle = INK; nc.lineWidth = 2; nc.beginPath(); nc.moveTo(ax0, ay); nc.lineTo(ax1, ay); nc.stroke();
-  [1, 10, 100, 1000, 10000].forEach((f) => { const x = logx(f, ax0, ax1); nc.fillStyle = "#777"; nc.fillRect(x - 1, ay, 2, 8); txt(nc, f >= 1000 ? f / 1000 + "k" : String(f), x, ay + 28, { font: "400 16px 'JetBrains Mono', monospace", align: "center" }); });
-  txt(nc, "Hz", ax1, ay + 28, { font: "400 16px 'JetBrains Mono', monospace", align: "right" });
+  [1, 10, 100, 1000, 10000].forEach((f) => { const x = logx(f, ax0, ax1), last = f === 10000; nc.fillStyle = "#777"; nc.fillRect(x - 1, ay, 2, 8); txt(nc, last ? "10k Hz" : f >= 1000 ? f / 1000 + "k" : String(f), last ? ax1 : x, ay + 28, { font: "400 16px 'JetBrains Mono', monospace", align: last ? "right" : "center" }); });
   const xh = logx(HZ, ax0, ax1), xa = logx(alias, ax0, ax1);
   nc.strokeStyle = HUM; nc.lineWidth = 2.5; nc.setLineDash([6, 5]); nc.beginPath(); nc.moveTo(xh, ay - 38); nc.quadraticCurveTo((xh + xa) / 2, ay - 110, xa + 6, ay - 38); nc.stroke(); nc.setLineDash([]);
   txt(nc, "folds down", (xh + xa) / 2, ay - 84, { font: "400 15px 'JetBrains Mono', monospace", color: HUM, align: "center" });
@@ -672,7 +699,7 @@ function drawSnr() {
   const med = loc[Math.floor(loc.length / 2)];
   scx.strokeStyle = INK; scx.lineWidth = 2; scx.setLineDash([8, 6]); scx.beginPath(); scx.moveTo(X(d.peak_hz - M.local), Y(med)); scx.lineTo(X(d.peak_hz + M.local), Y(med)); scx.stroke(); scx.setLineDash([]);
   txt(scx, "median within ±100 Hz", X(d.peak_hz - M.local) + 4, Y(med) + 22, { font: "500 16px 'JetBrains Mono', monospace", color: INK });
-  const gx = 770, gy0 = 24, gy1 = H - 40, GY = (v) => gy1 - Math.log10(Math.max(v, 1)) / 4 * (gy1 - gy0);
+  const gx = 770, gy0 = 24, gy1 = H - 40, GY = (v) => gy1 - Math.min(4, Math.log10(Math.max(v, 1))) / 4 * (gy1 - gy0);
   scx.fillStyle = "rgba(255,90,31,.16)"; scx.fillRect(gx - 26, gy0, 52, GY(M.clear) - gy0);
   scx.fillStyle = "#E6E6E6"; scx.fillRect(gx - 26, GY(M.clear), 52, GY(M.amb) - GY(M.clear));
   scx.strokeStyle = INK; scx.lineWidth = 2; scx.strokeRect(gx - 26, gy0, 52, gy1 - gy0);
@@ -694,56 +721,84 @@ async function drawWin() {
   const d = await getSpec(clip, M.hf, M.hb, w);
   if (id !== M.wreq || clip !== cur.clip) return;
   mc.fillStyle = "#FEFEFE"; mc.fillRect(0, 0, mp.width, mp.height);
-  specPlot(mc, d, [40, 14, mp.width - 270, mp.height - 30], { f0: 100, f1: 1000, ticks: [100, 400, 700, 1000] });
-  txt(mc, `Δf = ${(1000 / w).toFixed(1)} Hz`, mp.width - 250, 60, { font: "500 30px 'JetBrains Mono', monospace", color: INK });
-  txt(mc, `score ${Math.round(d.snr)}`, mp.width - 250, 110, { font: "500 24px 'JetBrains Mono', monospace", color: d.clear ? HUM : "#777" });
-  txt(mc, `${d.compute_ms ?? "–"} ms live, OpenCV 5`, mp.width - 250, 150, { font: "400 18px 'JetBrains Mono', monospace" });
+  specPlot(mc, d, [40, 20, mp.width - 280, mp.height - 34], { f0: 100, f1: 1000, ticks: [100, 400, 700, 1000] });
+  txt(mc, `Δf = ${(1000 / w).toFixed(1)} Hz`, mp.width - 250, 90, { font: "500 32px 'JetBrains Mono', monospace", color: INK });
+  txt(mc, `score ${Math.round(d.snr)}`, mp.width - 250, 160, { font: "500 32px 'JetBrains Mono', monospace", color: d.clear ? HUM : "#777" });
+  mp.title = `${d.window_ms} ms window, peak ${d.peak_hz} Hz, score ${d.snr}, ${d.compute_ms ?? "–"} ms live on the server with OpenCV 5`;
 }
 
-function chain(clip) {
-  const eps = tracesDoc.episodes || [];
-  const ep = eps.find((e) => e.episode === clip.id && e.planner !== "rule") || eps.find((e) => e.planner !== "rule") || eps[0];
-  const host = $("chain");
-  if (!ep) { host.replaceChildren(); return; }
-  const alias2 = {}, key = (b) => JSON.stringify(b), root = (k2) => (alias2[k2] ? root(alias2[k2]) : k2);
-  const groups = {}, order = [], alerted = new Set();
-  ep.rows.filter((r) => r.kind === "step" && r.guard === "ok").forEach((r) => {
-    if (r.tool === "track" && r.result && r.result.box) alias2[key(r.result.box)] = key(r.args.box);
-    if (["box_spectrum", "request_window"].includes(r.tool) && r.result && r.result.verdict) {
-      const g = root(key(r.args.box)); if (!groups[g]) { groups[g] = []; order.push(g); } groups[g].push(r);
-    }
-    if (r.tool === "raise_alert") alerted.add(root(key(r.args.box)));
-  });
-  const head = el("div", "row", `agent trace, ${ep.planner}, FRED seq ${(clips.find((c) => c.id === ep.episode) || {}).seq || ep.episode}: window · score`);
-  host.replaceChildren(head, ...order.map((g) => {
-    const row = el("div", "row"); row.append(icon(alerted.has(g) ? "i-drone" : "i-frame"));
-    groups[g].forEach((r, j) => {
-      if (j) { const a = el("span", "", "→"); if (r.tool === "request_window") a.append(icon("i-clock")); row.append(a); }
-      const c = el("span", "chip " + r.result.verdict, `${r.result.window_ms} ms · ${Math.round(r.result.snr)}`);
-      c.title = `step ${r.step}: ${r.tool}, ${r.result.window_ms} ms window, score ${r.result.snr}, ${r.result.verdict}, ${r.result.peak_hz} Hz`;
-      row.append(c);
-    });
-    row.append(el("span", "", "→"), icon(alerted.has(g) ? "i-alert" : "i-x"));
-    return row;
-  }));
-  host.title = `Real ${ep.planner} trace, episode ${ep.episode}`;
+const logo = { hz: null, from: 0, shown: 0, t0: 0, phase: 0, last: 0 };
+function drawLogo(now) {
+  const t = now / 1000, dt = logo.last ? Math.min(0.05, t - logo.last) : 0; logo.last = t;
+  const hz = logo.hz;
+  const eye = $("eye"), e = eye.getContext("2d"), W = eye.width, H = eye.height, cx = W / 2, cy = H / 2;
+  e.clearRect(0, 0, W, H);
+  const almond = () => { e.beginPath(); e.moveTo(4, cy); e.quadraticCurveTo(cx, -10, W - 4, cy); e.quadraticCurveTo(cx, H + 10, 4, cy); e.closePath(); };
+  e.save(); almond(); e.clip();
+  const N = 28, flare = hz ? Math.round((Math.min(Math.max(hz, 150), 1000) - 150) / 850 * (N - 1)) : -1;
+  e.lineCap = "round";
+  for (let i = 0; i < N; i++) {
+    const a = -Math.PI / 2 + i / N * 2 * Math.PI;
+    const pulse = 0.5 + 0.5 * Math.sin(t * (hz ? 5 + hz / 120 : 2) + i * 2.3) * Math.sin(t * 1.7 + i * 0.9);
+    const isF = i === flare, beat = isF ? 0.75 + 0.25 * Math.sin(t * Math.PI * 2 * (hz / 100)) : 0;
+    const len = isF ? 15 + 4 * beat : 3 + (hz ? 7 : 3) * pulse;
+    e.strokeStyle = isF ? HUM : hz ? "#3a3a3a" : "#9a9a9a"; e.lineWidth = isF ? 3.6 : 2.2;
+    e.beginPath(); e.moveTo(cx + Math.cos(a) * 9, cy + Math.sin(a) * 9); e.lineTo(cx + Math.cos(a) * (9 + len), cy + Math.sin(a) * (9 + len)); e.stroke();
+  }
+  e.fillStyle = INK; e.beginPath(); e.arc(cx, cy, 7, 0, 7); e.fill();
+  e.fillStyle = "#fff"; e.beginPath(); e.arc(cx - 2.4, cy - 2.4, 1.8, 0, 7); e.fill();
+  e.restore();
+  almond(); e.strokeStyle = INK; e.lineWidth = 3; e.lineJoin = "round"; e.stroke();
+  const sv = $("sine"), s = sv.getContext("2d"), SW = sv.width, SH = sv.height;
+  s.clearRect(0, 0, SW, SH);
+  logo.phase += dt * (hz ? hz / 60 : 0.6) * 2 * Math.PI;
+  s.lineWidth = 3.4; s.lineCap = "round"; s.lineJoin = "round"; s.strokeStyle = hz ? HUM : "#9a9a9a"; s.beginPath();
+  for (let x = 3; x <= SW - 3; x += 1) {
+    const y = SH / 2 + (hz ? SH * 0.34 : SH * 0.06) * Math.sin(2 * Math.PI * (x / SW) * 2 - logo.phase);
+    if (x === 3) s.moveTo(x, y); else s.lineTo(x, y);
+  }
+  s.stroke();
+  const c = $("hzc"), u = Math.min(1, (now - logo.t0) / 700), k = 1 - Math.pow(1 - u, 3);
+  if (hz) { logo.shown = logo.from + (hz - logo.from) * k; c.textContent = `${Math.round(logo.shown)} Hz`; } else c.textContent = "— Hz";
+  c.classList.toggle("none", !hz);
+}
+function logoLoop(now) { drawLogo(now); requestAnimationFrame(logoLoop); }
+function setLogoHz(hz) {
+  logo.from = logo.shown || (hz ? hz * 0.6 : 0); logo.hz = hz; logo.t0 = performance.now();
+  $("hzc").setAttribute("aria-label", hz ? `Selected clip: measured propeller frequency ${Math.round(hz)} Hz` : "Selected clip: hard case, no clean propeller frequency");
+  if (reduce) { logo.t0 = -1e9; drawLogo(performance.now()); }
 }
 
 function clipBar() {
   const bar = $("clipbar");
   droneClips.forEach((c) => {
-    const b = el("button", "btn"), HZ = hzOf(c);
-    b.append(document.createTextNode(shortName(c) + " "), el("b", "", HZ ? `${Math.round(HZ)} Hz` : "no clean peak"));
-    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}, ${HZ ? "median hum " + HZ + " Hz" : "no clean peak"}: ${c.title}`);
+    const HZ = hzOf(c), b = el("button", "btn" + (HZ ? "" : " hard"));
+    b.append(el("span", "", shortName(c)), el("b", "", HZ ? `${Math.round(HZ)} Hz` : "hard case"));
+    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}, ${HZ ? "median hum " + HZ + " Hz" : "hard case, no clean peak"}: ${c.title}`);
     b.dataset.clip = c.id;
     b.addEventListener("click", () => setClip(c));
     bar.append(b);
+  });
+  $("sr-clips").textContent = `Clip picker, all FRED test sequences: ${droneClips.map((c) => `${modelOf(c)} (sequence ${c.seq}, ${hzOf(c) ? hzOf(c) + " Hz, " + c.hum.n_clear + " of " + c.hum.n_windows + " windows pass" : "hard case, " + c.hum.n_clear + " of " + c.hum.n_windows + " windows pass"})`).join("; ")}. The no-drone side is FRED sequence ${bg.seq}. Picking a clip re-runs slides 1 to 4 on it.`;
+}
+
+function preload() {
+  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 300));
+  idle(() => {
+    [...droneClips, bg].forEach((c) => {
+      loadFrames(c);
+      if (c.cloud.crop) bufOf(c.cloud.crop.src);
+      const fb = firstBox(c, c.drone ? "drone" : "other");
+      if (fb) getSpec(c, fb[0], fb[1], 100).catch(() => {});
+    });
+    slideMath();
   });
 }
 
 async function setClip(clip) {
   if (cur.clip === clip) return;
   cur.clip = clip; cur.HZ = hzOf(clip); cur.crop = null;
+  setLogoHz(cur.HZ);
   document.querySelectorAll("#clipbar [data-clip]").forEach((b) => { const on = b.dataset.clip === clip.id; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
   const crop = clip.cloud.crop ? await bufOf(clip.cloud.crop.src) : null;
   if (cur.clip !== clip) return;
@@ -770,7 +825,7 @@ function enter(i) {
   if (i === 1 && cur.crop) slide2();
   if (i === 2) Object.values(spec.sides).forEach((s) => { if (s.data && !s.played) { s.played = true; animateSpec(s.svg, s.data, true); } });
   if (i === 3 && cur.crop) slideMath();
-  if (i === 4) schedule(); else clearTimeout(agent.timer);
+  if (i !== 4 && agent.run) stopPlay();
   if (i === 5) requestAnimationFrame(growBars);
 }
 deck.addEventListener("scroll", () => { clearTimeout(deck._t); deck._t = setTimeout(() => enter(Math.round(deck.scrollLeft / deck.clientWidth)), 80); });
@@ -788,8 +843,6 @@ addEventListener("keydown", (e) => {
 let wheelLock = 0;
 deck.addEventListener("wheel", (e) => {
   if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-  const s = slides[current];
-  if (s.scrollHeight > s.clientHeight + 4) { const atTop = s.scrollTop <= 0, atBottom = s.scrollTop + s.clientHeight >= s.scrollHeight - 2; if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) return; }
   e.preventDefault();
   const now = performance.now();
   if (now < wheelLock || Math.abs(e.deltaY) < 8) return;
@@ -797,15 +850,20 @@ deck.addEventListener("wheel", (e) => {
   go(current + (e.deltaY > 0 ? 1 : -1));
 }, { passive: false });
 addEventListener("resize", () => deck.scrollTo({ left: current * deck.clientWidth }));
+addEventListener("hashchange", () => { const k = slides.findIndex((s) => location.hash === "#" + s.id); if (k >= 0 && k !== current) go(k); });
 let drag = null;
 deck.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch" || e.button !== 0 || e.target.closest("button,input,a,#cloud,canvas.thumb,.thumb")) return; drag = { x: e.clientX, y: e.clientY }; });
 addEventListener("pointerup", (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(current + (dx < 0 ? 1 : -1)); });
 
 clipBar();
+mathTabs();
+if (reduce) drawLogo(0); else requestAnimationFrame(logoLoop);
 slide1();
 slide3();
 slide4();
 slide5();
-await setClip(droneClips[0]);
+const strongest = droneClips.filter((c) => hzOf(c)).sort((a, b) => b.cloud.crop.n_events - a.cloud.crop.n_events)[0] || droneClips[0];
+await setClip(strongest);
+preload();
 const start = Math.max(0, slides.findIndex((s) => location.hash.startsWith("#" + s.id)));
 go(start, false);
