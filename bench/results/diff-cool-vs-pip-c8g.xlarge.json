@@ -1,6 +1,6 @@
 {
- "base": "D:\\PHD_Take2\\opencv2026\\repo\\bench\\results\\pip-graviton4-c8g.xlarge-samehost.npz",
- "other": "D:\\PHD_Take2\\opencv2026\\repo\\bench\\results\\cool-graviton4-c8g.xlarge.npz",
+ "base": "bench/results/pip-graviton4-c8g.xlarge-samehost.npz",
+ "other": "bench/results/cool-graviton4-c8g.xlarge.npz",
  "rows": [
   {
    "op": "GaussianBlur",

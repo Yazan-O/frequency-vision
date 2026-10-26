@@ -1,7 +1,7 @@
 {
  "generated_utc": "2026-10-26T14:43:14Z",
- "data": "D:\\PHD_Take2\\opencv2026\\repo\\data\\fred_slices",
- "scenarios": "D:\\PHD_Take2\\opencv2026\\repo\\eval\\scenarios.json",
+ "data": "data/fred_slices",
+ "scenarios": "eval/scenarios.json",
  "vision_source": {
   "spectrum": "strobe.freq (lane L1)",
   "detect": "event blobs (agent, cv.connectedComponentsWithStats)"

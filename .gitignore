@@ -6,3 +6,4 @@ data/
 *.hdf5
 *.onnx
 .env
+docs/STORYBOARD.md
