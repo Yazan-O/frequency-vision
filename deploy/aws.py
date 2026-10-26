@@ -77,7 +77,7 @@ def security_group():
     got = ec2.describe_security_groups(Filters=[{"Name": "group-name", "Values": [SG]}, {"Name": "vpc-id", "Values": [vpc]}])["SecurityGroups"]
     if got:
         return got[0]["GroupId"]
-    gid = ec2.create_security_group(GroupName=SG, Description="Strobe HTTP/HTTPS only, no SSH (SSM)", VpcId=vpc, TagSpecifications=tags(SG, "security-group"))["GroupId"]
+    gid = ec2.create_security_group(GroupName=SG, Description="Hertz HTTP/HTTPS only, no SSH (SSM)", VpcId=vpc, TagSpecifications=tags(SG, "security-group"))["GroupId"]
     ec2.authorize_security_group_ingress(GroupId=gid, IpPermissions=[
         {"IpProtocol": "tcp", "FromPort": p, "ToPort": p, "IpRanges": [{"CidrIp": "0.0.0.0/0"}], "Ipv6Ranges": [{"CidrIpv6": "::/0"}]} for p in (80, 443)])
     return gid
@@ -153,7 +153,7 @@ def run(iid, script, timeout=3600):
 def bundle(bkt):
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as t:
-        for p in ("app", "strobe", "pipeline", "agent", "bench", "deploy", "requirements.txt"):
+        for p in ("app", "hertz", "pipeline", "agent", "bench", "deploy", "requirements.txt"):
             if (REPO / p).exists():
                 t.add(REPO / p, arcname=p, filter=lambda x: None if "__pycache__" in x.name or x.name.endswith(".pyc") else x)
     key = f"releases/strobe-{int(time.time())}.tgz"

@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 from .tools import schemas
 
-MODEL = os.environ.get("STROBE_MODEL", "us.anthropic.claude-sonnet-4-6")
+MODEL = os.environ.get("HERTZ_MODEL") or os.environ.get("STROBE_MODEL", "us.anthropic.claude-sonnet-4-6")
 
 
 class PlannerError(Exception):
@@ -109,7 +109,7 @@ class FixedPlanner(GeneratorPlanner):
         yield ("finish", {"verdict": "no_drone", "reason": "schedule ended"}, "done")
 
 
-SYSTEM = """You are Strobe, an active-perception agent that watches one FRED event-camera sequence for drones.
+SYSTEM = """You are Hertz, an active-perception agent that watches one FRED event-camera sequence for drones.
 A drone is confirmed by its propeller hum: a blade-pass peak (hundreds of Hz to kHz) in the event-count spectrum inside its box. Birds, people, trees and flicker do not hum, or hum everywhere at mains multiples.
 Your tools run OpenCV 5 on the real event stream. The clock starts at t_start; detect_frame and track move it forward; spectra can only look back at most 1 s.
 Decide what to look at next from what the tools return:

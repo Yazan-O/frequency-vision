@@ -119,7 +119,7 @@ function applySlide1() {
   $("period").textContent = HZ ? `one blade pass = ${(1000 / HZ).toFixed(1)} ms` : "";
   $("cap-scope").textContent = HZ ? `brighter minus darker pixels in the box, per 0.5 ms, over ${c.cloud.ms} ms. Orange ticks: one per blade pass`
     : `brighter minus darker pixels in the box, per 0.5 ms, over ${c.cloud.ms} ms. No steady rhythm`;
-  $("sr-hum").textContent = HZ ? `Measured blade-pass frequency inside the drone box, FRED sequence ${c.seq} (${model}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with strobe.freq.box_spectrum.`
+  $("sr-hum").textContent = HZ ? `Measured blade-pass frequency inside the drone box, FRED sequence ${c.seq} (${model}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with hertz.freq.box_spectrum.`
     : `FRED sequence ${c.seq} (${model}): ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms pass the hum test, so no blade-pass frequency is claimed.`;
   cur.imgs = loadFrames(c); cur.i = Math.floor(c.frames.length / 2);
   if (!c._bound) { c._bound = true; cur.imgs.forEach((im) => im.addEventListener("load", () => { if (cur.clip === c) cur.drawVideo(); })); }

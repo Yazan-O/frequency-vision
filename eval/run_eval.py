@@ -13,8 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "eval"))
 from fred_rgb import frame_labels
-from strobe import freq
-from strobe.detect import Detector
+from hertz import freq
+from hertz.detect import Detector
 
 FPS = 30.0
 MOTION_LAG = 10
@@ -43,7 +43,7 @@ def infer_seq(a):
     events = None
     h5 = Path(seq_dir, "Event", "events.hdf5")
     if spec_conf is not None and h5.exists():
-        from strobe.events import read_events
+        from hertz.events import read_events
         events = read_events(h5)
     rows, gts, lat = [], [], []
     idx = list(range(0, len(frames), stride))

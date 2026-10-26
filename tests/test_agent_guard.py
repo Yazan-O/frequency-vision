@@ -1,6 +1,6 @@
 import pytest
 
-from strobe.agent.guard import Budget, Reject, State, check
+from hertz.agent.guard import Budget, Reject, State, check
 
 
 def st(**kw):

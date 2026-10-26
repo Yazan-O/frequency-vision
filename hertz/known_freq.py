@@ -5,8 +5,8 @@ from pathlib import Path
 import h5py
 import numpy as np
 
-from strobe.events import read_events, read_evt2
-from strobe.freq import box_spectrum, frequency_map
+from hertz.events import read_events, read_evt2
+from hertz.freq import box_spectrum, frequency_map
 
 
 def sensor_size(h5):

@@ -9,7 +9,7 @@ import cv2 as cv
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from strobe.detect import Detector
+from hertz.detect import Detector
 
 
 def main():

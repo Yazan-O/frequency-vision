@@ -6,7 +6,7 @@ import cv2 as cv
 import numpy as np
 
 try:
-    from strobe import freq as L1
+    from hertz import freq as L1
 except Exception:
     L1 = None
 
@@ -16,7 +16,7 @@ CLEAR_SNR = L1.CLEAR_SNR if L1 else 15.0
 MIN_EVENTS = L1.MIN_EVENTS if L1 else 200
 AMB_SNR = L1.AMBIGUOUS_SNR if L1 else 7.9
 MIN_AMB_EVENTS = 100
-SOURCE = {"spectrum": "strobe.freq (lane L1)" if L1 else "agent stub (lane L1 missing)", "detect": "not loaded yet"}
+SOURCE = {"spectrum": "hertz.freq (lane L1)" if L1 else "agent stub (lane L1 missing)", "detect": "not loaded yet"}
 
 
 def mains_like(f):
@@ -68,7 +68,7 @@ def box_spectrum(sl, box, t0, t1):
 
 def frequency_map(sl, t0, t1):
     if L1 is None:
-        return {"error": "frequency_map needs strobe.freq (lane L1)"}
+        return {"error": "frequency_map needs hertz.freq (lane L1)"}
     ev = _ev(sl, t0, t1)
     fmap, smap = L1.frequency_map(ev, sl.us(t0), sl.us(t1), (0, 0, sl.width, sl.height))
     act = smap > 0
@@ -93,7 +93,7 @@ def frequency_map(sl, t0, t1):
             "hum_spots": spots[:6], "source": SOURCE["spectrum"]}
 
 
-DNN_PATH = os.environ.get("STROBE_DETECTOR_ONNX", str(Path(__file__).resolve().parents[3] / "build" / "models" / "strobe_drone_960x544.onnx"))
+DNN_PATH = os.environ.get("HERTZ_DETECTOR_ONNX") or os.environ.get("STROBE_DETECTOR_ONNX", str(Path(__file__).resolve().parents[3] / "build" / "models" / "strobe_drone_960x544.onnx"))
 DNN_CONF = 0.125
 _DNN = {"net": None, "tried": False, "error": None}
 
@@ -102,9 +102,9 @@ def _dnn():
     if not _DNN["tried"]:
         _DNN["tried"] = True
         try:
-            from strobe.detect import Detector
+            from hertz.detect import Detector
             _DNN["net"] = Detector(DNN_PATH, conf=DNN_CONF)
-            SOURCE["detect"] = f"strobe.detect.Detector (lane L2, {Path(DNN_PATH).name}, score >= {DNN_CONF})"
+            SOURCE["detect"] = f"hertz.detect.Detector (lane L2, {Path(DNN_PATH).name}, score >= {DNN_CONF})"
         except Exception as e:
             _DNN["error"] = f"{type(e).__name__}: {str(e)[:150]}"
             SOURCE["detect"] = f"FALLBACK event blobs (detector unavailable: {_DNN['error']})"

@@ -13,8 +13,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "eval"))
 from fred_rgb import frame_labels
 from run_eval import FPS, ap_curve, load, match, op_point
-from strobe.events import HEIGHT, WIDTH, read_events
-from strobe.freq import frequency_map
+from hertz.events import HEIGHT, WIDTH, read_events
+from hertz.freq import frequency_map
 
 
 def seq_boxes(a):
@@ -76,7 +76,7 @@ def main():
     tv = run(a.trainval_root, out / "eo_trainval", a.stride, a.win_ms, a.min_events, a.tile, a.workers)
     te = run(a.test_root, out / "eo_test", a.stride, a.win_ms, a.min_events, a.tile, a.workers)
     res = {"n_seq_test": len(te), "stride": a.stride, "win_ms": a.win_ms, "min_events_per_tile": a.min_events, "tile_px": a.tile,
-           "method": "strobe.freq.frequency_map on 8x8-pixel tiles over the full 1280x720 sensor; each connected group of active tiles is one box scored by its strongest hum; score threshold chosen on held-out train sequences"}
+           "method": "hertz.freq.frequency_map on 8x8-pixel tiles over the full 1280x720 sensor; each connected group of active tiles is one box scored by its strongest hum; score threshold chosen on held-out train sequences"}
     for iou_thr in (0.5, 0.1):
         D, G, tp, mins = evaluate(tv, iou_thr)
         cand = sorted(set(np.round(np.quantile(D[:, 6], np.linspace(0, 0.99, 60)), 2))) if len(D) else [0.0]

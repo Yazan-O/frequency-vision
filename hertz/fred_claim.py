@@ -7,8 +7,8 @@ import cv2 as cv
 import h5py
 import numpy as np
 
-from strobe.events import HEIGHT, WIDTH, _decode_rows, read_boxes, read_events
-from strobe.freq import _window, box_spectrum
+from hertz.events import HEIGHT, WIDTH, _decode_rows, read_boxes, read_events
+from hertz.freq import _window, box_spectrum
 
 WINDOWS_MS = (20, 50, 100, 200)
 VARIANTS = (("count", "count", False, False), ("signed", "signed", False, False), ("signed_mask", "signed", True, False),
@@ -117,4 +117,4 @@ if __name__ == "__main__":
         dst = out / f"{s}.csv"
         if dst.exists():
             continue
-        print(s, run(root / s, dst, int(os.environ.get("STROBE_STRIDE", 5))), flush=True)
+        print(s, run(root / s, dst, int(os.environ.get("HERTZ_STRIDE") or os.environ.get("STROBE_STRIDE", 5))), flush=True)

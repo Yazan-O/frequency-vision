@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Strobe drone hum</title>
-<meta name="description" content="Strobe confirms drones by their propeller hum: OpenCV 5 on AWS Graviton, real FRED event and RGB recordings. Machine-readable summary at /api/summary.">
+<title>Hertz drone hum</title>
+<meta name="description" content="Hertz confirms drones by their propeller hum: OpenCV 5 on AWS Graviton, real FRED event and RGB recordings. Machine-readable summary at /api/summary.">
 <link rel="alternate" type="application/json" href="/api/summary" title="Machine-readable summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/deck.css">
@@ -57,7 +57,7 @@
 </svg>
 
 <header class="bar">
-  <a class="mark" href="#s1" data-go="0" aria-label="Strobe, first slide"><svg class="mini" viewBox="30 30 180 180" aria-hidden="true"><use href="#drone-art"/></svg><span>Strobe</span></a>
+  <a class="mark" href="#s1" data-go="0" aria-label="Hertz, first slide"><svg class="mini" viewBox="30 30 180 180" aria-hidden="true"><use href="#drone-art"/></svg><span>Hertz</span></a>
   <nav class="steps" aria-label="Slides">
     <button data-go="0" aria-label="Slide 1: the hum"><svg class="ic"><use href="#i-wave"/></svg></button>
     <button data-go="1" aria-label="Slide 2: events in 3D"><svg class="ic"><use href="#i-cube"/></svg></button>
@@ -189,13 +189,13 @@
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
 <section class="sr-only" id="readme" aria-label="Text description for screen readers and agents">
-  <h2>Strobe: drone confirmation by propeller hum</h2>
-  <p>Strobe confirms drones by their propeller hum. A normal 30 fps camera proposes objects. Inside each box, the event camera stream is checked for a blade-pass frequency peak at hundreds of Hz, which a 30 fps camera cannot see. An agent decides what to look at next: re-check a box with a longer or tighter event window, track it, raise an alert, or ask a human. Everything runs in OpenCV 5 on AWS Graviton.</p>
+  <h2>Hertz: drone confirmation by propeller hum</h2>
+  <p>Hertz confirms drones by their propeller hum. A normal 30 fps camera proposes objects. Inside each box, the event camera stream is checked for a blade-pass frequency peak at hundreds of Hz, which a 30 fps camera cannot see. An agent decides what to look at next: re-check a box with a longer or tighter event window, track it, raise an alert, or ask a human. Everything runs in OpenCV 5 on AWS Graviton.</p>
   <p id="sr-hum"></p>
   <p>Clip picker: the drone clips are FRED test sequences 210 (DJI Mini 2), 129 (DJI Tello EDU), 20 (DarwinFPV cineape20, a hard case with no clean peak) and 34 (DJI Mini 3 next to a flickering patch). The no-drone side is always FRED sequence 138. Picking a clip re-runs slides 1 to 4 on it.</p>
   <p>Slide 1: the 30 fps RGB video with the annotated drone box and a zoomed view where no rotor is visible, next to a bar strip of brighter-minus-darker event counts inside the drone box, one bar per 0.5 ms, with ticks at the measured blade-pass period.</p>
   <p>Slide 2: an orbitable x-y-time point cloud of the events in 40 ms on the drone, with x, y and time axes labelled. Black points: a pixel got brighter. Grey points: darker. The orange lines are one per measured blade pass. The "vs no drone" view stacks a same-size patch from the no-drone clip under it.</p>
-  <p>Slide 3: the event spectrum of a box in the drone clip next to a box in a clip with no drone, computed live on the server by strobe.freq.box_spectrum (OpenCV 5 calcHist and dft) for each click. The shaded band is the propeller band, 150 to 1000 Hz. Power is shown relative to the band median on a log scale. A box hums when its band peak stands far above the local spectral floor and it holds enough events.</p>
+  <p>Slide 3: the event spectrum of a box in the drone clip next to a box in a clip with no drone, computed live on the server by hertz.freq.box_spectrum (OpenCV 5 calcHist and dft) for each click. The shaded band is the propeller band, 150 to 1000 Hz. Power is shown relative to the band median on a log scale. A box hums when its band peak stands far above the local spectral floor and it holds enough events.</p>
   <p id="sr-math">Slide 4, the math. (1) Sampling: a 30 fps camera only sees frequencies up to its Nyquist limit of 15 Hz; a propeller blade-pass rate of several hundred Hz folds (aliases) to a slow apparent rate, the wagon-wheel effect. Events binned at 0.1 ms (10 kHz) see up to 5 kHz. (2) Fourier transform: the brighter-minus-darker event count inside the box over time, multiplied by a Hanning window, goes through cv.dft; the power spectrum shows the blade-pass peak. X(f) = sum over t of x(t) w(t) exp(-i 2 pi f t). (3) Score: the peak power divided by the median power within plus or minus 100 Hz of it. Thresholds from lane L1, chosen on FRED training data: ambiguous above 7.9, hum above 98. (4) Frequency resolution is 1/T for a window of T seconds, so a longer window sharpens the peak; this is why the agent asks for a longer window (request_window) when a spectrum is ambiguous. (5) OpenCV 5 calls in order: calcHist (event binning), dft (spectrum), connectedComponentsWithStats (event blobs and masks), dnn (RGB detector).</p>
   <p id="sr-math-live"></p>
   <p>Slide 5: the agent's recorded steps from lane L4's evaluation traces: perception tools (detect_frame, box_spectrum, request_window, frequency_map, track), the human approval request, the alert, and the finish. The Approve and Reject buttons record a decision on the server only; nothing external is triggered. The approval inside the recorded run came from an automatic stand-in for the operator, marked SIMULATED in the trace.</p>

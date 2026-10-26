@@ -11,7 +11,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 try:
-    from strobe import freq
+    from hertz import freq
 except Exception:
     freq = None
 
@@ -19,7 +19,7 @@ HERE = Path(__file__).parent
 ROOT = HERE.parent
 DATA = HERE / "data"
 STATIC = HERE / "static" / "data"
-STATE = Path(os.environ.get("STROBE_STATE", str(Path.home() / ".strobe")))
+STATE = Path(os.environ.get("HERTZ_STATE") or os.environ.get("STROBE_STATE", str(Path.home() / ".strobe")))
 FMAX = 1200.0
 MAX_APPROVALS = 20000
 router = APIRouter(prefix="/api")
@@ -70,14 +70,14 @@ def spectrum(r: SpecReq):
         m = (f >= freq.BAND[0]) & (f <= freq.BAND[1])
         med = float(np.median(p[m])) or 1.0
         k = f <= FMAX
-        return {"mode": "live", "source": "strobe.freq.box_spectrum (OpenCV 5 calcHist + dft)", "compute_ms": round(ms, 2),
+        return {"mode": "live", "source": "hertz.freq.box_spectrum (OpenCV 5 calcHist + dft)", "compute_ms": round(ms, 2),
                 "window_ms": win, "peak_hz": round(out["peak_hz"], 1), "snr": round(out["snr"], 2), "n_events": int(out["n_events"]),
                 "clear": out["clear"], "df": round(float(f[1] - f[0]), 3), "power": np.round((p[k] / med).astype(np.float64), 3).tolist(),
                 "band": list(freq.BAND), "clear_snr": freq.CLEAR_SNR}
     s = precomputed(r.clip)["spectra"].get(f"{r.frame}_{r.box_index}")
     if s is None:
         raise HTTPException(503, "live spectrum unavailable and no precomputed spectrum for this box")
-    return {"mode": "precomputed", "source": "precomputed by tools/export_web.py with strobe.freq", "window_ms": 100.0,
+    return {"mode": "precomputed", "source": "precomputed by tools/export_web.py with hertz.freq", "window_ms": 100.0,
             "band": [150.0, 1000.0], "clear_snr": 15.0, **s}
 
 
@@ -150,14 +150,14 @@ def summary():
     hero = next((c for c in cs if c.get("hum") and c["hum"].get("median_hz")), cs[0])
     tr = json.loads((STATIC / "traces.json").read_text())["episodes"]
     return {
-        "name": "Strobe",
-        "claim": "Strobe confirms drones by their propeller hum: an RGB detector proposes boxes, the event-camera stream inside each box is checked for a blade-pass frequency peak (150-1000 Hz) that a 30 fps camera cannot see, and an agent chooses the next look, alert, or human approval. OpenCV 5 on AWS Graviton.",
+        "name": "Hertz",
+        "claim": "Hertz confirms drones by their propeller hum: an RGB detector proposes boxes, the event-camera stream inside each box is checked for a blade-pass frequency peak (150-1000 Hz) that a 30 fps camera cannot see, and an agent chooses the next look, alert, or human approval. OpenCV 5 on AWS Graviton.",
         "measured_hum": {"clip": hero["id"], "fred_sequence": hero["seq"], "drone": hero["classes"], **(hero["hum"] or {}),
-                         "method": "median strobe.freq.box_spectrum peak over the FRED-box event windows that pass the hum test",
+                         "method": "median hertz.freq.box_spectrum peak over the FRED-box event windows that pass the hum test",
                          "source": "app/static/data/clips.json, written by tools/export_web.py"},
         "hum_test": {"band_hz": list(freq.BAND) if freq else [150.0, 1000.0], "clear_score": getattr(freq, "CLEAR_SNR", None),
                      "ambiguous_score": getattr(freq, "AMBIGUOUS_SNR", None), "local_hz": getattr(freq, "LOCAL_HZ", None),
-                     "fs_hz": getattr(freq, "FS", None), "min_events": getattr(freq, "MIN_EVENTS", None), "module": "strobe.freq",
+                     "fs_hz": getattr(freq, "FS", None), "min_events": getattr(freq, "MIN_EVENTS", None), "module": "hertz.freq",
                      "score": "peak power / median power within +-local_hz of the peak; thresholds chosen by lane L1 on FRED training data"},
         "math": ["30 fps sampling sees at most 15 Hz; a blade-pass f aliases to |f - k*30|", "event counts binned at 1/fs_hz s see up to fs_hz/2",
                  "X(f) = sum_t x(t) w(t) exp(-i 2 pi f t), x = ON minus OFF events in the box, w = Hanning, computed with cv.dft",

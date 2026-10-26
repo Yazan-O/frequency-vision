@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from strobe.freq import MIN_EVENTS
+from hertz.freq import MIN_EVENTS
 
 PROPPULSE = {"DJI Mini 3": 223, "DJI Mini 2": 316, "DJI Tello EDU": 539, "Betafpv air75": 738, "DarwinFPV cineape20": 547}
 TRAIN_FA = 0.05

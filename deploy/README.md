@@ -1,4 +1,4 @@
-# Deploying Strobe on AWS Graviton
+# Deploying Hertz on AWS Graviton
 
 Live endpoint: `https://<public-ip-with-dashes>.sslip.io` (`/health`, `/version`). `/version` reports the CPU architecture, the OpenCV version, the path `cv2` was loaded from, and the HAL lines of `cv2.getBuildInformation()`.
 
@@ -26,7 +26,7 @@ python deploy/aws.py web
 curl https://<host>/version
 ```
 
-`web` is idempotent: it reuses the bucket, role, security group and instance, uploads the current `app/ pipeline/ agent/ bench/ deploy/ requirements.txt` as a bundle to S3, and runs `deploy/provision.sh` on the instance through SSM Run Command. Re-run it to redeploy. `python deploy/aws.py run --name strobe "<shell>"` runs any command on the instance.
+`web` is idempotent: it reuses the bucket, role, security group and instance, uploads the current `app/ hertz/ pipeline/ agent/ bench/ deploy/ requirements.txt` as a bundle to S3, and runs `deploy/provision.sh` on the instance through SSM Run Command. Re-run it to redeploy. `python deploy/aws.py run --name strobe "<shell>"` runs any command on the instance.
 
 ## COOL (Cloud-Optimized OpenCV, Graviton4)
 

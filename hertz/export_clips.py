@@ -5,9 +5,9 @@ from pathlib import Path
 import cv2 as cv
 import numpy as np
 
-from strobe.events import HEIGHT, WIDTH, read_boxes, read_events, rgb_frames
-from strobe.fred_claim import busiest_box
-from strobe.freq import BAND, _window, box_spectrum, frequency_map
+from hertz.events import HEIGHT, WIDTH, read_boxes, read_events, rgb_frames
+from hertz.fred_claim import busiest_box
+from hertz.freq import BAND, _window, box_spectrum, frequency_map
 
 MAX_EVENTS = 3_000_000
 

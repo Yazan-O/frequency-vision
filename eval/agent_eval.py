@@ -7,10 +7,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from strobe.agent import vision
-from strobe.agent.data import Store
-from strobe.agent.guard import Budget, iou
-from strobe.agent.runner import run_episode
+from hertz.agent import vision
+from hertz.agent.data import Store
+from hertz.agent.guard import Budget, iou
+from hertz.agent.runner import run_episode
 
 
 def gt_box(sl, t):

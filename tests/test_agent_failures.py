@@ -2,11 +2,11 @@ from pathlib import Path
 
 import pytest
 
-from strobe.agent import vision
-from strobe.agent.data import Store
-from strobe.agent.faults import DownClient, ScriptedClient, TextOnlyClient, slow
-from strobe.agent.guard import Budget
-from strobe.agent.runner import run_episode
+from hertz.agent import vision
+from hertz.agent.data import Store
+from hertz.agent.faults import DownClient, ScriptedClient, TextOnlyClient, slow
+from hertz.agent.guard import Budget
+from hertz.agent.runner import run_episode
 
 DATA = Path(__file__).resolve().parents[1] / "data" / "fred_slices"
 SCN = {"id": "clear_111", "kind": "clear", "seq": "111", "t0": 25.0, "t1": 28.0, "drone": True, "entry": None}

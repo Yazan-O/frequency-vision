@@ -1,6 +1,6 @@
 import numpy as np
 
-from strobe.freq import box_spectrum, frequency_map, peak
+from hertz.freq import box_spectrum, frequency_map, peak
 
 
 def synthetic_hum(f_hz=317.0, t0_us=7_000_000_000, dur_us=200_000, seed=0):

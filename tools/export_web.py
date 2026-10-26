@@ -9,9 +9,9 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from strobe import freq
-from strobe.agent import vision
-from strobe.agent.data import Slice
+from hertz import freq
+from hertz.agent import vision
+from hertz.agent.data import Slice
 
 FMAX = 1200.0
 CLOUD_MS = 40
