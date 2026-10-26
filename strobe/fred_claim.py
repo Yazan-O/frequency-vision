@@ -4,9 +4,10 @@ import sys
 from pathlib import Path
 
 import cv2 as cv
+import h5py
 import numpy as np
 
-from strobe.events import HEIGHT, WIDTH, read_boxes, read_events
+from strobe.events import HEIGHT, WIDTH, _decode_rows, read_boxes, read_events
 from strobe.freq import _window, box_spectrum
 
 WINDOWS_MS = (20, 50, 100, 200)
@@ -69,7 +70,8 @@ def run(seq_dir, out_csv, stride=5):
     h5 = seqp / "Event" / "events.hdf5"
     boxes = read_boxes(seqp / "coordinates.txt")
     keys = sorted(boxes)[::stride]
-    t_first = int(read_events(h5, 0, keys[0] + 1)["t"][0])
+    with h5py.File(h5, "r") as h:
+        t_first = int(_decode_rows(h["CD/events"], 0, 1)["t"][0])
     seq = seqp.name
     rng = np.random.default_rng(int(seq))
     rows = []

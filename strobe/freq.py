@@ -3,7 +3,8 @@ import numpy as np
 
 FS = 10000
 BAND = (150.0, 1000.0)
-CLEAR_SNR = 15.0
+CLEAR_SNR = 98.0
+AMBIGUOUS_SNR = 7.9
 MIN_EVENTS = 200
 FLICKER_HZ = 100.0
 NOTCH_HZ = 6.0
@@ -94,7 +95,7 @@ def activity_mask(ev, box):
     return np.where(lab == keep, 255, 0).astype(np.uint8), int(stats[keep, cv.CC_STAT_AREA])
 
 
-def box_spectrum(events, box, t0_us, t1_us, fs=FS, band=BAND, use_mask=True, signal="signed", notch=False):
+def box_spectrum(events, box, t0_us, t1_us, fs=FS, band=BAND, use_mask=True, signal="signed", notch=True):
     ev, b = _in_box(_window(events, t0_us, t1_us), box)
     n_box = len(ev["t"])
     if use_mask:
