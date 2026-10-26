@@ -1,4 +1,4 @@
-# Deploying Hertz on AWS Graviton
+# Deploying Frequency Vision on AWS Graviton
 
 Live endpoint: `https://<public-ip-with-dashes>.sslip.io` (`/health`, `/version`). `/version` reports the CPU architecture, the OpenCV version, the path `cv2` was loaded from, and the HAL lines of `cv2.getBuildInformation()`.
 

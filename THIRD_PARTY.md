@@ -1,6 +1,6 @@
 # Third-party code, models and data
 
-Hertz's own code is Apache-2.0 (`LICENSE`). It uses the following.
+Frequency Vision's own code is Apache-2.0 (`LICENSE`). It uses the following.
 
 ## Runtime dependencies (`requirements.txt`, pinned)
 
@@ -26,7 +26,7 @@ Hertz's own code is Apache-2.0 (`LICENSE`). It uses the following.
 
 | Package | Version | Licence | Note |
 |---|---|---|---|
-| ultralytics | 8.3.236 | AGPL-3.0 | Used only to fine-tune the detector and export ONNX. Not imported by the Hertz runtime, which loads the ONNX file with OpenCV. |
+| ultralytics | 8.3.236 | AGPL-3.0 | Used only to fine-tune the detector and export ONNX. Not imported by the Frequency Vision runtime, which loads the ONNX file with OpenCV. |
 | onnx | 1.20.1 | Apache-2.0 | Export |
 | onnxslim | 0.1.98 | MIT | Export |
 | opencv-python-headless | 4.12.0.88 | Apache-2.0 | Data preparation in the training environment |
