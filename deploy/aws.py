@@ -19,6 +19,8 @@ TAG = {"Key": "Project", "Value": "opencv26"}
 ROLE = "opencv26-strobe-ec2"
 SG = "opencv26-strobe-web"
 REPO = Path(__file__).resolve().parent.parent
+MODEL = REPO.parent / "build" / "models" / "strobe_drone_960x544.onnx"
+MODEL_KEY = f"models/{MODEL.name}"
 COOL_G4_PRODUCT_CODE = "aajkmdd4qo3r7yhqg61a7aah9"
 UBUNTU = {
     "arm64": "/aws/service/canonical/ubuntu/server/24.04/stable/current/arm64/hvm/ebs-gp3/ami-id",
@@ -161,11 +163,25 @@ def bundle(bkt):
     return s3.generate_presigned_url("get_object", Params={"Bucket": bkt, "Key": key}, ExpiresIn=3600)
 
 
+def model_url(bkt):
+    try:
+        same = s3.head_object(Bucket=bkt, Key=MODEL_KEY)["ContentLength"] == MODEL.stat().st_size
+    except ClientError:
+        same = False
+    if not same:
+        s3.upload_file(str(MODEL), bkt, MODEL_KEY, ExtraArgs={"Tagging": "Project=opencv26"})
+    return s3.generate_presigned_url("get_object", Params={"Bucket": bkt, "Key": MODEL_KEY}, ExpiresIn=3600)
+
+
 def push(name, mode, web):
     i = find(name) or sys.exit(f"no instance {name}")
-    url = bundle(bucket())
+    bkt = bucket()
+    url = bundle(bkt)
     host = host_of(i) if web else "none"
-    run(i["InstanceId"], f"curl -fsSL '{url}' -o /tmp/strobe.tgz && rm -rf /tmp/strobe-src && mkdir -p /tmp/strobe-src && tar xzf /tmp/strobe.tgz -C /tmp/strobe-src && bash /tmp/strobe-src/deploy/provision.sh {mode} {host}", 1800)
+    dst = f"/srv/models/{MODEL.name}"
+    model = (f"mkdir -p /srv/models /etc/systemd/system/strobe.service.d && curl -fsSL '{model_url(bkt)}' -o {dst} && "
+             f"printf '[Service]\nEnvironment=HERTZ_DETECTOR_ONNX={dst}\n' > /etc/systemd/system/strobe.service.d/model.conf && ")
+    run(i["InstanceId"], model + f"curl -fsSL '{url}' -o /tmp/strobe.tgz && rm -rf /tmp/strobe-src && mkdir -p /tmp/strobe-src && tar xzf /tmp/strobe.tgz -C /tmp/strobe-src && bash /tmp/strobe-src/deploy/provision.sh {mode} {host}", 1800)
     return host
 
 
@@ -207,6 +223,23 @@ def bench(name, label, out, py=None, terminate=True):
             print("terminated", i["InstanceId"])
 
 
+def e2e(name, itype, out):
+    i = up(name, itype, "arm64", ami=cool_ami()["ImageId"])
+    bkt = bucket()
+    t0 = time.time()
+    try:
+        push(name, "cool", False)
+        run(i["InstanceId"], f"bash /srv/strobe/bench/e2e_remote.sh {itype} {price(itype)} {bkt}", 3600)
+        os.makedirs(out, exist_ok=True)
+        for o in s3.list_objects_v2(Bucket=bkt, Prefix="e2e/").get("Contents", []):
+            s3.download_file(bkt, o["Key"], os.path.join(out, os.path.basename(o["Key"])))
+    finally:
+        ec2.terminate_instances(InstanceIds=[i["InstanceId"]])
+        ec2.get_waiter("instance_terminated").wait(InstanceIds=[i["InstanceId"]])
+        st = ec2.describe_instances(InstanceIds=[i["InstanceId"]])["Reservations"][0]["Instances"][0]["State"]["Name"]
+        print(json.dumps({"instance": i["InstanceId"], "state": st, "launched": str(i["LaunchTime"]), "minutes_after_up": round((time.time() - t0) / 60, 1)}))
+
+
 def main():
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest="cmd", required=True)
@@ -238,6 +271,10 @@ def main():
     be.add_argument("--label", required=True)
     be.add_argument("--out", default=str(REPO / "bench" / "results"))
     be.add_argument("--keep", action="store_true")
+    ee = sp.add_parser("e2e")
+    ee.add_argument("--name", default="strobe-e2e")
+    ee.add_argument("--type", default="c8g.xlarge")
+    ee.add_argument("--out", default=str(REPO / "bench" / "results"))
     bg = sp.add_parser("budget")
     bg.add_argument("--amount", type=float, default=5)
     bg.add_argument("--email", required=True)
@@ -275,6 +312,8 @@ def main():
     elif a.cmd == "cool-ami":
         i = cool_ami()
         print(json.dumps({k: i.get(k) for k in ("ImageId", "Name", "CreationDate", "Architecture", "ProductCodes", "Description")}, indent=1))
+    elif a.cmd == "e2e":
+        e2e(a.name, a.type, a.out)
     elif a.cmd == "budget":
         print(budget(a.amount, a.email))
 
