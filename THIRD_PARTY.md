@@ -31,7 +31,7 @@ Strobe's own code is Apache-2.0 (`LICENSE`). It uses the following.
 | onnxslim | 0.1.98 | MIT | Export |
 | opencv-python-headless | 4.12.0.88 | Apache-2.0 | Data preparation in the training environment |
 
-Detector weights: fine-tuned from Ultralytics YOLOv8s pretrained weights (AGPL-3.0, Ultralytics). The trained ONNX file is not committed to this repository. Anyone redistributing it follows the Ultralytics licence terms.
+Detector weights: fine-tuned from Ultralytics YOLOv8n pretrained weights (AGPL-3.0, Ultralytics). The trained ONNX file is not committed to this repository. Anyone redistributing it follows the Ultralytics licence terms.
 
 ## Vendored code
 
@@ -54,5 +54,5 @@ Detector weights: fine-tuned from Ultralytics YOLOv8s pretrained weights (AGPL-3
 |---|---|
 | Caddy (HTTPS reverse proxy on the endpoint) | Apache-2.0 |
 | Amazon Bedrock, Claude Sonnet 4.6 (`us.anthropic.claude-sonnet-4-6`) | AWS Service Terms and the model provider's terms; called through the Bedrock API, nothing redistributed |
-| COOL, Cloud Optimized OpenCV for AWS Graviton4 (AWS Marketplace) | Commercial Marketplace licence; used on our own subscribed instance, nothing redistributed |
+| COOL, Cloud Optimized OpenCV for AWS Graviton4 (AWS Marketplace) | Commercial Marketplace licence; runs the live endpoint and the benchmark on our own subscribed instances, nothing redistributed |
 | sslip.io | Free wildcard DNS service for the endpoint host name |
