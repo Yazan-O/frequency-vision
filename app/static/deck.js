@@ -10,26 +10,29 @@ const HUM = css.getPropertyValue("--hum").trim();
 const fmt = (v, d = 1) => (v == null || Number.isNaN(+v) ? "–" : Number(v).toFixed(d));
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const icon = (id, cls = "ic") => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("class", cls); s.setAttribute("aria-hidden", "true"); const u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", "#" + id); s.append(u); return s; };
+const txt = (ctx, s, x, y, o = {}) => { ctx.save(); ctx.font = o.font || "400 18px 'JetBrains Mono', monospace"; ctx.textAlign = o.align || "left"; ctx.lineWidth = 6; ctx.lineJoin = "round"; ctx.strokeStyle = o.back || "#FEFEFE"; ctx.strokeText(s, x, y); ctx.fillStyle = o.color || "#777"; ctx.fillText(s, x, y); ctx.restore(); };
 if (reduce) document.querySelectorAll("svg").forEach((s) => s.pauseAnimations && s.pauseAnimations());
 
 const [clipsDoc, tracesDoc] = await Promise.all([fetch("/data/clips.json").then((r) => r.json()), fetch("/data/traces.json").then((r) => r.json())]);
 const clips = clipsDoc.clips;
-const hero = clips.find((c) => c.hum && c.hum.median_hz) || clips[0];
+const droneClips = clips.filter((c) => c.drone && c.cloud.crop);
 const bg = clips.find((c) => !c.drone) || clips[clips.length - 1];
-const HZ = hero.hum && hero.hum.median_hz ? hero.hum.median_hz : null;
-const PROV = hero.provenance;
-const cropBuf = hero.cloud.crop ? new Uint16Array(await fetch("/" + hero.cloud.crop.src).then((r) => r.arrayBuffer())) : null;
+const modelOf = (c) => (c.hum && c.hum.model) || (c.classes && c.classes[0]) || "drone";
+const shortName = (c) => modelOf(c).replace(/^(DJI|DarwinFPV)\s+/, "");
+const hzOf = (c) => (c.hum && c.hum.median_hz) || null;
+const cur = { clip: null, crop: null, HZ: null, imgs: null, i: 0 };
+const bufs = {};
+const bufOf = (src) => bufs[src] || (bufs[src] = fetch("/" + src).then((r) => r.arrayBuffer()).then((b) => new Uint16Array(b)));
 
 const tip = $("tip");
-document.querySelectorAll("[data-prov]").forEach((b) => {
-  const text = `${PROV} · ${hero.source}`;
-  b.setAttribute("aria-label", `Data source: ${text}`);
-  const show = () => { const r = b.getBoundingClientRect(); tip.textContent = text; tip.hidden = false; tip.style.left = Math.max(8, Math.min(innerWidth - 290, r.right - 280)) + "px"; tip.style.top = r.bottom + 6 + "px"; };
+function tipOn(b, text) {
+  const show = () => { const r = b.getBoundingClientRect(); tip.textContent = typeof text === "function" ? text() : text; tip.hidden = false; tip.style.left = Math.max(8, Math.min(innerWidth - 290, r.right - 280)) + "px"; tip.style.top = r.bottom + 6 + "px"; };
   const hide = () => { tip.hidden = true; };
   b.addEventListener("mouseenter", show); b.addEventListener("focus", show);
   b.addEventListener("mouseleave", hide); b.addEventListener("blur", hide);
   b.addEventListener("click", () => (tip.hidden ? show() : hide()));
-});
+}
+document.querySelectorAll("[data-prov]").forEach((b) => tipOn(b, () => `${cur.clip.provenance} · ${cur.clip.source} · seq ${cur.clip.seq}`));
 
 function loadFrames(clip) {
   if (!clip._imgs) clip._imgs = clip.frames.map((f) => { const i = new Image(); i.src = "/" + f.src; return i; });
@@ -37,15 +40,15 @@ function loadFrames(clip) {
 }
 
 function rhythm(nb) {
-  const d = new Float32Array(nb), span = hero.cloud.ms * 1000;
-  if (!cropBuf) return d;
-  for (let k = 0; k < cropBuf.length / 4; k++) d[Math.min(nb - 1, Math.floor(cropBuf[4 * k + 2] / span * nb))] += cropBuf[4 * k + 3] ? 1 : -1;
+  const d = new Float32Array(nb), span = cur.clip.cloud.ms * 1000, b = cur.crop;
+  if (!b) return d;
+  for (let k = 0; k < b.length / 4; k++) d[Math.min(nb - 1, Math.floor(b[4 * k + 2] / span * nb))] += b[4 * k + 3] ? 1 : -1;
   return d;
 }
 
 function drawRhythm(cv, opt) {
-  const ctx = cv.getContext("2d"), W = cv.width, H = cv.height, d = rhythm(80), nb = d.length, span = hero.cloud.ms * 1000;
-  const m = Math.max(...d.map(Math.abs)) || 1, bw = W / nb, mid = H * (opt.dark ? 0.5 : 0.5), amp = H * (opt.dark ? 0.36 : 0.44);
+  const ctx = cv.getContext("2d"), W = cv.width, H = cv.height, d = rhythm(80), nb = d.length, span = cur.clip.cloud.ms * 1000, HZ = cur.HZ;
+  const m = Math.max(...d.map(Math.abs)) || 1, bw = W / nb, mid = H * 0.5, amp = H * (opt.dark ? 0.34 : 0.4);
   ctx.fillStyle = opt.dark ? "#0b0b0b" : "#FEFEFE"; ctx.fillRect(0, 0, W, H);
   if (HZ) {
     ctx.fillStyle = opt.dark ? "rgba(255,90,31,.16)" : "rgba(255,90,31,.10)";
@@ -60,44 +63,38 @@ function drawRhythm(cv, opt) {
   if (HZ) { ctx.fillStyle = HUM; for (let t = 0; t < span; t += 1e6 / HZ) ctx.fillRect(t / span * W - 1, H - 14, 3, 14); }
   if (opt.head != null) { ctx.fillStyle = HUM; ctx.fillRect(opt.head * W - 2, 0, 4, H); }
   if (opt.dark) {
-    ctx.fillStyle = "#FFFFFF"; ctx.font = "500 30px 'JetBrains Mono', monospace";
-    ctx.fillText(`0`, 16, H - 26); const t = `${hero.cloud.ms} ms`; ctx.fillText(t, W - ctx.measureText(t).width - 16, H - 26);
-    ctx.fillStyle = HUM; ctx.font = "500 34px 'JetBrains Mono', monospace";
-    if (HZ) ctx.fillText(`${Math.round(HZ)} Hz`, 16, 46);
+    const back = "#0b0b0b";
+    txt(ctx, "0 ms", 16, H - 26, { font: "500 28px 'JetBrains Mono', monospace", color: "#fff", back });
+    txt(ctx, `${cur.clip.cloud.ms} ms`, W - 16, H - 26, { font: "500 28px 'JetBrains Mono', monospace", color: "#fff", back, align: "right" });
+    txt(ctx, HZ ? `${Math.round(HZ)} blade passes a second` : "no steady rhythm", 16, 46, { font: "500 32px 'JetBrains Mono', monospace", color: HZ ? HUM : "#aaa", back });
+    if (HZ) txt(ctx, `one tick = ${(1000 / HZ).toFixed(1)} ms`, W - 16, 46, { font: "500 26px 'JetBrains Mono', monospace", color: HUM, back, align: "right" });
   }
 }
 
 function slide1() {
-  if (HZ) {
-    $("headline").textContent = `A bird and a drone look alike at 30 fps. Only one hums at ${Math.round(HZ)} Hz.`;
-    $("hz").textContent = `${Math.round(HZ)} Hz`;
-    $("period").textContent = `${(1000 / HZ).toFixed(1)} ms`;
-    const h = hero.hum;
-    $("sr-hum").textContent = `Measured blade-pass frequency inside the drone box, FRED sequence ${hero.seq} (${hero.classes.join(", ")}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with strobe.freq.box_spectrum.`;
-  }
-  const cv = $("rgb"), ctx = cv.getContext("2d"), imgs = loadFrames(hero);
-  let playing = !reduce, i = Math.floor(hero.frames.length / 2), last = 0;
+  const cv = $("rgb"), ctx = cv.getContext("2d");
+  let playing = !reduce, last = 0;
   const draw = () => {
-    const img = imgs[i], fr = hero.frames[i];
-    if (!(img.complete && img.naturalWidth)) return;
+    const clip = cur.clip, img = cur.imgs[cur.i], fr = clip.frames[cur.i];
+    if (!(img && img.complete && img.naturalWidth)) return;
     ctx.drawImage(img, 0, 0, cv.width, cv.height);
     const db = fr.boxes.find((b) => b.kind === "drone");
     if (!db) return;
-    const sx = cv.width / hero.width, sy = cv.height / hero.height, [x0, y0, x1, y1] = db.box;
+    const sx = cv.width / clip.width, sy = cv.height / clip.height, [x0, y0, x1, y1] = db.box;
     ctx.lineWidth = 5; ctx.strokeStyle = "#FFFFFF"; ctx.strokeRect(x0 * sx - 6, y0 * sy - 6, (x1 - x0) * sx + 12, (y1 - y0) * sy + 12);
-    const k = img.naturalWidth / hero.width, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, sw = 120, sh = 68;
-    const iw = cv.width * 0.42, ih = iw * sh / sw, ix = cv.width - iw - 18, iy = 18;
+    const k = img.naturalWidth / clip.width, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, sw = Math.max(120, (x1 - x0) * 1.2), sh = sw * 68 / 120;
+    const iw = cv.width * 0.42, ih = iw * sh / sw, ix = cx * sx > cv.width / 2 ? 18 : cv.width - iw - 18, iy = cy * sy > cv.height / 2 ? 18 : cv.height - ih - 18;
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(img, (cx - sw / 2) * k, (cy - sh / 2) * k, sw * k, sh * k, ix, iy, iw, ih);
     ctx.imageSmoothingEnabled = true;
     ctx.lineWidth = 5; ctx.strokeRect(ix, iy, iw, ih);
-    ctx.beginPath(); ctx.moveTo(x1 * sx + 6, y0 * sy - 6); ctx.lineTo(ix, iy + ih); ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx * sx, cy * sy); ctx.lineTo(ix + iw / 2, iy + ih / 2); ctx.lineWidth = 2; ctx.stroke();
   };
+  cur.drawVideo = draw;
   const tick = (now) => {
-    if (playing && now - last >= 1000 / 30) { i = (i + 1) % imgs.length; last = now; draw(); }
+    if (playing && cur.imgs && now - last >= 1000 / 30) { cur.i = (cur.i + 1) % cur.imgs.length; last = now; draw(); }
     requestAnimationFrame(tick);
   };
-  imgs.forEach((im) => im.addEventListener("load", draw));
   requestAnimationFrame(tick);
   const btn = $("play");
   const sync = () => { btn.setAttribute("aria-label", playing ? "Pause video" : "Play video"); btn.replaceChildren(icon(playing ? "i-pause" : "i-play")); };
@@ -106,20 +103,34 @@ function slide1() {
   const scope = $("scope");
   let t0 = performance.now();
   const sweep = (now) => {
-    const f = reduce ? null : ((now - t0) / 4000) % 1;
-    drawRhythm(scope, { dark: true, head: f });
+    if (cur.clip) drawRhythm(scope, { dark: true, head: reduce ? null : ((now - t0) / 4000) % 1 });
     if (!reduce) requestAnimationFrame(sweep);
   };
   requestAnimationFrame(sweep);
 }
 
-let cloudStarted = false;
+function applySlide1() {
+  const c = cur.clip, HZ = cur.HZ, h = c.hum || {}, model = modelOf(c);
+  $("headline").textContent = HZ ? `A 30 fps camera cannot see the propellers. The event camera counts them: ${Math.round(HZ)} blade passes a second.`
+    : `A 30 fps camera cannot see the propellers. On this ${model} the event camera finds no steady hum either.`;
+  $("hz").textContent = HZ ? `${Math.round(HZ)} Hz` : "no clean hum";
+  $("hzsub").textContent = HZ ? `${model}, FRED seq ${c.seq}: median of the ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms that pass the hum test`
+    : `${model}, FRED seq ${c.seq}: ${h.n_clear} of ${h.n_windows} windows pass the hum test`;
+  $("period").textContent = HZ ? `one blade pass = ${(1000 / HZ).toFixed(1)} ms` : "";
+  $("cap-scope").textContent = HZ ? `brighter minus darker pixels in the box, per 0.5 ms, over ${c.cloud.ms} ms. Orange ticks: one per blade pass`
+    : `brighter minus darker pixels in the box, per 0.5 ms, over ${c.cloud.ms} ms. No steady rhythm`;
+  $("sr-hum").textContent = HZ ? `Measured blade-pass frequency inside the drone box, FRED sequence ${c.seq} (${model}): median ${h.median_hz} Hz over the ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms that pass the hum test; middle half ${h.p25_hz} to ${h.p75_hz} Hz. Computed by tools/export_web.py with strobe.freq.box_spectrum.`
+    : `FRED sequence ${c.seq} (${model}): ${h.n_clear} of ${h.n_windows} event windows of ${h.window_ms} ms pass the hum test, so no blade-pass frequency is claimed.`;
+  cur.imgs = loadFrames(c); cur.i = Math.floor(c.frames.length / 2);
+  if (!c._bound) { c._bound = true; cur.imgs.forEach((im) => im.addEventListener("load", () => { if (cur.clip === c) cur.drawVideo(); })); }
+  cur.drawVideo();
+}
+
+const S = { started: false, view: "crop", labels: [] };
 async function slide2() {
-  if (cloudStarted) return;
-  cloudStarted = true;
-  drawRhythm($("bars"), { dark: false, head: null });
-  $("cloudms").textContent = `${hero.cloud.ms} ms`;
-  const host = $("cloud");
+  if (S.started) return;
+  S.started = true;
+  const host = $("cloud"), lab = $("cloudlabels");
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setClearColor(new THREE.Color("#FEFEFE"));
@@ -130,49 +141,103 @@ async function slide2() {
   controls.enableDamping = true; controls.enableZoom = false; controls.autoRotate = !reduce; controls.autoRotateSpeed = 0.9;
   controls.addEventListener("start", () => { controls.autoRotate = false; });
   const group = new THREE.Group(); scene.add(group);
-  const cache = {}, c = hero.cloud;
-  async function show(view) {
-    const spec = view === "crop" && c.crop ? c.crop : c.scene;
-    const buf = cache[spec.src] || (cache[spec.src] = spec === c.crop && cropBuf ? cropBuf : new Uint16Array(await fetch("/" + spec.src).then((r) => r.arrayBuffer())));
-    const n = buf.length / 4;
-    const q = (o, a) => { const v = []; for (let k = 0; k < n; k++) v.push(buf[4 * k + o]); v.sort((x, y) => x - y); return v[Math.floor(a * (n - 1))]; };
-    const [bx0, by0, bx1, by1] = view === "crop" ? [q(0, 0.02), q(1, 0.02), q(0, 0.98) + 1, q(1, 0.98) + 1] : [0, 0, hero.width, hero.height];
-    const w = bx1 - bx0, h = by1 - by0, span = c.ms * 1000;
-    const s = view === "crop" ? Math.min(0.9 / h, 1.4 / w) : 1 / Math.max(w, h), depth = 1.6;
-    const order = [...Array(n).keys()].sort((a, b) => buf[4 * a + 3] - buf[4 * b + 3]);
+  const depth = 1.6;
+  const label = (text, pos, cls = "") => { const e = el("span", cls, text); lab.append(e); S.labels.push({ e, pos }); };
+  const points = (buf, bx0, by0, w, h, s, yOff, size, mask) => {
+    const idx = [];
+    for (let k = 0; k < buf.length / 4; k++) if (!mask || mask(buf[4 * k], buf[4 * k + 1])) idx.push(k);
+    idx.sort((a, b) => buf[4 * a + 3] - buf[4 * b + 3]);
+    const n = idx.length, span = cur.clip.cloud.ms * 1000;
     const pos = new Float32Array(n * 3), col = new Float32Array(n * 3), on = new THREE.Color(INK), off = new THREE.Color("#C9C9C9");
-    for (let j = 0; j < n; j++) {
-      const k = order[j];
+    idx.forEach((k, j) => {
       pos[3 * j] = (buf[4 * k + 2] / span - 0.5) * depth;
-      pos[3 * j + 1] = -(buf[4 * k + 1] - by0 - h / 2) * s;
+      pos[3 * j + 1] = -(buf[4 * k + 1] - by0 - h / 2) * s + yOff;
       pos[3 * j + 2] = (buf[4 * k] - bx0 - w / 2) * s;
       const cc = buf[4 * k + 3] ? on : off;
       col[3 * j] = cc.r; col[3 * j + 1] = cc.g; col[3 * j + 2] = cc.b;
-    }
-    group.clear();
+    });
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
     g.setAttribute("color", new THREE.BufferAttribute(col, 3));
-    group.add(new THREE.Points(g, new THREE.PointsMaterial({ size: view === "crop" ? 3.2 : 1.3, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.9 })));
-    group.add(new THREE.Box3Helper(new THREE.Box3(new THREE.Vector3(-depth / 2, -h * s / 2, -w * s / 2), new THREE.Vector3(depth / 2, h * s / 2, w * s / 2)), new THREE.Color("#CFCFCF")));
-    if (HZ && view === "crop") {
+    group.add(new THREE.Points(g, new THREE.PointsMaterial({ size, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.9 })));
+    const hs = h * s, ws = w * s;
+    group.add(new THREE.Box3Helper(new THREE.Box3(new THREE.Vector3(-depth / 2, yOff - hs / 2, -ws / 2), new THREE.Vector3(depth / 2, yOff + hs / 2, ws / 2)), new THREE.Color("#CFCFCF")));
+    return { hs, ws, n };
+  };
+  const line = (a, b, color, opacity = 0.55) => group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), new THREE.LineBasicMaterial({ color: new THREE.Color(color), transparent: true, opacity })));
+  async function show(view) {
+    S.view = view;
+    const c = cur.clip, span = c.cloud.ms * 1000, HZ = cur.HZ;
+    group.clear(); lab.replaceChildren(); S.labels = [];
+    const whole = view === "scene" || !cur.crop;
+    const buf = whole ? await bufOf(c.cloud.scene.src) : cur.crop;
+    if (c !== cur.clip || S.view !== view) return;
+    const [bx0, by0, bx1, by1] = whole ? [0, 0, c.width, c.height] : c.cloud.crop.box;
+    const w = bx1 - bx0, h = by1 - by0;
+    const s = whole ? 1 / Math.max(w, h) : view === "duo" ? Math.min(0.42 / h, 1.4 / w) : Math.min(0.9 / h, 1.4 / w);
+    const top = points(buf, bx0, by0, w, h, s, 0, whole ? 1.3 : 3.2);
+    const { hs, ws } = top;
+    const lo = -hs / 2;
+    let base = lo;
+    if (HZ && !whole) {
       const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(HUM), transparent: true, opacity: 0.55 });
-      for (let t = 0; t < span; t += 1e6 / HZ) {
-        const x = (t / span - 0.5) * depth;
-        group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, -h * s / 2, w * s / 2), new THREE.Vector3(x, -h * s / 2, -w * s / 2)]), mat));
-      }
+      const xs = [];
+      for (let t = 0; t < span; t += 1e6 / HZ) { const x = (t / span - 0.5) * depth; xs.push(x); group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, lo, ws / 2), new THREE.Vector3(x, lo, -ws / 2)]), mat)); }
+      const k = Math.floor(xs.length / 2) - 1, x1 = xs[k], x2 = xs[k + 1], yb = hs / 2 + 0.05, z = ws / 2;
+      line(new THREE.Vector3(x1, yb, z), new THREE.Vector3(x2, yb, z), HUM, 1);
+      line(new THREE.Vector3(x1, yb - 0.025, z), new THREE.Vector3(x1, yb + 0.025, z), HUM, 1);
+      line(new THREE.Vector3(x2, yb - 0.025, z), new THREE.Vector3(x2, yb + 0.025, z), HUM, 1);
+      label(`one blade pass, ${(1000 / HZ).toFixed(1)} ms`, new THREE.Vector3((x1 + x2) / 2, yb + 0.07, z), "hum");
+    } else if (!whole) {
+      label("no stripes: no steady hum", new THREE.Vector3(0, hs / 2 + 0.1, ws / 2), "hum");
     }
-    camera.position.set(0.35, 0.3, 2.3); controls.target.set(0, 0, 0); controls.update();
+    if (view === "duo") {
+      label(`${modelOf(c)}, drone box`, new THREE.Vector3(-depth / 2 + 0.3, hs / 2 + 0.22, ws / 2), "title");
+      const sb = await bufOf(bg.cloud.scene.src);
+      if (c !== cur.clip || S.view !== view) return;
+      const bf = bg.frames[Math.floor(bg.frames.length / 2)], ob = bf.boxes[0] ? bf.boxes[0].box : [bg.width / 2, bg.height / 2, bg.width / 2, bg.height / 2];
+      const cx = Math.min(bg.width - w / 2, Math.max(w / 2, (ob[0] + ob[2]) / 2)), cy = Math.min(bg.height - h / 2, Math.max(h / 2, (ob[1] + ob[3]) / 2));
+      const px0 = cx - w / 2, py0 = cy - h / 2;
+      const yOff = -(hs + 0.14);
+      const low = points(sb, px0, py0, w, h, s, yOff, 3.2, (x, y) => x >= px0 && x < px0 + w && y >= py0 && y < py0 + h);
+      label(`no drone, same size patch (${low.n} events)`, new THREE.Vector3(-depth / 2 + 0.3, yOff + hs / 2 + 0.08, ws / 2), "title");
+      base = yOff - hs / 2;
+      controls.target.set(0, yOff / 2, 0);
+    } else controls.target.set(0, 0, 0);
+    group.add(new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(-depth / 2, base - 0.04, ws / 2 + 0.04), depth, new THREE.Color(INK), 0.06, 0.03));
+    label(`time, ${c.cloud.ms} ms`, new THREE.Vector3(0, base - 0.11, ws / 2 + 0.04));
+    label("x", new THREE.Vector3(depth / 2 + 0.06, base - 0.02, 0));
+    label("y", new THREE.Vector3(depth / 2 + 0.06, 0, ws / 2 + 0.03));
+    fit();
   }
+  const fit = () => { const a = camera.aspect || 1, d = 2.3 * Math.max(1, 1.8 / a) * (S.view === "duo" ? 1.15 : 1); camera.position.set(0.15 * d, 0.13 * d + controls.target.y, d); controls.update(); };
   const resize = () => { const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
   new ResizeObserver(resize).observe(host); resize();
-  const loop = () => { if (current === 1) { controls.update(); renderer.render(scene, camera); } requestAnimationFrame(loop); };
+  const v = new THREE.Vector3();
+  const loop = () => {
+    if (current === 1) {
+      controls.update(); renderer.render(scene, camera);
+      const W = host.clientWidth, H = host.clientHeight;
+      S.labels.forEach(({ e, pos }) => { v.copy(pos).project(camera); e.style.left = ((v.x + 1) / 2 * W).toFixed(1) + "px"; e.style.top = ((1 - v.y) / 2 * H).toFixed(1) + "px"; });
+    }
+    requestAnimationFrame(loop);
+  };
   loop();
   document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => {
     document.querySelectorAll("[data-view]").forEach((o) => { const sel = o === b; o.classList.toggle("on", sel); o.setAttribute("aria-pressed", String(sel)); });
     show(b.dataset.view);
   }));
-  await show(c.crop ? "crop" : "scene");
+  S.show = show;
+  await show(cur.crop ? "crop" : "scene");
+}
+
+function applySlide2() {
+  const c = cur.clip, HZ = cur.HZ;
+  $("hl2").textContent = HZ ? `Each dot is one pixel change. Time runs left to right. The propellers make the stripes: ${Math.round(HZ)} a second.`
+    : `Each dot is one pixel change. Time runs left to right. No stripes here: this ${modelOf(c)} gives no clean hum.`;
+  $("cap-bars").textContent = HZ ? `orange ticks every ${(1000 / HZ).toFixed(1)} ms = ${Math.round(HZ)} Hz · 0 to ${c.cloud.ms} ms` : `0 to ${c.cloud.ms} ms`;
+  drawRhythm($("bars"), { dark: false, head: null });
+  if (S.started) S.show(S.view);
 }
 
 const spec = { win: 100, sides: {} };
@@ -185,35 +250,31 @@ function slide3() {
     wins.append(b);
   });
   document.querySelectorAll(".side").forEach((host) => {
-    const isDrone = host.dataset.side === "drone", clip = isDrone ? hero : bg;
-    const firstFrame = () => {
+    const isDrone = host.dataset.side === "drone";
+    const st = { clip: null, frame: 0, box: 0, req: 0, played: false };
+    const head = el("div", "head");
+    head.append(icon(isDrone ? "i-drone" : "i-nodrone"), el("span", "who", isDrone ? "drone box" : "no drone"));
+    const verdict = el("span", "verdict", "…"); const score = el("span", "score2");
+    const prov = el("button", "prov"); prov.append(icon("i-data"));
+    tipOn(prov, () => `${st.clip.provenance} · ${st.clip.title} · seq ${st.clip.seq}`);
+    head.append(verdict, score, prov);
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 600 300"); svg.setAttribute("class", "spec"); svg.setAttribute("role", "img");
+    const row = el("div", "thumbrow");
+    const thumb = el("div", "thumb"); const cv = el("canvas"); cv.width = 640; cv.height = 360; cv.setAttribute("aria-label", "Frame with clickable boxes"); thumb.append(cv);
+    const right = el("div"); right.style.flex = "1"; right.style.minWidth = "0";
+    const boxes = el("div", "boxbtns"); const range = el("input"); range.type = "range"; range.min = 0;
+    range.setAttribute("aria-label", "Frame");
+    right.append(boxes, range); row.append(thumb, right);
+    host.append(head, svg, row);
+    const ctx = cv.getContext("2d");
+    const firstFrame = (clip) => {
       const mid = Math.floor(clip.frames.length / 2);
       for (let d = 0; d < clip.frames.length; d++) for (const f of [mid - d, mid + d]) if (f >= 0 && f < clip.frames.length && clip.frames[f].boxes.length) return f;
       return mid;
     };
-    const st = { clip, frame: firstFrame(), box: 0, req: 0, played: false };
-    st.box = Math.max(0, clip.frames[st.frame].boxes.findIndex((b) => b.kind === (isDrone ? "drone" : "other")));
-    const head = el("div", "head");
-    head.append(icon(isDrone ? "i-drone" : "i-nodrone"));
-    const verdict = el("span", "verdict", "…"); const score = el("span", "score2");
-    const prov = el("button", "prov"); prov.dataset.prov = ""; prov.append(icon("i-data"));
-    prov.setAttribute("aria-label", `Data source: ${clip.provenance}, ${clip.title}`);
-    prov.addEventListener("mouseenter", () => { const r = prov.getBoundingClientRect(); tip.textContent = `${clip.provenance} · ${clip.title} · seq ${clip.seq}`; tip.hidden = false; tip.style.left = Math.max(8, Math.min(innerWidth - 290, r.right - 280)) + "px"; tip.style.top = r.bottom + 6 + "px"; });
-    prov.addEventListener("mouseleave", () => { tip.hidden = true; }); prov.addEventListener("focus", () => prov.dispatchEvent(new Event("mouseenter"))); prov.addEventListener("blur", () => { tip.hidden = true; });
-    head.append(verdict, score, prov);
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "0 0 600 300"); svg.setAttribute("class", "spec"); svg.setAttribute("role", "img");
-    svg.setAttribute("aria-label", `Event spectrum of a box in the ${isDrone ? "drone" : "no-drone"} clip`);
-    const row = el("div", "thumbrow");
-    const thumb = el("div", "thumb"); const cv = el("canvas"); cv.width = 640; cv.height = 360; cv.setAttribute("aria-label", "Frame with clickable boxes"); thumb.append(cv);
-    const right = el("div"); right.style.flex = "1"; right.style.minWidth = "0";
-    const boxes = el("div", "boxbtns"); const range = el("input"); range.type = "range"; range.min = 0; range.max = clip.frames.length - 1; range.value = st.frame;
-    range.setAttribute("aria-label", "Frame");
-    right.append(boxes, range); row.append(thumb, right);
-    host.append(head, svg, row);
-    const ctx = cv.getContext("2d"), imgs = loadFrames(clip);
     const paint = () => {
-      const f = clip.frames[st.frame], img = imgs[st.frame];
+      const clip = st.clip, f = clip.frames[st.frame], img = loadFrames(clip)[st.frame];
       if (img.complete && img.naturalWidth) ctx.drawImage(img, 0, 0, cv.width, cv.height); else img.onload = paint;
       const sx = cv.width / clip.width, sy = cv.height / clip.height;
       f.boxes.forEach((b, i) => {
@@ -225,14 +286,14 @@ function slide3() {
       ctx.setLineDash([]);
       boxes.replaceChildren(...f.boxes.map((b, i) => {
         const btn = el("button", "iconbtn"); btn.append(icon(b.kind === "drone" ? "i-drone" : "i-frame"));
-        btn.setAttribute("aria-label", `${b.kind === "drone" ? "Drone box (FRED annotation)" : "Other moving thing (event blob)"} ${Math.round(b.box[2] - b.box[0])} by ${Math.round(b.box[3] - b.box[1])} px`);
+        btn.setAttribute("aria-label", `${b.kind === "drone" ? "Drone box (FRED annotation)" : b.label} ${Math.round(b.box[2] - b.box[0])} by ${Math.round(b.box[3] - b.box[1])} px`);
         btn.setAttribute("aria-pressed", String(i === st.box));
         btn.addEventListener("click", () => { st.box = i; paint(); st.run(); });
         return btn;
       }));
     };
     cv.addEventListener("click", (e) => {
-      const r = cv.getBoundingClientRect(), f = clip.frames[st.frame];
+      const clip = st.clip, r = cv.getBoundingClientRect(), f = clip.frames[st.frame];
       const x = (e.clientX - r.left) / r.width * clip.width, y = (e.clientY - r.top) / r.height * clip.height, tol = 18 / r.width * clip.width;
       let best = -1, area = Infinity;
       f.boxes.forEach((b, i) => { const [x0, y0, x1, y1] = b.box; if (x >= x0 - tol && x <= x1 + tol && y >= y0 - tol && y <= y1 + tol && (x1 - x0) * (y1 - y0) < area) { best = i; area = (x1 - x0) * (y1 - y0); } });
@@ -240,8 +301,8 @@ function slide3() {
     });
     range.addEventListener("input", () => { st.frame = +range.value; st.box = 0; paint(); clearTimeout(st.deb); st.deb = setTimeout(() => st.run(), 150); });
     st.run = async () => {
-      const f = clip.frames[st.frame], b = f.boxes[st.box];
-      if (!b) { verdict.textContent = "–"; score.textContent = ""; svg.innerHTML = ""; return; }
+      const clip = st.clip, f = clip.frames[st.frame], b = f.boxes[st.box];
+      if (!b) { verdict.textContent = "–"; score.textContent = "no box in this frame"; svg.innerHTML = ""; return; }
       const id = ++st.req;
       try {
         const r = await fetch("/api/spectrum", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clip.id, box: b.box, t: f.t, window_ms: spec.win, frame: st.frame, box_index: st.box }) });
@@ -250,28 +311,37 @@ function slide3() {
         if (id !== st.req) return;
         st.data = d;
         verdict.className = "verdict" + (d.clear ? " hum" : "");
-        verdict.replaceChildren(icon(d.clear ? "i-wave" : "i-x"), document.createTextNode(d.clear ? `${Math.round(d.peak_hz)} Hz` : "no hum"));
-        score.textContent = `${d.n_events.toLocaleString()} ev`;
-        score.title = `peak score ${fmt(d.snr, 1)} (hum needs ${d.clear_snr}), ${d.mode === "live" ? `computed live in ${d.compute_ms} ms by ${d.source}` : d.source}`;
+        verdict.replaceChildren(icon(d.clear ? "i-wave" : "i-x"), document.createTextNode(d.clear ? `${Math.round(d.peak_hz)} Hz hum` : "no hum"));
+        score.textContent = `score ${fmt(d.snr, 0)} (hum ≥ ${d.clear_snr}) · ${d.n_events.toLocaleString()} events`;
+        score.title = `peak ${d.peak_hz} Hz, ${d.mode === "live" ? `computed live in ${d.compute_ms} ms by ${d.source}` : d.source}`;
         svg.setAttribute("aria-label", `${isDrone ? "Drone" : "No-drone"} clip box spectrum: ${d.clear ? "hums at " + Math.round(d.peak_hz) + " Hz" : "no hum"}, peak score ${fmt(d.snr, 1)}, ${d.n_events} events, ${d.window_ms} ms window, ${d.mode}`);
         animateSpec(svg, d, current === 2 || st.played);
         st.played = st.played || current === 2;
       } catch (e) { if (id === st.req) verdict.textContent = "offline"; }
     };
-    st.svg = svg;
+    st.setClip = (clip) => {
+      st.clip = clip; st.frame = firstFrame(clip);
+      st.box = Math.max(0, clip.frames[st.frame].boxes.findIndex((b) => b.kind === (isDrone ? "drone" : "other")));
+      range.max = clip.frames.length - 1; range.value = st.frame;
+      svg.setAttribute("aria-label", `Event spectrum of a box in the ${isDrone ? "drone" : "no-drone"} clip, FRED sequence ${clip.seq}`);
+      paint(); st.run();
+    };
+    st.svg = svg; st.isDrone = isDrone;
     spec.sides[host.dataset.side] = st;
-    paint(); st.run();
   });
+  spec.sides.bg.setClip(bg);
 }
 
 function animateSpec(svg, d, animate) {
-  const W = 600, H = 300, L = 40, R = 8, T = 10, B = 26, fmax = 1200;
+  const W = 600, H = 300, L = 44, R = 8, T = 10, B = 40, fmax = 1200;
   const X = (f) => L + (f / fmax) * (W - L - R);
   const Y = (v) => T + (1 - (Math.log10(Math.max(v, 0.1)) + 1) / 5) * (H - T - B);
   let s = `<rect class="band" x="${X(150)}" y="${T}" width="${X(1000) - X(150)}" height="${H - T - B}"/>`;
   [1, 10, 100, 1000].forEach((v) => { s += `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#ECECEC"/><text x="${L - 5}" y="${Y(v) + 4}" text-anchor="end">${v >= 1000 ? "1k" : v}</text>`; });
-  [0, 300, 600, 900, 1200].forEach((f) => { s += `<text x="${X(f)}" y="${H - 8}" text-anchor="middle">${f}</text>`; });
-  s += `<text x="${W - R}" y="${T + 12}" text-anchor="end">Hz</text><path class="curve${d.clear ? " hum" : ""}" d=""/>`;
+  [0, 300, 600, 900, 1200].forEach((f) => { s += `<text x="${X(f)}" y="${H - 24}" text-anchor="middle">${f}</text>`; });
+  s += `<text class="ax" x="${(L + W - R) / 2}" y="${H - 7}" text-anchor="middle">frequency, Hz · shaded: propeller band 150 to 1000 Hz</text>`;
+  s += `<text class="ax" transform="translate(11 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle">power ÷ band median</text>`;
+  s += `<path class="curve${d.clear ? " hum" : ""}" d=""/>`;
   svg.innerHTML = s;
   const path = svg.querySelector("path");
   const pts = d.power.map((p, k) => [X(k * d.df), Math.log10(Math.max(p, 0.1))]).filter(([x]) => x <= X(fmax));
@@ -282,7 +352,8 @@ function animateSpec(svg, d, animate) {
   const finish = () => {
     if (!d.clear) return;
     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    g.innerHTML = `<circle class="pk pulse" cx="${X(d.peak_hz)}" cy="${Y(pv)}" r="9" filter="url(#glow)"/><circle class="pk" cx="${X(d.peak_hz)}" cy="${Y(pv)}" r="4.5"/><text class="pkl" x="${X(d.peak_hz) + 14}" y="${Math.max(Y(pv) + 6, T + 18)}">${Math.round(d.peak_hz)} Hz</text>`;
+    const px = X(d.peak_hz), py = Y(pv), right = px < W - 130;
+    g.innerHTML = `<circle class="pk pulse" cx="${px}" cy="${py}" r="9" filter="url(#glow)"/><circle class="pk" cx="${px}" cy="${py}" r="4.5"/><text class="pkl" x="${right ? px + 14 : px - 14}" y="${Math.max(py - 12, T + 18)}" text-anchor="${right ? "start" : "end"}">${Math.round(d.peak_hz)} Hz</text>`;
     svg.append(g);
   };
   if (!animate || reduce) { frame(1); finish(); return; }
@@ -331,7 +402,7 @@ function slide4() {
     bar.append(b);
   });
   $("aplay").addEventListener("click", () => { agent.playing = !agent.playing; syncPlay(); if (agent.playing) schedule(); });
-  const first = Math.max(0, eps.findIndex((e) => e.episode === hero.id));
+  const first = Math.max(0, eps.findIndex((e) => e.episode === droneClips[0].id));
   pickEp(eps[first], bar.children[first]);
 }
 function syncPlay() { const b = $("aplay"); b.setAttribute("aria-label", agent.playing ? "Pause" : "Play"); b.replaceChildren(icon(agent.playing ? "i-pause" : "i-play")); }
@@ -397,7 +468,28 @@ function approval(r) {
   return box;
 }
 
+function clipCards() {
+  const host = $("clipcards");
+  host.replaceChildren(...droneClips.map((c) => {
+    const b = el("button", "cc"), HZ = hzOf(c), h = c.hum || {};
+    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}: ${HZ ? "median " + HZ + " Hz" : "no clean peak"}, ${h.n_clear} of ${h.n_windows} windows pass the hum test. Show this clip.`);
+    const cv = el("canvas"); cv.width = 320; cv.height = 180; const ctx = cv.getContext("2d");
+    const fi = Math.floor(c.frames.length / 2), f = c.frames[fi], img = loadFrames(c)[fi];
+    const paint = () => {
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      const sx = cv.width / c.width, sy = cv.height / c.height;
+      f.boxes.filter((x) => x.kind === "drone").forEach(({ box: [x0, y0, x1, y1] }) => { ctx.lineWidth = 2; ctx.strokeStyle = HZ ? HUM : "#fff"; ctx.strokeRect(x0 * sx - 3, y0 * sy - 3, (x1 - x0) * sx + 6, (y1 - y0) * sy + 6); });
+    };
+    if (img.complete && img.naturalWidth) paint(); else img.addEventListener("load", paint);
+    b.append(cv, el("span", "model", `${modelOf(c)} · seq ${c.seq}`), el("span", "v" + (HZ ? "" : " none"), HZ ? `${Math.round(HZ)} Hz` : "no clean peak"),
+      el("span", "n", `${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test`));
+    b.addEventListener("click", () => { setClip(c); go(0); });
+    return b;
+  }));
+}
+
 async function slide5() {
+  clipCards();
   const d = await fetch("/api/results").then((r) => r.json()).catch(() => null);
   const f = d && d.false_alarms, fa = $("fa");
   const cell = (ics, label, v) => {
@@ -456,169 +548,210 @@ function specPlot(ctx, d, box, opt) {
   let first = true;
   d.power.forEach((p, k) => { const f = k * d.df; if (f < f0 || f > f1) return; const x = X(f), y = Y(p); if (first) ctx.moveTo(x, y); else ctx.lineTo(x, y); first = false; });
   ctx.stroke();
-  ctx.fillStyle = "#777"; ctx.font = "400 18px 'JetBrains Mono', monospace";
-  (opt.ticks || [0, 300, 600, 900, 1200]).forEach((f) => ctx.fillText(String(f), X(f) - 14, y1 + 22));
-  if (d.clear && d.peak_hz > 0) {
-    const pv = d.power[Math.round(d.peak_hz / d.df)] || 1;
-    ctx.save(); ctx.shadowColor = HUM; ctx.shadowBlur = 22; ctx.fillStyle = HUM; ctx.beginPath(); ctx.arc(X(d.peak_hz), Y(pv), 8, 0, 7); ctx.fill(); ctx.restore();
-    ctx.fillStyle = HUM; ctx.font = "500 26px 'JetBrains Mono', monospace"; ctx.fillText(`${Math.round(d.peak_hz)} Hz`, Math.min(X(d.peak_hz) + 14, x1 - 120), Math.max(Y(pv) + 8, y0 + 24));
+  (opt.ticks || [0, 300, 600, 900, 1200]).forEach((f) => txt(ctx, String(f), X(f), y1 + 22, { align: "center" }));
+  txt(ctx, "Hz", x1, y1 + 22, { align: "right" });
+  if (d.peak_hz > 0) {
+    const pv = d.power[Math.round(d.peak_hz / d.df)] || 1, px = X(d.peak_hz), py = Y(pv), right = px < x1 - 150;
+    if (d.clear) { ctx.save(); ctx.shadowColor = HUM; ctx.shadowBlur = 22; ctx.fillStyle = HUM; ctx.beginPath(); ctx.arc(px, py, 8, 0, 7); ctx.fill(); ctx.restore(); }
+    txt(ctx, d.clear ? `${Math.round(d.peak_hz)} Hz` : `${Math.round(d.peak_hz)} Hz, no hum`, right ? px + 14 : px - 14, Math.max(py - 14, y0 + 22), { font: "500 24px 'JetBrains Mono', monospace", color: d.clear ? HUM : "#777", align: right ? "left" : "right" });
   }
   return { X, Y };
 }
 
-const M = { started: false };
+const M = { init: false, ready: false, clipId: null };
 async function slideMath() {
-  if (M.started) return;
-  M.started = true;
-  const sm = await fetch("/api/summary").then((r) => r.json());
-  const ht = sm.hum_test;
-  M.fs = ht.fs_hz; M.amb = ht.ambiguous_score; M.clear = ht.clear_score; M.local = ht.local_hz;
-  const k = Math.round(HZ / 30), alias = Math.abs(HZ - k * 30);
-  $("fx-nyq").innerHTML = `f<sub>alias</sub> = |f &minus; k&middot;30| = |${Math.round(HZ)} &minus; ${k}&middot;30| = ${alias.toFixed(1)} Hz &nbsp;&middot;&nbsp; f<sub>Nyq</sub> = f<sub>s</sub>/2 : 15 Hz vs ${M.fs / 2000} kHz`;
-  const [hf, hb] = firstBox(hero, "drone"), bgb = firstBox(bg, "other");
-  const fCloud = hero.frames.findIndex((f) => f.t === hero.cloud.t_end);
-  const [d100, dbg, d40] = await Promise.all([getSpec(hero, hf, hb, 100), bgb ? getSpec(bg, bgb[0], bgb[1], 100) : null,
-    getSpec(hero, fCloud >= 0 ? fCloud : hf, fCloud >= 0 ? Math.max(0, hero.frames[fCloud].boxes.findIndex((b) => b.kind === "drone")) : hb, hero.cloud.ms)]);
-  M.d100 = d100; M.dbg = dbg; M.d40 = d40;
-  $("sr-math-live").textContent = `Live numbers: measured blade-pass ${HZ} Hz aliases at 30 fps to ${alias.toFixed(1)} Hz (k = ${k}). Event bins of ${1e3 / M.fs} ms give a Nyquist limit of ${M.fs / 2} Hz. Drone box score at 100 ms: ${fmt(d100.snr, 1)} (hum above ${M.clear}); no-drone box score: ${dbg ? fmt(dbg.snr, 1) : "n/a"} (ambiguous above ${M.amb}).`;
-
-  const nyq = $("nyq"), nc = nyq.getContext("2d");
-  const drawNyq = (t) => {
-    const W = nyq.width;
-    nc.fillStyle = "#FEFEFE"; nc.fillRect(0, 0, W, nyq.height);
-    const th = (tt) => 2 * Math.PI * (HZ / 2) * tt, R = 92;
-    nc.strokeStyle = "#E4E4E4"; nc.lineWidth = 2;
-    [[170, 130], [470, 130]].forEach(([x, y]) => { nc.beginPath(); nc.arc(x, y, R + 6, 0, 7); nc.stroke(); });
-    for (let s = 0; s < 24; s++) blades(nc, 170, 130, R, th(t + s / 60 / 24), 0.07, INK);
-    blades(nc, 470, 130, R, th(Math.floor(t * 30) / 30), 0.9, INK);
-    [[170, 130], [470, 130]].forEach(([x, y]) => { nc.fillStyle = "#2a2a2a"; nc.beginPath(); nc.arc(x, y, 12, 0, 7); nc.fill(); });
-    nc.font = "500 30px 'JetBrains Mono', monospace";
-    nc.fillStyle = HUM; nc.fillText(`${Math.round(HZ)} Hz`, 640, 110);
-    nc.fillStyle = INK; nc.fillText(`${alias.toFixed(1)} Hz`, 640, 170);
-    nc.font = "400 20px 'JetBrains Mono', monospace"; nc.fillStyle = "#777";
-    nc.fillText("real", 145, 22); nc.fillText("30 fps", 437, 22);
-    nc.fillText("real", 800, 110); nc.fillText("seen", 800, 170);
-    const ax0 = 40, ax1 = W - 30, ay = 330;
-    nc.fillStyle = "rgba(255,90,31,.14)"; nc.fillRect(ax0, ay - 34, logx(M.fs / 2, ax0, ax1) - ax0, 26);
-    nc.fillStyle = "#CFCFCF"; nc.fillRect(ax0, ay - 34, logx(15, ax0, ax1) - ax0, 26);
-    nc.fillStyle = "#444"; nc.font = "500 16px 'JetBrains Mono', monospace";
-    nc.fillText("≤15", ax0 + 6, ay - 15); nc.fillText(`events ≤${M.fs / 2000} kHz`, logx(M.fs / 2, ax0, ax1) - 190, ay - 15);
-    nc.strokeStyle = INK; nc.lineWidth = 2; nc.beginPath(); nc.moveTo(ax0, ay); nc.lineTo(ax1, ay); nc.stroke();
-    nc.font = "400 16px 'JetBrains Mono', monospace"; nc.fillStyle = "#777";
-    [1, 10, 100, 1000, 10000].forEach((f) => { const x = logx(f, ax0, ax1); nc.fillRect(x - 1, ay, 2, 8); nc.fillText(f >= 1000 ? f / 1000 + "k" : String(f), x - 10, ay + 28); });
-    const xh = logx(HZ, ax0, ax1), xa = logx(alias, ax0, ax1);
-    nc.strokeStyle = HUM; nc.lineWidth = 2.5; nc.setLineDash([6, 5]); nc.beginPath(); nc.moveTo(xh, ay - 38); nc.quadraticCurveTo((xh + xa) / 2, ay - 110, xa + 6, ay - 38); nc.stroke(); nc.setLineDash([]);
-    nc.fillStyle = HUM; nc.beginPath(); nc.arc(xh, ay, 8, 0, 7); nc.fill();
-    nc.fillStyle = INK; nc.beginPath(); nc.arc(xa, ay, 7, 0, 7); nc.fill();
-  };
-
-  const ft = $("ft"), fc = ft.getContext("2d");
-  const N = Math.round(hero.cloud.ms * M.fs / 1000), sig = new Float32Array(N);
-  for (let i = 0; i < cropBuf.length / 4; i++) sig[Math.min(N - 1, Math.floor(cropBuf[4 * i + 2] / (hero.cloud.ms * 1000) * N))] += cropBuf[4 * i + 3] ? 1 : -1;
-  const smax = Math.max(...sig.map(Math.abs)) || 1;
-  const hann = (n) => 0.5 - 0.5 * Math.cos(2 * Math.PI * n / (N - 1));
-  M.stage = 0;
-  const ftb = $("ftbtns");
-  const drawFt = () => {
-    const W = ft.width, H = ft.height;
-    [...ftb.children].forEach((b, j) => b.setAttribute("aria-pressed", String(j === M.stage)));
-    fc.fillStyle = "#FEFEFE"; fc.fillRect(0, 0, W, H);
-    const top = M.stage < 2, y0 = top ? 30 : 16, hh = top ? 300 : 120, mid = y0 + hh / 2, bw = (W - 60) / N;
-    for (let n = 0; n < N; n++) {
-      const w = M.stage >= 1 ? hann(n) : 1, v = sig[n] / smax * (hh / 2 - 6), vw = v * w;
-      if (M.stage >= 1) { fc.fillStyle = "#E6E6E6"; fc.fillRect(30 + n * bw, v >= 0 ? mid - v : mid, Math.max(bw, 1), Math.abs(v)); }
-      fc.fillStyle = v >= 0 ? INK : OFF; fc.fillRect(30 + n * bw, vw >= 0 ? mid - vw : mid, Math.max(bw, 1), Math.abs(vw));
-    }
-    if (M.stage >= 1) { fc.strokeStyle = HUM; fc.lineWidth = 2.5; fc.beginPath(); for (let n = 0; n < N; n++) { const x = 30 + n * bw, y = mid - hann(n) * (hh / 2 - 6); if (n) fc.lineTo(x, y); else fc.moveTo(x, y); } fc.stroke(); }
-    fc.fillStyle = "#777"; fc.font = "400 18px 'JetBrains Mono', monospace"; fc.fillText("0", 30, y0 + hh + 20); fc.fillText(`${hero.cloud.ms} ms`, W - 110, y0 + hh + 20);
-    if (M.stage === 2) {
-      fc.fillStyle = INK; fc.font = "500 20px 'JetBrains Mono', monospace"; fc.fillText("cv.dft ↓", W / 2 - 40, 180);
-      specPlot(fc, M.d40, [40, 196, W - 20, H - 34], {});
-    }
-  };
-  ["x(t)", "·w(t)", "|X(f)|²"].forEach((lab, j) => { const b = el("button", "btn", lab); b.addEventListener("click", () => { M.stage = j; M.ftHold = performance.now() + 8000; drawFt(); }); ftb.append(b); });
-
-  const snr = $("snr"), scx = snr.getContext("2d");
-  const drawSnr = () => {
-    const W = snr.width, H = snr.height, d = M.d100;
-    scx.fillStyle = "#FEFEFE"; scx.fillRect(0, 0, W, H);
-    const f0 = Math.max(0, d.peak_hz - 160), f1 = d.peak_hz + 160;
-    scx.fillStyle = "rgba(30,30,30,.05)";
-    const pre = (f) => 40 + (f - f0) / (f1 - f0) * 560;
-    scx.fillRect(pre(d.peak_hz - M.local), 20, pre(d.peak_hz + M.local) - pre(d.peak_hz - M.local), H - 60);
-    const { X, Y } = specPlot(scx, d, [40, 20, 600, H - 40], { f0, f1, ticks: [Math.round(d.peak_hz - 100), Math.round(d.peak_hz), Math.round(d.peak_hz + 100)] });
-    const loc = d.power.filter((p, k2) => Math.abs(k2 * d.df - d.peak_hz) <= M.local).slice().sort((a, b) => a - b);
-    const med = loc[Math.floor(loc.length / 2)];
-    scx.strokeStyle = INK; scx.lineWidth = 2; scx.setLineDash([8, 6]); scx.beginPath(); scx.moveTo(X(d.peak_hz - M.local), Y(med)); scx.lineTo(X(d.peak_hz + M.local), Y(med)); scx.stroke(); scx.setLineDash([]);
-    scx.fillStyle = INK; scx.font = "500 18px 'JetBrains Mono', monospace"; scx.fillText("median", X(d.peak_hz + M.local) - 70, Y(med) + 24);
-    const gx = 770, gy0 = 24, gy1 = H - 40, GY = (v) => gy1 - Math.log10(Math.max(v, 1)) / 4 * (gy1 - gy0);
-    scx.fillStyle = "rgba(255,90,31,.16)"; scx.fillRect(gx - 26, gy0, 52, GY(M.clear) - gy0);
-    scx.fillStyle = "#E6E6E6"; scx.fillRect(gx - 26, GY(M.clear), 52, GY(M.amb) - GY(M.clear));
-    scx.strokeStyle = INK; scx.lineWidth = 2; scx.strokeRect(gx - 26, gy0, 52, gy1 - gy0);
-    scx.font = "500 18px 'JetBrains Mono', monospace"; scx.fillStyle = INK;
-    [[M.amb, `${M.amb}`], [M.clear, `${M.clear}`]].forEach(([v, l]) => { scx.fillRect(gx - 34, GY(v) - 1, 68, 2); scx.fillText(l, gx - 84, GY(v) + 6); });
-    const mark = (v, color, lab) => { const y = GY(v); scx.fillStyle = color; scx.beginPath(); scx.moveTo(gx + 30, y); scx.lineTo(gx + 44, y - 9); scx.lineTo(gx + 44, y + 9); scx.fill(); scx.font = "500 18px 'JetBrains Mono', monospace"; scx.fillText(`${lab} ${Math.round(v)}`, gx + 48, y + 7); };
-    mark(d.snr, HUM, "drone");
-    if (M.dbg) mark(M.dbg.snr, INK, "none");
-  };
-
-  const wins = [20, 50, 100, 150, 200, 300], mw = $("mwin"), mp = $("mwplot"), mc = mp.getContext("2d");
-  const drawWin = async () => {
-    const w = wins[+mw.value]; $("mwinv").textContent = `${w} ms`;
-    mw.setAttribute("aria-valuetext", `${w} ms`);
-    const id = (M.wreq = (M.wreq || 0) + 1);
-    const d = await getSpec(hero, hf, hb, w);
-    if (id !== M.wreq) return;
-    mc.fillStyle = "#FEFEFE"; mc.fillRect(0, 0, mp.width, mp.height);
-    specPlot(mc, d, [40, 14, mp.width - 260, mp.height - 30], { f0: 100, f1: 700, ticks: [100, 300, 500, 700] });
-    mc.fillStyle = INK; mc.font = "500 30px 'JetBrains Mono', monospace"; mc.fillText(`Δf ${(1000 / w).toFixed(1)} Hz`, mp.width - 240, 60);
-    mc.fillStyle = d.clear ? HUM : "#777"; mc.font = "500 24px 'JetBrains Mono', monospace"; mc.fillText(`score ${Math.round(d.snr)}`, mp.width - 240, 110);
-    mc.fillStyle = "#777"; mc.font = "400 18px 'JetBrains Mono', monospace"; mc.fillText(`${d.compute_ms ?? "–"} ms live`, mp.width - 240, 150);
-  };
-  mw.addEventListener("input", () => { clearTimeout(M.wt); M.wt = setTimeout(drawWin, 120); });
-  drawWin();
-
-  const eps = tracesDoc.episodes || [];
-  const ep = eps.find((e) => e.episode === hero.id && e.planner !== "rule") || eps[0];
-  if (ep) {
-    const alias2 = {}, key = (b) => JSON.stringify(b), root = (k2) => (alias2[k2] ? root(alias2[k2]) : k2);
-    const groups = {}, order = [], alerted = new Set();
-    ep.rows.filter((r) => r.kind === "step" && r.guard === "ok").forEach((r) => {
-      if (r.tool === "track" && r.result && r.result.box) alias2[key(r.result.box)] = key(r.args.box);
-      if (["box_spectrum", "request_window"].includes(r.tool) && r.result && r.result.verdict) {
-        const g = root(key(r.args.box)); if (!groups[g]) { groups[g] = []; order.push(g); } groups[g].push(r);
+  if (!M.init) {
+    M.init = true;
+    const sm = await fetch("/api/summary").then((r) => r.json());
+    const ht = sm.hum_test;
+    M.fs = ht.fs_hz; M.amb = ht.ambiguous_score; M.clear = ht.clear_score; M.local = ht.local_hz;
+    ["x(t)", "·w(t)", "|X(f)|²"].forEach((lab, j) => { const b = el("button", "btn", lab); b.addEventListener("click", () => { M.stage = j; M.ftHold = performance.now() + 8000; drawFt(); }); $("ftbtns").append(b); });
+    const ops = [["i-hist", "calcHist"], ["i-wave", "dft"], ["i-blobs", "connectedComponentsWithStats"], ["i-net", "dnn"]];
+    const row = $("cvrow");
+    ops.forEach(([ic, n], j) => { if (j) row.append(el("span", "arr", "→")); const o = el("span", "op"); o.append(icon(ic), document.createTextNode("cv." + n)); row.append(o); });
+    M.opEls = [...row.querySelectorAll(".op")];
+    $("mwin").addEventListener("input", () => { clearTimeout(M.wt); M.wt = setTimeout(drawWin, 120); });
+    M.stage = 0;
+    const t0 = performance.now();
+    const loop = (now) => {
+      if (current === 3 && M.ready) {
+        const t = (now - t0) / 1000;
+        drawNyq(reduce ? 0 : t);
+        if (!reduce && !(M.ftHold > now)) { const st = Math.floor(t / 2.4) % 3; if (st !== M.stage) { M.stage = st; drawFt(); } }
+        M.opEls.forEach((o, j) => o.classList.toggle("lit", reduce ? true : Math.floor(t / 0.8) % (M.opEls.length + 1) >= j + 1));
       }
-      if (r.tool === "raise_alert") alerted.add(root(key(r.args.box)));
-    });
-    $("chain").replaceChildren(...order.map((g) => {
-      const row = el("div", "row"); row.append(icon(alerted.has(g) ? "i-drone" : "i-frame"));
-      groups[g].forEach((r, j) => {
-        if (j) { const a = el("span", "", "→"); if (r.tool === "request_window") a.append(icon("i-clock")); row.append(a); }
-        const c = el("span", "chip " + r.result.verdict, `${r.result.window_ms}ms·${Math.round(r.result.snr)}`);
-        c.title = `step ${r.step}: ${r.tool}, ${r.result.window_ms} ms window, score ${r.result.snr}, ${r.result.verdict}, ${r.result.peak_hz} Hz`;
-        row.append(c);
-      });
-      row.append(el("span", "", "→"), icon(alerted.has(g) ? "i-alert" : "i-x"));
-      return row;
-    }));
-    $("chain").title = `Real ${ep.planner} trace, episode ${ep.episode}`;
-  }
-
-  const ops = [["i-hist", "calcHist"], ["i-wave", "dft"], ["i-blobs", "connectedComponentsWithStats"], ["i-net", "dnn"]];
-  const row = $("cvrow");
-  ops.forEach(([ic, n], j) => { if (j) row.append(el("span", "arr", "→")); const o = el("span", "op"); o.append(icon(ic), document.createTextNode("cv." + n)); row.append(o); });
-  const opEls = [...row.querySelectorAll(".op")];
-  const t0 = performance.now();
-  const loop = (now) => {
-    if (current === 3) {
-      const t = (now - t0) / 1000;
-      drawNyq(reduce ? 0 : t);
-      if (!reduce && !(M.ftHold > now)) { const st = Math.floor(t / 2.4) % 3; if (st !== M.stage) { M.stage = st; drawFt(); } }
-      opEls.forEach((o, j) => o.classList.toggle("lit", reduce ? true : Math.floor(t / 0.8) % (opEls.length + 1) >= j + 1));
-    }
+      requestAnimationFrame(loop);
+    };
     requestAnimationFrame(loop);
-  };
-  drawFt(); drawSnr(); requestAnimationFrame(loop);
+  }
+  if (M.clipId === cur.clip.id) return;
+  M.ready = false; M.clipId = cur.clip.id;
+  const clip = cur.clip, ref = cur.HZ ? clip : droneClips.find((c) => hzOf(c)), HZ = hzOf(ref);
+  M.hz = HZ; M.refName = `${shortName(ref)} · ${Math.round(HZ)} Hz`;
+  $("nyqwho").textContent = cur.HZ ? "" : `(${M.refName}, this clip has no clean hum)`;
+  const k = Math.round(HZ / 30), alias = Math.abs(HZ - k * 30);
+  M.alias = alias;
+  $("fx-nyq").innerHTML = `f<sub>alias</sub> = |f &minus; k&middot;30| = |${Math.round(HZ)} &minus; ${k}&middot;30| = ${alias.toFixed(1)} Hz &nbsp;&middot;&nbsp; f<sub>Nyq</sub> = f<sub>s</sub>/2 : 15 Hz vs ${M.fs / 2000} kHz`;
+  const [hf, hb] = firstBox(clip, "drone"), bgb = firstBox(bg, "other");
+  M.hf = hf; M.hb = hb;
+  const fCloud = clip.frames.findIndex((f) => f.t === clip.cloud.t_end);
+  const [d100, dbg, d40] = await Promise.all([getSpec(clip, hf, hb, 100), bgb ? getSpec(bg, bgb[0], bgb[1], 100) : null,
+    getSpec(clip, fCloud >= 0 ? fCloud : hf, fCloud >= 0 ? Math.max(0, clip.frames[fCloud].boxes.findIndex((b) => b.kind === "drone")) : hb, clip.cloud.ms)]);
+  if (M.clipId !== clip.id) return;
+  M.d100 = d100; M.dbg = dbg; M.d40 = d40;
+  const N = Math.round(clip.cloud.ms * M.fs / 1000), sig = new Float32Array(N), cb = cur.crop;
+  for (let i = 0; i < cb.length / 4; i++) sig[Math.min(N - 1, Math.floor(cb[4 * i + 2] / (clip.cloud.ms * 1000) * N))] += cb[4 * i + 3] ? 1 : -1;
+  M.sig = sig; M.N = N; M.smax = Math.max(...sig.map(Math.abs)) || 1;
+  $("sr-math-live").textContent = `Live numbers for ${modelOf(clip)}, FRED sequence ${clip.seq}: ${cur.HZ ? `measured blade-pass ${HZ} Hz aliases at 30 fps to ${alias.toFixed(1)} Hz (k = ${k})` : `no clean hum; the aliasing panel uses ${M.refName}`}. Event bins of ${1e3 / M.fs} ms give a Nyquist limit of ${M.fs / 2} Hz. Drone box score at 100 ms: ${fmt(d100.snr, 1)} (hum above ${M.clear}); no-drone box score: ${dbg ? fmt(dbg.snr, 1) : "n/a"} (ambiguous above ${M.amb}).`;
+  chain(clip);
+  M.ready = true;
+  drawFt(); drawSnr(); drawWin();
+}
+
+function drawNyq(t) {
+  const nyq = $("nyq"), nc = nyq.getContext("2d"), W = nyq.width, HZ = M.hz, alias = M.alias;
+  nc.fillStyle = "#FEFEFE"; nc.fillRect(0, 0, W, nyq.height);
+  const th = (tt) => 2 * Math.PI * (HZ / 2) * tt, R = 92;
+  nc.strokeStyle = "#E4E4E4"; nc.lineWidth = 2;
+  [[170, 130], [470, 130]].forEach(([x, y]) => { nc.beginPath(); nc.arc(x, y, R + 6, 0, 7); nc.stroke(); });
+  for (let s = 0; s < 24; s++) blades(nc, 170, 130, R, th(t + s / 60 / 24), 0.07, INK);
+  blades(nc, 470, 130, R, th(Math.floor(t * 30) / 30), 0.9, INK);
+  [[170, 130], [470, 130]].forEach(([x, y]) => { nc.fillStyle = "#2a2a2a"; nc.beginPath(); nc.arc(x, y, 12, 0, 7); nc.fill(); });
+  txt(nc, `${Math.round(HZ)} Hz`, 640, 110, { font: "500 30px 'JetBrains Mono', monospace", color: HUM });
+  txt(nc, `${alias.toFixed(1)} Hz`, 640, 170, { font: "500 30px 'JetBrains Mono', monospace", color: INK });
+  txt(nc, "real propeller", 170, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
+  txt(nc, "what 30 fps sees", 470, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
+  txt(nc, "real", 800, 110, { font: "400 20px 'JetBrains Mono', monospace" });
+  txt(nc, "at 30 fps", 800, 170, { font: "400 20px 'JetBrains Mono', monospace" });
+  const ax0 = 40, ax1 = W - 30, ay = 330;
+  nc.fillStyle = "rgba(255,90,31,.14)"; nc.fillRect(ax0, ay - 34, logx(M.fs / 2, ax0, ax1) - ax0, 26);
+  nc.fillStyle = "#CFCFCF"; nc.fillRect(ax0, ay - 34, logx(15, ax0, ax1) - ax0, 26);
+  txt(nc, "30 fps sees ≤15 Hz", ax0, ay - 42, { font: "500 16px 'JetBrains Mono', monospace", color: "#444" });
+  txt(nc, `events see ≤${M.fs / 2000} kHz`, logx(M.fs / 2, ax0, ax1), ay - 42, { font: "500 16px 'JetBrains Mono', monospace", color: "#444", align: "right" });
+  nc.strokeStyle = INK; nc.lineWidth = 2; nc.beginPath(); nc.moveTo(ax0, ay); nc.lineTo(ax1, ay); nc.stroke();
+  [1, 10, 100, 1000, 10000].forEach((f) => { const x = logx(f, ax0, ax1); nc.fillStyle = "#777"; nc.fillRect(x - 1, ay, 2, 8); txt(nc, f >= 1000 ? f / 1000 + "k" : String(f), x, ay + 28, { font: "400 16px 'JetBrains Mono', monospace", align: "center" }); });
+  txt(nc, "Hz", ax1, ay + 28, { font: "400 16px 'JetBrains Mono', monospace", align: "right" });
+  const xh = logx(HZ, ax0, ax1), xa = logx(alias, ax0, ax1);
+  nc.strokeStyle = HUM; nc.lineWidth = 2.5; nc.setLineDash([6, 5]); nc.beginPath(); nc.moveTo(xh, ay - 38); nc.quadraticCurveTo((xh + xa) / 2, ay - 110, xa + 6, ay - 38); nc.stroke(); nc.setLineDash([]);
+  txt(nc, "folds down", (xh + xa) / 2, ay - 84, { font: "400 15px 'JetBrains Mono', monospace", color: HUM, align: "center" });
+  nc.fillStyle = HUM; nc.beginPath(); nc.arc(xh, ay, 8, 0, 7); nc.fill();
+  nc.fillStyle = INK; nc.beginPath(); nc.arc(xa, ay, 7, 0, 7); nc.fill();
+}
+
+function drawFt() {
+  const ft = $("ft"), fc = ft.getContext("2d"), W = ft.width, H = ft.height, N = M.N, sig = M.sig, smax = M.smax;
+  [...$("ftbtns").children].forEach((b, j) => b.setAttribute("aria-pressed", String(j === M.stage)));
+  fc.fillStyle = "#FEFEFE"; fc.fillRect(0, 0, W, H);
+  if (!sig) return;
+  const hann = (n) => 0.5 - 0.5 * Math.cos(2 * Math.PI * n / (N - 1));
+  const top = M.stage < 2, y0 = top ? 34 : 20, hh = top ? 290 : 116, mid = y0 + hh / 2, bw = (W - 60) / N;
+  for (let n = 0; n < N; n++) {
+    const w = M.stage >= 1 ? hann(n) : 1, v = sig[n] / smax * (hh / 2 - 6), vw = v * w;
+    if (M.stage >= 1) { fc.fillStyle = "#E6E6E6"; fc.fillRect(30 + n * bw, v >= 0 ? mid - v : mid, Math.max(bw, 1), Math.abs(v)); }
+    fc.fillStyle = v >= 0 ? INK : OFF; fc.fillRect(30 + n * bw, vw >= 0 ? mid - vw : mid, Math.max(bw, 1), Math.abs(vw));
+  }
+  if (M.stage >= 1) { fc.strokeStyle = HUM; fc.lineWidth = 2; fc.beginPath(); for (let n = 0; n < N; n++) { const x = 30 + n * bw, y = mid - hann(n) * (hh / 2 - 6); if (n) fc.lineTo(x, y); else fc.moveTo(x, y); } fc.stroke(); }
+  txt(fc, M.stage === 0 ? "brighter minus darker, per 0.1 ms" : M.stage === 1 ? "× Hanning window" : "windowed signal", 30, 22, { font: "400 16px 'JetBrains Mono', monospace" });
+  txt(fc, "0", 30, y0 + hh + 20, { font: "400 16px 'JetBrains Mono', monospace" });
+  txt(fc, `${cur.clip.cloud.ms} ms`, W - 30, y0 + hh + 20, { font: "400 16px 'JetBrains Mono', monospace", align: "right" });
+  if (M.stage === 2) {
+    txt(fc, "cv.dft ↓", W / 2, 182, { font: "500 20px 'JetBrains Mono', monospace", color: INK, align: "center" });
+    specPlot(fc, M.d40, [40, 200, W - 20, H - 34], {});
+  }
+}
+
+function drawSnr() {
+  const snr = $("snr"), scx = snr.getContext("2d"), W = snr.width, H = snr.height, d = M.d100;
+  scx.fillStyle = "#FEFEFE"; scx.fillRect(0, 0, W, H);
+  const f0 = Math.max(0, d.peak_hz - 160), f1 = d.peak_hz + 160;
+  scx.fillStyle = "rgba(30,30,30,.05)";
+  const pre = (f) => 40 + (f - f0) / (f1 - f0) * 560;
+  scx.fillRect(pre(d.peak_hz - M.local), 20, pre(d.peak_hz + M.local) - pre(d.peak_hz - M.local), H - 60);
+  const { X, Y } = specPlot(scx, d, [40, 20, 600, H - 40], { f0, f1, ticks: [Math.round(d.peak_hz - 100), Math.round(d.peak_hz), Math.round(d.peak_hz + 100)] });
+  const loc = d.power.filter((p, k2) => Math.abs(k2 * d.df - d.peak_hz) <= M.local).slice().sort((a, b) => a - b);
+  const med = loc[Math.floor(loc.length / 2)];
+  scx.strokeStyle = INK; scx.lineWidth = 2; scx.setLineDash([8, 6]); scx.beginPath(); scx.moveTo(X(d.peak_hz - M.local), Y(med)); scx.lineTo(X(d.peak_hz + M.local), Y(med)); scx.stroke(); scx.setLineDash([]);
+  txt(scx, "median within ±100 Hz", X(d.peak_hz - M.local) + 4, Y(med) + 22, { font: "500 16px 'JetBrains Mono', monospace", color: INK });
+  const gx = 770, gy0 = 24, gy1 = H - 40, GY = (v) => gy1 - Math.log10(Math.max(v, 1)) / 4 * (gy1 - gy0);
+  scx.fillStyle = "rgba(255,90,31,.16)"; scx.fillRect(gx - 26, gy0, 52, GY(M.clear) - gy0);
+  scx.fillStyle = "#E6E6E6"; scx.fillRect(gx - 26, GY(M.clear), 52, GY(M.amb) - GY(M.clear));
+  scx.strokeStyle = INK; scx.lineWidth = 2; scx.strokeRect(gx - 26, gy0, 52, gy1 - gy0);
+  txt(scx, "hum", gx, gy0 + 22, { font: "500 14px 'JetBrains Mono', monospace", color: HUM, align: "center" });
+  txt(scx, "maybe", gx, (GY(M.clear) + GY(M.amb)) / 2 + 5, { font: "500 14px 'JetBrains Mono', monospace", color: "#555", align: "center" });
+  txt(scx, "no", gx, (GY(M.amb) + gy1) / 2 + 5, { font: "500 14px 'JetBrains Mono', monospace", color: "#555", align: "center" });
+  [[M.amb, `${M.amb}`], [M.clear, `${M.clear}`]].forEach(([v, l]) => { scx.fillStyle = INK; scx.fillRect(gx - 34, GY(v) - 1, 68, 2); txt(scx, l, gx - 40, GY(v) + 6, { font: "500 18px 'JetBrains Mono', monospace", color: INK, align: "right" }); });
+  const mark = (v, color, lab, dy) => { const y = GY(v); scx.fillStyle = color; scx.beginPath(); scx.moveTo(gx + 30, y); scx.lineTo(gx + 44, y - 9); scx.lineTo(gx + 44, y + 9); scx.fill(); txt(scx, `${lab} ${Math.round(v)}`, gx + 48, y + 7 + dy, { font: "500 18px 'JetBrains Mono', monospace", color }); };
+  mark(d.snr, HUM, "drone box", 0);
+  if (M.dbg) mark(M.dbg.snr, INK, "no drone", Math.abs(GY(M.dbg.snr) - GY(d.snr)) < 22 ? 20 : 0);
+}
+
+const WINS = [20, 50, 100, 150, 200, 300];
+async function drawWin() {
+  const mw = $("mwin"), mp = $("mwplot"), mc = mp.getContext("2d"), clip = cur.clip;
+  const w = WINS[+mw.value]; $("mwinv").textContent = `${w} ms`;
+  mw.setAttribute("aria-valuetext", `${w} ms`);
+  const id = (M.wreq = (M.wreq || 0) + 1);
+  const d = await getSpec(clip, M.hf, M.hb, w);
+  if (id !== M.wreq || clip !== cur.clip) return;
+  mc.fillStyle = "#FEFEFE"; mc.fillRect(0, 0, mp.width, mp.height);
+  specPlot(mc, d, [40, 14, mp.width - 270, mp.height - 30], { f0: 100, f1: 1000, ticks: [100, 400, 700, 1000] });
+  txt(mc, `Δf = ${(1000 / w).toFixed(1)} Hz`, mp.width - 250, 60, { font: "500 30px 'JetBrains Mono', monospace", color: INK });
+  txt(mc, `score ${Math.round(d.snr)}`, mp.width - 250, 110, { font: "500 24px 'JetBrains Mono', monospace", color: d.clear ? HUM : "#777" });
+  txt(mc, `${d.compute_ms ?? "–"} ms live, OpenCV 5`, mp.width - 250, 150, { font: "400 18px 'JetBrains Mono', monospace" });
+}
+
+function chain(clip) {
+  const eps = tracesDoc.episodes || [];
+  const ep = eps.find((e) => e.episode === clip.id && e.planner !== "rule") || eps.find((e) => e.planner !== "rule") || eps[0];
+  const host = $("chain");
+  if (!ep) { host.replaceChildren(); return; }
+  const alias2 = {}, key = (b) => JSON.stringify(b), root = (k2) => (alias2[k2] ? root(alias2[k2]) : k2);
+  const groups = {}, order = [], alerted = new Set();
+  ep.rows.filter((r) => r.kind === "step" && r.guard === "ok").forEach((r) => {
+    if (r.tool === "track" && r.result && r.result.box) alias2[key(r.result.box)] = key(r.args.box);
+    if (["box_spectrum", "request_window"].includes(r.tool) && r.result && r.result.verdict) {
+      const g = root(key(r.args.box)); if (!groups[g]) { groups[g] = []; order.push(g); } groups[g].push(r);
+    }
+    if (r.tool === "raise_alert") alerted.add(root(key(r.args.box)));
+  });
+  const head = el("div", "row", `agent trace, ${ep.planner}, FRED seq ${(clips.find((c) => c.id === ep.episode) || {}).seq || ep.episode}: window · score`);
+  host.replaceChildren(head, ...order.map((g) => {
+    const row = el("div", "row"); row.append(icon(alerted.has(g) ? "i-drone" : "i-frame"));
+    groups[g].forEach((r, j) => {
+      if (j) { const a = el("span", "", "→"); if (r.tool === "request_window") a.append(icon("i-clock")); row.append(a); }
+      const c = el("span", "chip " + r.result.verdict, `${r.result.window_ms} ms · ${Math.round(r.result.snr)}`);
+      c.title = `step ${r.step}: ${r.tool}, ${r.result.window_ms} ms window, score ${r.result.snr}, ${r.result.verdict}, ${r.result.peak_hz} Hz`;
+      row.append(c);
+    });
+    row.append(el("span", "", "→"), icon(alerted.has(g) ? "i-alert" : "i-x"));
+    return row;
+  }));
+  host.title = `Real ${ep.planner} trace, episode ${ep.episode}`;
+}
+
+function clipBar() {
+  const bar = $("clipbar");
+  droneClips.forEach((c) => {
+    const b = el("button", "btn"), HZ = hzOf(c);
+    b.append(document.createTextNode(shortName(c) + " "), el("b", "", HZ ? `${Math.round(HZ)} Hz` : "no clean peak"));
+    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}, ${HZ ? "median hum " + HZ + " Hz" : "no clean peak"}: ${c.title}`);
+    b.dataset.clip = c.id;
+    b.addEventListener("click", () => setClip(c));
+    bar.append(b);
+  });
+}
+
+async function setClip(clip) {
+  if (cur.clip === clip) return;
+  cur.clip = clip; cur.HZ = hzOf(clip); cur.crop = null;
+  document.querySelectorAll("#clipbar [data-clip]").forEach((b) => { const on = b.dataset.clip === clip.id; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
+  const crop = clip.cloud.crop ? await bufOf(clip.cloud.crop.src) : null;
+  if (cur.clip !== clip) return;
+  cur.crop = crop;
+  applySlide1();
+  applySlide2();
+  spec.sides.drone.setClip(clip);
+  if (M.init) slideMath();
 }
 
 const deck = $("deck"), slides = [...deck.querySelectorAll(".slide")];
@@ -634,9 +767,9 @@ function enter(i) {
   $("prev").disabled = i === 0; $("next").disabled = i === slides.length - 1;
   history.replaceState(null, "", "#" + slides[i].id);
   slides.forEach((s, j) => s.toggleAttribute("inert", j !== i));
-  if (i === 1) slide2();
+  if (i === 1 && cur.crop) slide2();
   if (i === 2) Object.values(spec.sides).forEach((s) => { if (s.data && !s.played) { s.played = true; animateSpec(s.svg, s.data, true); } });
-  if (i === 3) slideMath();
+  if (i === 3 && cur.crop) slideMath();
   if (i === 4) schedule(); else clearTimeout(agent.timer);
   if (i === 5) requestAnimationFrame(growBars);
 }
@@ -668,9 +801,11 @@ let drag = null;
 deck.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch" || e.button !== 0 || e.target.closest("button,input,a,#cloud,canvas.thumb,.thumb")) return; drag = { x: e.clientX, y: e.clientY }; });
 addEventListener("pointerup", (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(current + (dx < 0 ? 1 : -1)); });
 
+clipBar();
 slide1();
 slide3();
 slide4();
 slide5();
-const start = Math.max(0, slides.findIndex((s) => "#" + s.id === location.hash));
+await setClip(droneClips[0]);
+const start = Math.max(0, slides.findIndex((s) => location.hash.startsWith("#" + s.id)));
 go(start, false);
