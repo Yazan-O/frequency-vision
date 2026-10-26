@@ -335,14 +335,16 @@ def fig_known():
     ax.plot(xs, xs, color=INK, lw=1, label="measured = true")
     ax.plot(xs, 2 * xs, color=GREY, lw=1, ls="--", label="measured = 2 × true (two edges per cycle)")
     for r in kf:
-        g, m = r["gt_hz"], r["count_hz"]
+        g, m = r["gt_hz"], r["signed_hz"]
         err = abs(m - g) / g
         col, mk = (HUM, "o") if err < 0.03 else (BLUE, "s") if abs(m / g - 2) < 0.03 else (INK, "X")
+        ax.plot(g, r["count_hz"], "o", mfc="none", mec=GREY, ms=11)
         ax.plot(g, m, mk, color=col, ms=9, mec="white")
-        ax.annotate(r["name"], (g, m), xytext=(6, -10 if r["name"] in ("velcro_front", "highcontrastdot") else 4), textcoords="offset points", fontsize=8)
-    ax.plot([], [], "o", color=HUM, label="within 3% of true")
-    ax.plot([], [], "s", color=BLUE, label="2 × true")
-    ax.plot([], [], "X", color=INK, label="wrong")
+        ax.annotate(r["name"], (g, m), xytext={"velcro_front": (-70, 6), "highcontrastdot": (-92, -4), "motor": (8, 6), "velcro_side": (-72, -3)}.get(r["name"], (6, 4)), textcoords="offset points", fontsize=8)
+    ax.plot([], [], "o", color=HUM, label="ON-minus-OFF (pipeline): within 3% of true")
+    ax.plot([], [], "s", color=BLUE, label="ON-minus-OFF: 2 × true")
+    ax.plot([], [], "X", color=INK, label="ON-minus-OFF: other")
+    ax.plot([], [], "o", mfc="none", mec=GREY, label="event-count signal, for comparison")
     ax.set(xscale="log", yscale="log", xlim=lim, ylim=lim, xlabel="stated true frequency (Hz)", ylabel="measured peak (Hz)")
     ax.legend(loc="upper left", fontsize=8.5)
     ax.set_title(f"(g) Known-frequency check: {len(kf)} EEPPR event clips, 1 s window")
