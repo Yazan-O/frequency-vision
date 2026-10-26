@@ -13,3 +13,21 @@ jobs:
           python-version: "3.13"
       - run: pip install -r requirements-dev.txt
       - run: pytest -q
+  docker:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t frequency-vision .
+      - run: docker run -d --name fv -p 8080:8080 frequency-vision
+      - run: |
+          for i in $(seq 30); do curl -fs localhost:8080/health && break; sleep 2; done
+          curl -fs localhost:8080/health | jq -e '.ok == true'
+      - run: |
+          curl -fs -X POST localhost:8080/api/spectrum -H 'content-type: application/json' \
+            -d '{"clip":"clear_mini2_seq202","box":[812,462,938,504],"t":1.5,"window_ms":100}' \
+            | jq -e '.mode == "live" and .clear == true and .peak_hz > 150 and .peak_hz < 1000'
+      - if: failure()
+        run: docker logs fv
