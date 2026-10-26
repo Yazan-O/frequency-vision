@@ -24,7 +24,10 @@ STATIC = HERE / "static" / "data"
 STATE = Path(os.environ.get("HERTZ_STATE") or os.environ.get("STROBE_STATE", str(Path.home() / ".strobe")))
 FMAX = 1200.0
 MAX_APPROVALS = 20000
-LIMITS = {"approve": (10, 60.0), "detect": (30, 60.0)}
+LIMITS = {"approve": (10, 60.0), "detect": (30, 60.0), "agent": (4, 60.0)}
+AGENT_DATA = DATA / "agent"
+LIVE_WAIT_S = 60
+_live = {"lock": threading.Lock(), "runs": {}}
 DET_PATH = os.environ.get("HERTZ_DETECTOR_ONNX") or os.environ.get("STROBE_DETECTOR_ONNX", str(ROOT.parent / "build" / "models" / "strobe_drone_960x544.onnx"))
 DET_CONF = 0.125
 router = APIRouter(prefix="/api")
@@ -189,6 +192,96 @@ def detect(r: DetReq, req: Request):
             "opencv": cv.__version__, "cv2_build": build, "cv2_file": cv.__file__, "cool": cv.__file__.startswith("/opt/cool")}
 
 
+@lru_cache(maxsize=1)
+def agent_store():
+    from hertz.agent.data import Store
+    return Store(AGENT_DATA)
+
+
+def live_scenarios():
+    return {p.parent.name: json.loads(p.read_text())["scenario"] for p in sorted(AGENT_DATA.glob("*/meta.json"))}
+
+
+def _live_run(rid, scn):
+    from hertz.agent.guard import Budget
+    from hertz.agent.runner import run_episode
+    run = _live["runs"][rid]
+
+    def approver(seq, box, severity, question, now):
+        run["ask"] = {"box": box, "severity": severity, "question": question}
+        run["status"] = "waiting"
+        answered = run["event"].wait(LIVE_WAIT_S)
+        run["ask"], run["status"] = None, "running"
+        d = run["decision"] if answered else None
+        return {"approved": d == "approve", "responder": f"live page visitor: {d}" if d else f"no answer within {LIVE_WAIT_S} s"}
+
+    try:
+        budget = Budget(max_compute_ms=30000.0 + LIVE_WAIT_S * 1000.0)
+        run["summary"], _ = run_episode(scn, agent_store(), "rule", run["path"], budget=budget, timeout_s=LIVE_WAIT_S + 10.0, approver=approver)
+    except Exception as e:
+        run["error"] = f"{type(e).__name__}: {str(e)[:200]}"
+    run["status"] = "done"
+
+
+class LiveReq(BaseModel):
+    scenario: str = Field(default="clear_210", max_length=40)
+
+
+@router.post("/agent/live")
+def agent_live(r: LiveReq, req: Request):
+    scn = live_scenarios().get(r.scenario)
+    if scn is None:
+        raise HTTPException(404, "unknown scenario")
+    limit(req, "agent")
+    with _live["lock"]:
+        now = time.time()
+        for k in [k for k, v in _live["runs"].items() if v["status"] == "done" and now - v["started"] > 600]:
+            del _live["runs"][k]
+        if any(v["status"] != "done" for v in _live["runs"].values()):
+            raise HTTPException(429, "another live run is going; try again in a minute")
+        rid = os.urandom(6).hex()
+        _live["runs"][rid] = {"status": "running", "ask": None, "decision": None, "event": threading.Event(), "started": now,
+                              "scenario": r.scenario, "path": STATE / "agent_live" / f"{rid}.jsonl"}
+    threading.Thread(target=_live_run, args=(rid, scn), daemon=True).start()
+    return {"id": rid, "scenario": scn, "planner": "rule", "wait_s": LIVE_WAIT_S}
+
+
+def _run(rid):
+    run = _live["runs"].get(rid) if re.fullmatch(r"[0-9a-f]{12}", rid) else None
+    if run is None:
+        raise HTTPException(404, "unknown run")
+    return run
+
+
+@router.get("/agent/live/{rid}")
+def agent_live_get(rid: str):
+    run = _run(rid)
+    rows = []
+    if run["path"].exists():
+        for line in run["path"].read_text(encoding="utf-8").splitlines():
+            try:
+                rows.append(json.loads(line))
+            except ValueError:
+                pass
+    return {"status": run["status"], "ask": run["ask"], "rows": rows, "summary": run.get("summary"), "error": run.get("error")}
+
+
+class LiveDecision(BaseModel):
+    decision: str
+
+
+@router.post("/agent/live/{rid}/decide")
+def agent_live_decide(rid: str, d: LiveDecision):
+    run = _run(rid)
+    if d.decision not in ("approve", "reject"):
+        raise HTTPException(422, "decision must be approve or reject")
+    if run["status"] != "waiting":
+        raise HTTPException(409, "the run is not waiting for a decision")
+    run["decision"] = d.decision
+    run["event"].set()
+    return {"ok": True, "decision": d.decision}
+
+
 def e2e():
     out = []
     for f in sorted((ROOT / "bench" / "results").glob("e2e-*.json")):
@@ -262,8 +355,9 @@ def summary():
             {"title": "events in 3D", "shows": "orbitable x-y-time point cloud of 40 ms of events on the drone; black = pixel got brighter (ON), grey = darker (OFF); orange lines one blade pass apart; 'vs empty' stacks a same-size patch from the no-drone clip"},
             {"title": "spectrum", "shows": "live spectrum of a drone box next to a no-drone box for a chosen event window; shaded band 150-1000 Hz is the propeller band; power relative to the band median, log scale"},
             {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
-            {"title": "agent", "shows": "recorded agent steps as cards in a look -> listen -> decide loop; listen cards are orange when the hum test passes, dashed when ambiguous; the human approval card records Approve or Reject on the server only; nothing plays until Play is pressed"},
+            {"title": "agent", "shows": "recorded agent steps as cards in three rows, look, listen and decide; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.6 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the fixed-rule planner on FRED 210 against the live tools and waits for the visitor's approval before the critical alert"},
             {"title": "results", "shows": "measured median blade-pass frequency per drone clip with the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
-                   "approve": "POST /api/approve {episode, step, decision}", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "health": "/health", "version": "/version"},
+                   "approve": "POST /api/approve {episode, step, decision}",
+                   "agent_live": "POST /api/agent/live {scenario} starts the fixed-rule planner on the server against the live tools; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "health": "/health", "version": "/version"},
     }
