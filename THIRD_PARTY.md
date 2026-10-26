@@ -1,6 +1,6 @@
 # Third-party code, models and data
 
-Strobe's own code is Apache-2.0 (`LICENSE`). It uses the following.
+Hertz's own code is Apache-2.0 (`LICENSE`). It uses the following.
 
 ## Runtime dependencies (`requirements.txt`, pinned)
 
@@ -19,14 +19,14 @@ Strobe's own code is Apache-2.0 (`LICENSE`). It uses the following.
 |---|---|---|---|
 | pytest | 9.1.1 | `requirements-dev.txt` | MIT |
 | httpx | 0.28.1 | `requirements-dev.txt` | BSD-3-Clause |
-| mcp | 1.26.0 | `strobe/agent/requirements.txt` | MIT |
-| pydantic | 2.11.7 | `strobe/agent/requirements.txt` | MIT |
+| mcp | 1.26.0 | `hertz/agent/requirements.txt` | MIT |
+| pydantic | 2.11.7 | `hertz/agent/requirements.txt` | MIT |
 
 ## Detector training only (`eval/train_detector/requirements.txt`, separate environment)
 
 | Package | Version | Licence | Note |
 |---|---|---|---|
-| ultralytics | 8.3.236 | AGPL-3.0 | Used only to fine-tune the detector and export ONNX. Not imported by the Strobe runtime, which loads the ONNX file with OpenCV. |
+| ultralytics | 8.3.236 | AGPL-3.0 | Used only to fine-tune the detector and export ONNX. Not imported by the Hertz runtime, which loads the ONNX file with OpenCV. |
 | onnx | 1.20.1 | Apache-2.0 | Export |
 | onnxslim | 0.1.98 | MIT | Export |
 | opencv-python-headless | 4.12.0.88 | Apache-2.0 | Data preparation in the training environment |
@@ -37,7 +37,7 @@ Detector weights: fine-tuned from Ultralytics YOLOv8n pretrained weights (AGPL-3
 
 | Path | What | Licence |
 |---|---|---|
-| `strobe/ecf/ecf_codec.cpp`, `ecf_codec.h`, `ecf_codec_export.h` | Prophesee ECF event decoder, used to read FRED event files | Apache-2.0 (`strobe/ecf/LICENSE`) |
+| `hertz/ecf/ecf_codec.cpp`, `ecf_codec.h`, `ecf_codec_export.h` | Prophesee ECF event decoder, used to read FRED event files | Apache-2.0 (`hertz/ecf/LICENSE`) |
 
 ## Data
 

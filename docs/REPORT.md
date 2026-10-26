@@ -1,6 +1,6 @@
-# Strobe: technical report
+# Hertz: technical report
 
-**Strobe confirms drones by their propeller hum.** An OpenCV 5 DNN detector proposes boxes in normal 30 fps video. Inside each box, the event-camera stream is checked for a blade-pass frequency peak, at hundreds of Hz, that a 30 fps camera cannot see. An agent decides what to look at next: a longer or tighter event window, a whole-frame frequency map, a track, an alert, or a question to a human. Everything runs on AWS Graviton4 with COOL, the cloud-optimized OpenCV 5 build.
+**Hertz confirms drones by their propeller hum.** An OpenCV 5 DNN detector proposes boxes in normal 30 fps video. Inside each box, the event-camera stream is checked for a blade-pass frequency peak, at hundreds of Hz, that a 30 fps camera cannot see. An agent decides what to look at next: a longer or tighter event window, a whole-frame frequency map, a track, an alert, or a question to a human. Everything runs on AWS Graviton4 with COOL, the cloud-optimized OpenCV 5 build.
 
 A bird and a drone can look the same at 30 fps. Only one of them hums at 320 Hz (DJI Mini 2, measured on FRED).
 
@@ -23,7 +23,7 @@ Headline results, all on the real FRED dataset (event + RGB drone recordings, Ap
 
 Small drones near airports, prisons and stadiums are a daily safety problem. The FAA receives "more than 100" reports of drones near airports each month (FAA UAS sightings page, https://www.faa.gov/uas/resources/public_records/uas_sightings_report). In December 2018 drone sightings closed Gatwick's runway for about 33 hours, cancelling about 1,000 flights and affecting about 140,000 passengers (Wikipedia, "Gatwick Airport drone incident"). <!-- src: _runs/2026-10-26_build/L5_research/REPORT.md; Gatwick primaries not opened -->
 
-A camera-based guard has to answer one question fast: is that dot a drone or a bird, a bag, a leaf? At 30 fps a far drone is a few pixels, and its spinning propellers are invisible because the blade-pass rate (hundreds of Hz) is far above the 15 Hz the camera can represent. An event camera reports each pixel's brightness change with microsecond timing, so the propeller's rhythm is directly in the data. Strobe uses that rhythm as a physical signature that a bird does not have.
+A camera-based guard has to answer one question fast: is that dot a drone or a bird, a bag, a leaf? At 30 fps a far drone is a few pixels, and its spinning propellers are invisible because the blade-pass rate (hundreds of Hz) is far above the 15 Hz the camera can represent. An event camera reports each pixel's brightness change with microsecond timing, so the propeller's rhythm is directly in the data. Hertz uses that rhythm as a physical signature that a bird does not have.
 
 ## 2. Users
 
@@ -31,7 +31,7 @@ A camera-based guard has to answer one question fast: is that dot a drone or a b
 - **Counter-drone integrators** who want a cheap second opinion on detector boxes that runs on commodity Arm CPUs, not a GPU.
 - **Researchers** using FRED who want an OpenCV-native event pipeline they can read and change.
 
-Strobe does not intercept, jam or take any action against a drone. It confirms and alerts, and a critical alert needs a human's approval.
+Hertz does not intercept, jam or take any action against a drone. It confirms and alerts, and a critical alert needs a human's approval.
 
 ## 3. Architecture
 
@@ -39,10 +39,10 @@ Strobe does not intercept, jam or take any action against a drone. It confirms a
 
 `docs/architecture.svg`. Flow:
 
-1. **Data.** FRED sequences: synchronized RGB frames (30 fps) and events (1280×720, Prophesee ECF format, decoded by the Apache-2.0 Prophesee codec in `strobe/ecf/`).
-2. **Propose.** `strobe/detect.py`: a YOLOv8n drone detector fine-tuned on FRED train RGB frames for 10 epochs (validation mAP@0.5 0.577 on held-out train sequences, `results/detector/train_results.csv`), exported to ONNX at 960×544 and run by the OpenCV 5 DNN engine (`cv.dnn.ENGINE_NEW`) with letterbox preprocessing and `cv.dnn.NMSBoxes`. The ONNX output in OpenCV 5.0.0 matches PyTorch to 4.6e-4 on box coordinates and 7.5e-7 on scores over 3 test inputs (`results/detector/check_strobe_drone_yolov8n_960x544.json`).
-3. **Confirm.** `strobe/freq.py`: inside each box, events become a 10 kHz ON-minus-OFF time series (`cv.calcHist`), which is windowed and transformed (`cv.createHanningWindow`, `cv.dft`); the peak in 150 to 1,000 Hz is scored against its local spectral floor.
-4. **Decide and act.** `strobe/agent/`: a Bedrock planner (Claude Sonnet 4.6, model id `us.anthropic.claude-sonnet-4-6`, set in `strobe/agent/planners.py`) calls eight tools, five of which run OpenCV 5, through a deterministic guard; the same tools are exposed as an MCP server (`strobe/agent/mcp_server.py`, `mcp==1.26.0`).
+1. **Data.** FRED sequences: synchronized RGB frames (30 fps) and events (1280×720, Prophesee ECF format, decoded by the Apache-2.0 Prophesee codec in `hertz/ecf/`).
+2. **Propose.** `hertz/detect.py`: a YOLOv8n drone detector fine-tuned on FRED train RGB frames for 10 epochs (validation mAP@0.5 0.577 on held-out train sequences, `results/detector/train_results.csv`), exported to ONNX at 960×544 and run by the OpenCV 5 DNN engine (`cv.dnn.ENGINE_NEW`) with letterbox preprocessing and `cv.dnn.NMSBoxes`. The ONNX output in OpenCV 5.0.0 matches PyTorch to 4.6e-4 on box coordinates and 7.5e-7 on scores over 3 test inputs (`results/detector/check_strobe_drone_yolov8n_960x544.json`).
+3. **Confirm.** `hertz/freq.py`: inside each box, events become a 10 kHz ON-minus-OFF time series (`cv.calcHist`), which is windowed and transformed (`cv.createHanningWindow`, `cv.dft`); the peak in 150 to 1,000 Hz is scored against its local spectral floor.
+4. **Decide and act.** `hertz/agent/`: a Bedrock planner (Claude Sonnet 4.6, model id `us.anthropic.claude-sonnet-4-6`, set in `hertz/agent/planners.py`) calls eight tools, five of which run OpenCV 5, through a deterministic guard; the same tools are exposed as an MCP server (`hertz/agent/mcp_server.py`, `mcp==1.26.0`).
 5. **Serve on COOL.** The always-on endpoint is a Graviton4 `c8g.medium` (instance `strobe-cool`) launched from the COOL Graviton4 AMI. FastAPI + uvicorn run on COOL's OpenCV under `/opt/cool`, behind Caddy (automatic HTTPS). Traces and logs go to S3 and CloudWatch.
 6. **Benchmarks only.** A `c8g.xlarge` (COOL vs pip OpenCV 5 on the same host, and pip Graviton4) and a `c7i.xlarge` (x86 baseline) were launched for benchmark runs and terminated afterwards.
 
@@ -78,7 +78,7 @@ cv.add CV_64S       [809271298, 809271396, 1316134912] expected [340000000000000
 float64 workaround correct: True | int64 input silently wrong: True
 ```
 
-Strobe works around it by subtracting each window's start time and passing relative int32 microseconds (`strobe/freq.py`, `_rel_us`). The upstream issue draft is `docs/UPSTREAM_ISSUE_int64.md`.
+Hertz works around it by subtracting each window's start time and passing relative int32 microseconds (`hertz/freq.py`, `_rel_us`). The upstream issue draft is `docs/UPSTREAM_ISSUE_int64.md`.
 
 Other 5.0.0 traps we hit and worked around: `readNetFromONNX(bytes)` crashes (pass a `np.uint8` buffer), DISK + LightGlue fails (ALIKED + LightGlue works), and the default `findHomography` is not USAC (pass `cv.USAC_MAGSAC`).
 
@@ -118,14 +118,14 @@ COOL (Cloud-Optimized OpenCV Library) is the OpenCV build sold on AWS Marketplac
 | resize | 0.393 | 0.450 | 0.87x | 0.83x |
 | DNN forward (YOLOX-S) | 234.1 | 254.8 | 0.92x | 0.95x |
 
-Source: `bench/results/cool-graviton4-c8g.xlarge.json` and `bench/results/pip-graviton4-c8g.xlarge-samehost.json`. The ops that carry Strobe's confirm step, the blur in the activity mask, the `dft` and the connected components, are the three where COOL wins. Resize and the DNN are slower under COOL on this host. Cost per call scales with time on the same instance, so the speed ratios are also the EC2 cost ratios; the COOL Marketplace software fee is not included.
+Source: `bench/results/cool-graviton4-c8g.xlarge.json` and `bench/results/pip-graviton4-c8g.xlarge-samehost.json`. The ops that carry Hertz's confirm step, the blur in the activity mask, the `dft` and the connected components, are the three where COOL wins. Resize and the DNN are slower under COOL on this host. Cost per call scales with time on the same instance, so the speed ratios are also the EC2 cost ratios; the COOL Marketplace software fee is not included.
 
 **Output differences, COOL vs pip** (`bench/results/diff-cool-vs-pip-c8g.xlarge.json`):
 
 - resize, cvtColor, GaussianBlur: at most 1 grey level, on 0.004% to 0.005% of pixels.
 - dft: maximum absolute difference 2.03, which is 9e-8 of the output range.
 - DNN forward: maximum absolute difference 3.3e-5.
-- connectedComponentsWithStats: the same number of components, but 0.19% of the statistics entries differ, the largest by 342,977 (73% of the output range). At least one component is labelled or split differently. Strobe uses component areas only to keep the largest blob inside a box.
+- connectedComponentsWithStats: the same number of components, but 0.19% of the statistics entries differ, the largest by 342,977 (73% of the output range). At least one component is labelled or split differently. Hertz uses component areas only to keep the largest blob inside a box.
 
 **Baseline 2: Graviton4 vs x86 with pip OpenCV 5.0.0**, matched 4 vCPUs:
 
@@ -146,7 +146,7 @@ Put together: on the confirm-step ops, COOL on Graviton4 beats pip OpenCV on Gra
 
 ![Agent workflow](agent_workflow.png)
 
-`docs/agent_workflow.svg`. Code: `strobe/agent/` (tools, guard, planners, runner, MCP server).
+`docs/agent_workflow.svg`. Code: `hertz/agent/` (tools, guard, planners, runner, MCP server).
 
 **Perception, decision, action.** At each step the planner reads the JSON results of its last tool calls and picks the next call. The eight tools:
 
@@ -176,11 +176,11 @@ The Tello's median blade-pass frequency over the whole test split is 564 Hz (§8
 
 Across the 8 clean-run episodes, the planner's next tool followed the verdict: after **ambiguous** it asked for a new window 6 of 9 times; after **none** it moved on to a new frame (6) or searched the whole frame with `frequency_map` (3); after **hum** it tracked (3) or asked a human (1). <!-- src: results/agent/eval_v3/results.json summary.bedrock.next_tool_after_verdict -->
 
-**Guard (deterministic, `strobe/agent/guard.py`).** Every call is checked before it runs: tool name and argument schema; boxes clipped to the frame and capped at a quarter of it; a causal clock (no window may end in the future or start before the 1 s event buffer); window lengths 20 to 1,000 ms (frequency map at most 300 ms); a per-call event cap; budgets of 24 steps, 4 rejections, 30 s compute and 3 alerts; no repeated identical call. A rejected call returns its reason to the planner.
+**Guard (deterministic, `hertz/agent/guard.py`).** Every call is checked before it runs: tool name and argument schema; boxes clipped to the frame and capped at a quarter of it; a causal clock (no window may end in the future or start before the 1 s event buffer); window lengths 20 to 1,000 ms (frequency map at most 300 ms); a per-call event cap; budgets of 24 steps, 4 rejections, 30 s compute and 3 alerts; no repeated identical call. A rejected call returns its reason to the planner.
 
 **Evidence rule and human control.** `raise_alert` needs a hum verdict on the same box (or on the start box of a track that ended there) within the last 1.5 s. A **critical** alert also needs an approved `ask_human` on the same box within 0.5 s. On the live page, `POST /api/approve` records the operator's decision on the server only; nothing external is triggered.
 
-**Failure handling.** A tool that times out or throws gets one retry, then returns its error to the planner. Two planner failures (endpoint down, text with no tool call, malformed call) switch the episode to the deterministic rule planner. Each case is tested with injected faults (`strobe/agent/faults.py`, `tests/test_agent_failures.py`).
+**Failure handling.** A tool that times out or throws gets one retry, then returns its error to the planner. Two planner failures (endpoint down, text with no tool call, malformed call) switch the episode to the deterministic rule planner. Each case is tested with injected faults (`hertz/agent/faults.py`, `tests/test_agent_failures.py`).
 
 **Observability.** Every step is one JSONL row: planner, tool, arguments before and after the guard, result, latency, attempts and the guard verdict. Traces upload to S3; the app logs to CloudWatch.
 
@@ -220,7 +220,7 @@ The mains notch cut false alarms on the busiest patch at the clear threshold fro
 
 **Blade-pass frequency per drone model** (median of hum peaks in test boxes scoring ≥ 7.86, 100 ms), against the medians PropPulse/DENSE-CUAS reports on the same dataset. Source: `results/engine/per_model_youden.json`; PropPulse medians from its write-up (github.com/cweekiat/dense-cuas).
 
-| Drone | Test boxes | Boxes ≥ 7.86 | Strobe median (IQR) | PropPulse median |
+| Drone | Test boxes | Boxes ≥ 7.86 | Hertz median (IQR) | PropPulse median |
 |---|---|---|---|---|
 | DJI Mini 2 | 1,951 | 99.2% | 320 Hz (308 to 334) | 316 Hz |
 | DJI Tello EDU | 11,068 | 77.0% | 564 Hz (522 to 608) | 539 Hz |
@@ -280,7 +280,7 @@ Tests: `pytest -q` passes 39 tests, including guard checks, injected planner and
 
 ## 10. Limitations
 
-- The hum confirms; it does not find. Event-only detection reaches AP 0.066, so Strobe relies on the RGB detector to propose and on the agent to gather more windows on ambiguous boxes.
+- The hum confirms; it does not find. Event-only detection reaches AP 0.066, so Hertz relies on the RGB detector to propose and on the agent to gather more windows on ambiguous boxes.
 - Edge-on rotors and far drones give few events, so no peak.
 - FRED is one sensor (Prophesee EVK4) in daytime outdoor scenes; other sensors, night and rain are untested.
 - FRED RGB labels lag the events by about 3 frames; we score windows ending at the label time.
@@ -289,7 +289,7 @@ Tests: `pytest -q` passes 39 tests, including guard checks, injected planner and
 
 ## 11. Responsible use
 
-- **Purpose.** Detection and alerting only. Strobe never intercepts, jams or follows a person. A critical alert needs a human's approval, enforced by the guard, not by the prompt.
+- **Purpose.** Detection and alerting only. Hertz never intercepts, jams or follows a person. A critical alert needs a human's approval, enforced by the guard, not by the prompt.
 - **Privacy.** The confirm step uses event timing inside a box, not appearance. The planner receives JSON numbers (boxes, Hz, scores), never images. All data shown is the public FRED dataset.
 - **Data rights.** FRED is Apache-2.0 per its Hugging Face card. EEPPR is GPL-3.0 and is downloaded at run time and never committed. See `THIRD_PARTY.md`.
 - **Honest labels.** Measured numbers carry their denominators; simulated approval is labelled SIMULATED in every trace and in this report.
@@ -308,11 +308,11 @@ uvicorn app.main:app --port 8080
 Engine on FRED (Linux; builds the Prophesee ECF decoder):
 
 ```bash
-sh strobe/ecf/build.sh
-python strobe/fred_claim.py <fred_test_root> <out_test> <seq ids...>
-python strobe/fred_claim.py <fred_train_root> <out_train> <seq ids...>
-python strobe/fred_claim_report.py <out_test> <out_train> summary.json table.csv
-python strobe/known_freq.py <eeppr_dir> <monitoring_40_50hz.hdf5> known_freq.json
+sh hertz/ecf/build.sh
+python hertz/fred_claim.py <fred_test_root> <out_test> <seq ids...>
+python hertz/fred_claim.py <fred_train_root> <out_train> <seq ids...>
+python hertz/fred_claim_report.py <out_test> <out_train> summary.json table.csv
+python hertz/known_freq.py <eeppr_dir> <monitoring_40_50hz.hdf5> known_freq.json
 ```
 
 Detector and pipeline: `eval/train_detector/prep_and_train.sh`, `eval/train_detector/export_onnx.py`, `eval/check_onnx.py`, then `eval/get_fred_eval_data.sh`, `python eval/run_eval.py --onnx <model.onnx> --trainval_root <dir> --test_root <dir> --out <dir>` and `python eval/event_only.py --trainval_root <dir> --test_root <dir> --out <dir>`.
@@ -323,10 +323,10 @@ AWS and benchmarks: `deploy/README.md` (`python deploy/aws.py cool`, `cool-bench
 
 All result files cited here are committed under `results/` and `bench/results/`.
 
-## 13. Prior work and how Strobe differs
+## 13. Prior work and how Hertz differs
 
-- **PropPulse / DENSE-CUAS** (github.com/cweekiat/dense-cuas, 2026-10-22): detects the propeller blade-pass rhythm in FRED events, finding 70% of drones at a 5% false-alarm rate vs 50% for the best RGB detector. It is event-only and treats RGB as a rival. Strobe uses RGB to propose and events to confirm inside the box, and adds an agent that chooses the next look, all in OpenCV 5 on Arm. PropPulse's per-model medians serve as our independent check (§8.2).
-- **DDHF** (arXiv:2603.08386): event-only drone detection, F1 0.91 on a GPU; it reports failures on edge-on rotors (0 to 10 degrees) and on car wheel spokes and fences. Strobe runs on CPU and pairs the event check with an RGB proposal and a whole-frame frequency map that tells a rotor from scene-wide periodic texture.
-- **Stewart et al., event-based virtual fence** (doi:10.1145/3546790.3546800): event cameras detecting drones crossing a virtual boundary from their propeller signature. Strobe instead confirms detector proposals box by box and lets an agent choose the next measurement.
+- **PropPulse / DENSE-CUAS** (github.com/cweekiat/dense-cuas, 2026-10-22): detects the propeller blade-pass rhythm in FRED events, finding 70% of drones at a 5% false-alarm rate vs 50% for the best RGB detector. It is event-only and treats RGB as a rival. Hertz uses RGB to propose and events to confirm inside the box, and adds an agent that chooses the next look, all in OpenCV 5 on Arm. PropPulse's per-model medians serve as our independent check (§8.2).
+- **DDHF** (arXiv:2603.08386): event-only drone detection, F1 0.91 on a GPU; it reports failures on edge-on rotors (0 to 10 degrees) and on car wheel spokes and fences. Hertz runs on CPU and pairs the event check with an RGB proposal and a whole-frame frequency map that tells a rotor from scene-wide periodic texture.
+- **Stewart et al., event-based virtual fence** (doi:10.1145/3546790.3546800): event cameras detecting drones crossing a virtual boundary from their propeller signature. Hertz instead confirms detector proposals box by box and lets an agent choose the next measurement.
 
 We found no prior system that combines an RGB proposer, an event-frequency confirmation inside the box, and an agent that chooses the next measurement.

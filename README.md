@@ -1,6 +1,6 @@
-# Strobe
+# Hertz
 
-Strobe confirms drones by their propeller hum: an OpenCV 5 detector proposes a box, the event camera inside that box shows a 200 to 750 Hz blade-pass peak that 30 fps video cannot see, and an agent on AWS Graviton4 with COOL decides the next look, the alert, or the question to a human.
+Hertz confirms drones by their propeller hum: an OpenCV 5 detector proposes a box, the event camera inside that box shows a 200 to 750 Hz blade-pass peak that 30 fps video cannot see, and an agent on AWS Graviton4 with COOL decides the next look, the alert, or the question to a human. The name is the unit of what it listens for: a propeller hums at hundreds of hertz.
 
 **On the full FRED test split, the hum check cuts the detector's false alarms by 25% at the same recall, and the hum frequencies it measures match an independent published estimate (DJI Mini 2: 320 Hz vs 316 Hz).**
 
@@ -39,7 +39,7 @@ Clip frequencies: `app/static/data/clips.json`.
 |---|---|---|
 | False alarms per minute, RGB detector alone vs RGB + hum (47 test sequences, every frame, 84.3 min) | **412.7 vs 308.4 (−25%)**, recall 0.544 vs 0.544, precision 0.670 vs 0.731, mAP@0.5 0.505 vs 0.516 | `results/detector/results_test.json` |
 | False detections removed by the hum check | 8,790 of 34,796, while losing 26 of 70,794 true detections | same |
-| Blade-pass medians, Strobe vs published PropPulse estimate | DJI Mini 2 320 vs 316 Hz, DJI Tello 564 vs 539 Hz, DJI Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
+| Blade-pass medians, Hertz vs published PropPulse estimate | DJI Mini 2 320 vs 316 Hz, DJI Tello 564 vs 539 Hz, DJI Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
 | Hum score, drone box vs random background, AUC (26,911 vs 26,909 test boxes) | 0.917 | `results/engine/summary.json` |
 | COOL vs pip OpenCV 5, same Graviton4 host, 4 threads | GaussianBlur 1.89x, dft 1.54x, connectedComponentsWithStats 1.17x faster; resize 0.87x, DNN 0.92x | `bench/results/cool-graviton4-c8g.xlarge.json`, `bench/results/pip-graviton4-c8g.xlarge-samehost.json` |
 | Agent, 8 pre-registered FRED scenarios, clean run | Bedrock planner 4 of 8, 0 false alerts, 30% fewer steps than the rule planner (also 4 of 8); fixed schedule 3 of 8. Approval is SIMULATED in the evaluation | `results/agent/eval_v3/results.json` |
@@ -48,7 +48,7 @@ Every number, its denominator and its source file are in [`docs/REPORT.md`](docs
 
 ## Run locally
 
-Python 3.12 or 3.13. All dependencies are pinned; locally Strobe uses pip OpenCV 5.0.0.
+Python 3.12 or 3.13. All dependencies are pinned; locally Hertz uses pip OpenCV 5.0.0.
 
 ```bash
 pip install -r requirements-dev.txt
@@ -69,7 +69,7 @@ python tools/int64_repro.py
 The agent runs offline with the deterministic planners:
 
 ```bash
-pip install -r strobe/agent/requirements.txt
+pip install -r hertz/agent/requirements.txt
 python eval/agent_eval.py --planners rule,fixed --out runs/agent
 ```
 
@@ -88,8 +88,8 @@ python deploy/aws.py cool-bench
 
 ## Reproduce the evaluation and benchmarks
 
-- Hum engine on FRED: `strobe/fred_claim.py`, then `strobe/fred_claim_report.py` (report §8.2, results in `results/engine/`).
-- Known-frequency check: `strobe/known_freq.py` (EEPPR is GPL-3.0 and is downloaded at run time, never committed).
+- Hum engine on FRED: `hertz/fred_claim.py`, then `hertz/fred_claim_report.py` (report §8.2, results in `results/engine/`).
+- Known-frequency check: `hertz/known_freq.py` (EEPPR is GPL-3.0 and is downloaded at run time, never committed).
 - Detector training and full pipeline: `eval/train_detector/`, `eval/check_onnx.py`, `eval/get_fred_eval_data.sh`, `eval/run_eval.py`, `eval/event_only.py` (report §8.3, results in `results/detector/`).
 - Agent: `eval/export_fred_slices.py`, `eval/agent_eval.py`, scenarios fixed in `eval/scenarios.json` (report §8.4, results and traces in `results/agent/`).
 - Benchmarks: `python deploy/aws.py cool-bench`, `python deploy/aws.py bench ...`, `bench/table.py`, `bench/compare.py`; results in `bench/results/` (report §6).
@@ -98,4 +98,4 @@ Full commands are in report §12.
 
 ## Licence
 
-Apache-2.0, see [`LICENSE`](LICENSE). Third-party code, models and data and their licences are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). FRED is used under Apache-2.0 per its Hugging Face card. The detector was trained with Ultralytics (AGPL-3.0) in a separate training environment; Strobe's runtime uses only OpenCV.
+Apache-2.0, see [`LICENSE`](LICENSE). Third-party code, models and data and their licences are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). FRED is used under Apache-2.0 per its Hugging Face card. The detector was trained with Ultralytics (AGPL-3.0) in a separate training environment; Hertz's runtime uses only OpenCV.
