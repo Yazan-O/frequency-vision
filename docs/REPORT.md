@@ -4,7 +4,7 @@
 
 A bird and a drone can look the same at 30 fps. Only one of them hums at 320 Hz (DJI Mini 2, measured on FRED).
 
-- Live endpoint: https://100-58-195-104.sslip.io (no login)
+- Live endpoint: https://100-27-6-111.sslip.io (no login)
 - Architecture: `docs/architecture.svg` · Agent loop: `docs/agent_workflow.svg`
 
 Headline results, all on the real FRED dataset (event + RGB drone recordings, Apache-2.0):
@@ -90,7 +90,7 @@ Region us-east-1, every resource tagged `Project=opencv26`. Code: `deploy/README
 | Piece | What | Why |
 |---|---|---|
 | Endpoint | EC2 `t4g.small` (Graviton2, Ubuntu 24.04 arm64), always on | Arm CPU, the same architecture as COOL |
-| HTTPS | Caddy with an automatic Let's Encrypt certificate on `100-58-195-104.sslip.io` | Real TLS without a domain or load balancer |
+| HTTPS | Caddy with an automatic Let's Encrypt certificate on `100-27-6-111.sslip.io` | Real TLS without a domain or load balancer |
 | App | uvicorn on 127.0.0.1:8080 as systemd unit `strobe`; a one-minute `strobe-health` timer restarts it if `/health` fails | Self-healing |
 | Access | Security group opens 80 and 443 only; no SSH; shell through SSM Session Manager | No open admin port |
 | Identity | Role `opencv26-strobe-ec2`: SSM, CloudWatch agent, the project S3 bucket, Bedrock InvokeModel | Least privilege, no keys on the box |

@@ -14,7 +14,7 @@ An event camera records every pixel's brightness change with microsecond timing.
 
 ## Try it in 90 seconds
 
-Live, no login: **https://100-58-195-104.sslip.io**
+Live, no login: **https://100-27-6-111.sslip.io**
 
 1. Slide 1: a real FRED recording of a DJI Mini 2 at 30 fps. The rotor is a blur.
 2. Slide 2: the same drone as raw events in x, y and time.
@@ -25,7 +25,7 @@ Live, no login: **https://100-58-195-104.sslip.io**
 Or from a terminal:
 
 ```bash
-curl -s -X POST https://100-58-195-104.sslip.io/api/spectrum \
+curl -s -X POST https://100-27-6-111.sslip.io/api/spectrum \
   -H 'content-type: application/json' \
   -d '{"clip":"clear_210","box":[226,324,320,376],"t":20.5,"window_ms":100}'
 ```

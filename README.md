@@ -2,7 +2,7 @@
 
 Strobe confirms drones by their propeller hum: an OpenCV 5 detector proposes a box, the event camera inside that box shows a 200 to 750 Hz blade-pass peak that 30 fps video cannot see, and an agent on AWS Graviton decides the next look, the alert, or the question to a human.
 
-- Live endpoint: https://100-58-195-104.sslip.io (no login)
+- Live endpoint: https://100-27-6-111.sslip.io (no login)
 - Technical report: [`docs/REPORT.md`](docs/REPORT.md)
 - Architecture: [`docs/architecture.svg`](docs/architecture.svg) · Agent loop: [`docs/agent_workflow.svg`](docs/agent_workflow.svg)
 - Video: [X] <!-- fill with the video URL -->
@@ -11,7 +11,7 @@ Strobe confirms drones by their propeller hum: an OpenCV 5 detector proposes a b
 
 ## Try it in 90 seconds
 
-1. Open https://100-58-195-104.sslip.io. Slide 1 plays a real FRED clip of a DJI Mini 2: at 30 fps the propellers are a blur.
+1. Open https://100-27-6-111.sslip.io. Slide 1 plays a real FRED clip of a DJI Mini 2: at 30 fps the propellers are a blur.
 2. Slide 2 shows the same drone as raw events in x, y and time. The rotor is a dense, repeating texture.
 3. Slide 3 computes the spectrum live on the Graviton server with OpenCV 5 (`calcHist` + `dft`). The drone box peaks near 320 Hz; a box with no drone stays flat.
 4. Slide 5 replays the agent: an ambiguous box, a longer window, a frequency map, a hum, a track, then a human approval before the alert. Press approve or reject; the server records your answer and triggers nothing external.
@@ -20,8 +20,8 @@ Strobe confirms drones by their propeller hum: an OpenCV 5 detector proposes a b
 The same check from a terminal:
 
 ```bash
-curl -s https://100-58-195-104.sslip.io/version
-curl -s -X POST https://100-58-195-104.sslip.io/api/spectrum \
+curl -s https://100-27-6-111.sslip.io/version
+curl -s -X POST https://100-27-6-111.sslip.io/api/spectrum \
   -H 'content-type: application/json' \
   -d '{"clip":"clear_210","box":[226,324,320,376],"t":20.5,"window_ms":100}'
 ```
