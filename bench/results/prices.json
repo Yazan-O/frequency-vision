@@ -1,0 +1,14 @@
+{
+ "t4g.small": {
+  "usd_per_hour": 0.0168,
+  "published": "2026-10-23T22:13:55Z"
+ },
+ "c8g.xlarge": {
+  "usd_per_hour": 0.15952,
+  "published": "2026-10-23T22:13:55Z"
+ },
+ "c7i.xlarge": {
+  "usd_per_hour": 0.1785,
+  "published": "2026-10-23T22:13:55Z"
+ }
+}

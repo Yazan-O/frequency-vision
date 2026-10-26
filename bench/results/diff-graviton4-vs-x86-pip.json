@@ -1,0 +1,63 @@
+{
+ "base": "bench/results/pip-graviton4-c8g.xlarge.npz",
+ "other": "bench/results/pip-x86-c7i.xlarge.npz",
+ "rows": [
+  {
+   "op": "GaussianBlur",
+   "status": "differs",
+   "max_abs": 1.0,
+   "mean_abs": 0.04187319155092593,
+   "max_rel_to_range": 0.004149377593360996,
+   "frac_elems_diff": 0.04187319155092593,
+   "frac_elems_diff_gt1": 0.0
+  },
+  {
+   "op": "connectedComponentsWithStats",
+   "status": "shape",
+   "base": [
+    211,
+    5
+   ],
+   "other": [
+    210,
+    5
+   ]
+  },
+  {
+   "op": "cvtColor",
+   "status": "differs",
+   "max_abs": 1.0,
+   "mean_abs": 0.0458984375,
+   "max_rel_to_range": 0.004081632653061225,
+   "frac_elems_diff": 0.0458984375,
+   "frac_elems_diff_gt1": 0.0
+  },
+  {
+   "op": "dft",
+   "status": "differs",
+   "max_abs": 42236.0,
+   "mean_abs": 128.51949583697342,
+   "max_rel_to_range": 0.0018160472602263807,
+   "frac_elems_diff": 0.9999923706054688,
+   "frac_elems_diff_gt1": 0.9951324462890625
+  },
+  {
+   "op": "dnn_forward",
+   "status": "differs",
+   "max_abs": 0.00044089555740356445,
+   "mean_abs": 1.73427827731309e-06,
+   "max_rel_to_range": 0.00011842372119511485,
+   "frac_elems_diff": 0.9949187675070028,
+   "frac_elems_diff_gt1": 0.0
+  },
+  {
+   "op": "resize",
+   "status": "differs",
+   "max_abs": 2.0,
+   "mean_abs": 0.04182861328125,
+   "max_rel_to_range": 0.008064516129032258,
+   "frac_elems_diff": 0.041826171875,
+   "frac_elems_diff_gt1": 2.44140625e-06
+  }
+ ]
+}
