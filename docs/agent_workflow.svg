@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 512" xmlns="http://www.w3.org/2000/svg"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker><marker id="arrow-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#4f5d75"/></marker><marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker><marker id="arrow-accent-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#eb6c36"/></marker><marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker><marker id="arrow-link-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#2e5aa8"/></marker></defs><rect width="100%" height="100%" fill="#f5f5f5"/>
+<path d="M264,228 H376" fill="none" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+<rect x="288.8" y="208" width="62.4" height="12" rx="2" fill="#f5f5f5"/><text x="320.0" y="217" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">TOOL CALL</text>
+<path d="M576,228 H688" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="592.4" y="208" width="79.2" height="12" rx="2" fill="#f5f5f5"/><text x="632.0" y="217" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CHECKED ARGS</text>
+<path d="M376,264 H264" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<rect x="277.6" y="272" width="84.8" height="12" rx="2" fill="#f5f5f5"/><text x="320.0" y="281" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REJECT·REASON</text>
+<path d="M804,320 V364 Q804,372 796,372 H172 Q164,372 164,364 V292" fill="none" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+<rect x="441.6" y="352" width="84.8" height="12" rx="2" fill="#f5f5f5"/><text x="484.0" y="361" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EVIDENCE JSON</text>
+<path d="M476,200 V128" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="484.0" y="156" width="62.4" height="12" rx="2" fill="#f5f5f5"/><text x="515.2" y="165" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">ASK_HUMAN</text>
+<path d="M576,88 H688" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="603.6" y="68" width="56.8" height="12" rx="2" fill="#f5f5f5"/><text x="632.0" y="77" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">APPROVED</text>
+<path d="M164,200 V128" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<rect x="172.0" y="156" width="68.0" height="12" rx="2" fill="#f5f5f5"/><text x="206.0" y="165" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">2 FAILURES</text>
+<path d="M920,244 H992" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M1064,284 V376" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="1072.0" y="324" width="45.6" height="12" rx="2" fill="#f5f5f5"/><text x="1094.8" y="333" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">UPLOAD</text>
+<rect x="64" y="200" width="200" height="92" rx="6" fill="#f5f5f5"/>
+<rect x="64" y="200" width="200" height="92" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<rect x="72" y="208" width="44" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+<text x="94.0" y="217" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">DECIDE</text>
+<text x="164.0" y="240.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Bedrock planner</text>
+<text x="164.0" y="256.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Claude Sonnet 4.6</text>
+<text x="164.0" y="270.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">reads tool results, picks next</text>
+<rect x="376" y="200" width="200" height="92" rx="6" fill="#f5f5f5"/>
+<rect x="376" y="200" width="200" height="92" rx="6" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.60)" stroke-width="1" stroke-dasharray="4,4"/>
+<rect x="384" y="208" width="40" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+<text x="404.0" y="217" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GUARD</text>
+<text x="476.0" y="240.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Deterministic guard</text>
+<text x="476.0" y="256.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">schema · causal clock</text>
+<text x="476.0" y="270.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">budgets · evidence rule</text>
+<rect x="688" y="168" width="232" height="152" rx="6" fill="#f5f5f5"/>
+<rect x="688" y="168" width="232" height="152" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="696" y="176" width="92" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="742.0" y="185" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">PERCEIVE · ACT</text>
+<text x="804.0" y="220" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">OpenCV 5 tools</text>
+<text x="804.0" y="236" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">detect_frame · cv.dnn + CC</text>
+<text x="804.0" y="250" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">box_spectrum · calcHist + dft</text>
+<text x="804.0" y="264" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">request_window · longer/tighter</text>
+<text x="804.0" y="278" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">frequency_map · DFT_ROWS</text>
+<text x="804.0" y="292" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">track · KalmanFilter</text>
+<rect x="376" y="48" width="200" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="376" y="48" width="200" height="80" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<rect x="384" y="56" width="40" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+<text x="404.0" y="65" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">HUMAN</text>
+<text x="476.0" y="89.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Operator approval</text>
+<text x="476.0" y="105.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">approve / reject on page</text>
+<rect x="688" y="48" width="232" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="688" y="48" width="232" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="696" y="56" width="44" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="718.0" y="65" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ACTION</text>
+<text x="804.0" y="88" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">raise_alert</text>
+<text x="804.0" y="104" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">critical needs approval</text>
+<text x="804.0" y="118" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">and a hum verdict ≤ 1.5 s old</text>
+<rect x="64" y="48" width="200" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="64" y="48" width="200" height="80" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="72" y="56" width="56" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+<text x="100.0" y="65" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">FALLBACK</text>
+<text x="164.0" y="89.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Rule planner</text>
+<text x="164.0" y="105.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">after 2 planner failures</text>
+<rect x="992" y="204" width="144" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="992" y="204" width="144" height="80" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<rect x="1000" y="212" width="52" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+<text x="1026.0" y="221" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">OBSERVE</text>
+<text x="1064.0" y="245.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">JSONL trace</text>
+<text x="1064.0" y="261.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">every step, every reject</text>
+<rect x="992" y="376" width="144" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="992" y="376" width="144" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<rect x="1000" y="384" width="20" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+<text x="1010.0" y="393" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S3</text>
+<text x="1064.0" y="416" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Trace archive</text>
+<text x="1064.0" y="432" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">CloudWatch logs</text>
+<line x1="32" y1="452" x2="1168" y2="452" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="32" y="468" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+<rect x="32" y="480" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<text x="58" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Decision and human control</text>
+<rect x="208" y="480" width="14" height="10" rx="2" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.60)" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="234" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Guard</text>
+<rect x="276" y="480" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="302" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">OpenCV 5 work</text>
+<rect x="384" y="480" width="14" height="10" rx="2" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="410" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Fallback</text>
+<rect x="468" y="480" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<text x="494" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Observability</text>
+<line x1="576" y1="485" x2="596" y2="485" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+<text x="602" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Perception, decision, action loop</text>
+<line x1="788" y1="485" x2="808" y2="485" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<text x="814" y="488" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Reject or failure path</text>
+</svg>

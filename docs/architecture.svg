@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1288 556" xmlns="http://www.w3.org/2000/svg"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker><marker id="arrow-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#4f5d75"/></marker><marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker><marker id="arrow-accent-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#eb6c36"/></marker><marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker><marker id="arrow-link-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#2e5aa8"/></marker></defs><rect width="100%" height="100%" fill="#f5f5f5"/>
+<rect x="216" y="40" width="920" height="436" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.16)" stroke-width="0.8"/><rect x="228" y="34" width="94" height="12" rx="2" fill="#f5f5f5"/><text x="275.0" y="43" fill="rgba(45,49,66,0.55)" font-size="7.5" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">AWS US-EAST-1</text>
+<rect x="240" y="88" width="616" height="264" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.16)" stroke-width="0.8"/><rect x="252" y="82" width="256" height="12" rx="2" fill="#f5f5f5"/><text x="380.0" y="91" fill="rgba(45,49,66,0.55)" font-size="7.5" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">T4G.SMALL GRAVITON2 · ALWAYS-ON ENDPOINT</text>
+<path d="M168,204 H188 Q196,204 196,196 V172 Q196,164 204,164 H264" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M168,252 H188 Q196,252 196,260 V272 Q196,280 204,280 H264" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M356,200 V244" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="364.0" y="216" width="51.2" height="12" rx="2" fill="#f5f5f5"/><text x="389.6" y="225" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">BOX ROI</text>
+<path d="M448,164 H512" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="460.0" y="144" width="40.0" height="12" rx="2" fill="#f5f5f5"/><text x="480.0" y="153" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">BOXES</text>
+<path d="M448,280 H512" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="451.6" y="260" width="56.8" height="12" rx="2" fill="#f5f5f5"/><text x="480.0" y="269" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HZ · SNR</text>
+<path d="M664,164 H904" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-start="url(#arrow-link-start)" marker-end="url(#arrow-link)"/>
+<rect x="724.8" y="144" width="118.4" height="12" rx="2" fill="#f5f5f5"/><text x="784.0" y="153" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CONVERSE · TOOL USE</text>
+<path d="M664,240 H696" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M832,240 H1144" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-start="url(#arrow-link-start)" marker-end="url(#arrow-link)"/>
+<rect x="952.0" y="220" width="96.0" height="12" rx="2" fill="#f5f5f5"/><text x="1000.0" y="229" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS · APPROVE</text>
+<path d="M764,280 V296 Q764,304 772,304 H904" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="793.6" y="284" width="84.8" height="12" rx="2" fill="#f5f5f5"/><text x="836.0" y="293" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">LOGS · TRACES</text>
+<path d="M356,316 V384" fill="none" stroke="#eb6c36" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow-accent)"/>
+<rect x="364.0" y="360" width="73.6" height="12" rx="2" fill="#f5f5f5"/><text x="400.8" y="369" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SAME ENGINE</text>
+<path d="M832,420 H992 Q1000,420 1000,412 V340" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="878.0" y="400" width="68.0" height="12" rx="2" fill="#f5f5f5"/><text x="912.0" y="409" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">BENCH JSON</text>
+<rect x="24" y="176" width="144" height="104" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="176" width="144" height="104" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+<rect x="32" y="184" width="32" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.40)" stroke-width="0.8"/>
+<text x="48.0" y="193" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">DATA</text>
+<text x="96.0" y="216" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">FRED recordings</text>
+<text x="96.0" y="232" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">RGB 30 fps</text>
+<text x="96.0" y="246" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">events 1280×720</text>
+<text x="96.0" y="260" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Apache-2.0</text>
+<rect x="264" y="128" width="184" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="264" y="128" width="184" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="272" y="136" width="52" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="298.0" y="145" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">PROPOSE</text>
+<text x="356.0" y="168" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">RGB detector</text>
+<text x="356.0" y="184" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">cv.dnn ENGINE_NEW · ONNX</text>
+<rect x="264" y="244" width="184" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="264" y="244" width="184" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="272" y="252" width="52" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="298.0" y="261" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CONFIRM</text>
+<text x="356.0" y="284" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Hum engine</text>
+<text x="356.0" y="300" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">calcHist · dft · CC stats</text>
+<rect x="512" y="128" width="152" height="188" rx="6" fill="#f5f5f5"/>
+<rect x="512" y="128" width="152" height="188" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<rect x="520" y="136" width="40" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+<text x="540.0" y="145" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">AGENT</text>
+<text x="588.0" y="202.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Agent loop</text>
+<text x="588.0" y="218.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">8 tools, 5 on OpenCV 5</text>
+<text x="588.0" y="232.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">deterministic guard</text>
+<text x="588.0" y="246.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">human approval</text>
+<text x="588.0" y="260.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">MCP server</text>
+<rect x="696" y="200" width="136" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="696" y="200" width="136" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="704" y="208" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="718.0" y="217" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+<text x="764.0" y="241.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">FastAPI + Caddy</text>
+<text x="764.0" y="257.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">uvicorn · systemd</text>
+<rect x="904" y="128" width="200" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="904" y="128" width="200" height="72" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<rect x="912" y="136" width="52" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+<text x="938.0" y="145" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">BEDROCK</text>
+<text x="1004.0" y="168" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Planner</text>
+<text x="1004.0" y="184" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Claude Sonnet 4.6 · Converse</text>
+<rect x="904" y="268" width="200" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="904" y="268" width="200" height="72" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<rect x="912" y="276" width="52" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+<text x="938.0" y="285" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">OBSERVE</text>
+<text x="1004.0" y="308" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">S3 · CloudWatch</text>
+<text x="1004.0" y="324" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">traces · logs · alarms</text>
+<rect x="264" y="384" width="568" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="264" y="384" width="568" height="72" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<rect x="272" y="392" width="32" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+<text x="288.0" y="401" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">COOL</text>
+<text x="548.0" y="424" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">COOL on Graviton4 (c8g.xlarge)</text>
+<text x="548.0" y="440" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">OpenCV 5 + KleidiCV under /opt/cool · benchmark vs pip OpenCV 5 and x86 c7i</text>
+<rect x="1144" y="200" width="128" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="1144" y="200" width="128" height="80" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+<rect x="1152" y="208" width="32" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.40)" stroke-width="0.8"/>
+<text x="1168.0" y="217" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">USER</text>
+<text x="1208.0" y="241.0" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Judge browser</text>
+<text x="1208.0" y="257.0" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">sslip.io · no login</text>
+<line x1="32" y1="492" x2="1256" y2="492" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="32" y="508" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+<rect x="32" y="520" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<text x="58" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Award components: agent, COOL</text>
+<rect x="224" y="520" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="250" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">OpenCV 5 on Graviton</text>
+<rect x="368" y="520" width="14" height="10" rx="2" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="394" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Managed AI</text>
+<rect x="460" y="520" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<text x="486" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Storage, logs</text>
+<rect x="568" y="520" width="14" height="10" rx="2" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+<text x="594" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Data, user</text>
+<line x1="660" y1="525" x2="680" y2="525" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<text x="686" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Network call</text>
+<line x1="764" y1="525" x2="784" y2="525" stroke="#eb6c36" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow-accent)"/>
+<text x="790" y="528" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Same code, benchmark run</text>
+</svg>
