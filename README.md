@@ -5,11 +5,12 @@
   </picture>
 </p>
 
-<h3 align="center">A bird and a drone look the same at 30 fps. Only one of them hums at 321 Hz.</h3>
+<h3 align="center">A bird and a drone look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not.</h3>
 
 <p align="center">
   <b>On 84.3 minutes of real FRED test video, checking each detector box for a propeller hum cuts false alarms by 25% at the same recall</b><br>
-  (412.7 → 308.4 false alarms per minute, recall 0.544 → 0.544, 47 test sequences, every frame).
+  (412.7 → 308.4 false alarms per minute, recall 0.544 → 0.544, 47 test sequences, every frame).<br>
+  Hard case: some drones hum weakly. A DarwinFPV Cineape20 clip gives no clean peak in any of its 50 windows.
 </p>
 
 <p align="center">
@@ -56,10 +57,10 @@ All on FRED, a public dataset of real event + RGB drone recordings (Apache-2.0).
 | False alarms per minute, RGB detector vs RGB + hum (151,768 frames, 84.3 min) | **412.7 → 308.4 (−25%)**, recall 0.544 → 0.544, precision 0.670 → 0.731, mAP@0.5 0.505 → 0.516 | `results/detector/results_test.json` |
 | False detections removed / true detections lost | **8,790 of 34,796** / 26 of 70,794 | same |
 | Hum score AUC, drone box vs random patch / vs busiest non-drone patch (100 ms) | **0.917** / 0.758 (26,911 drone boxes) | `results/engine/summary.json` |
-| Blade-pass medians vs PropPulse published medians | DJI Mini 2 **320 vs 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
+| Blade-pass medians over all test boxes vs PropPulse published medians | DJI Mini 2 **320 vs 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
 | COOL vs pip OpenCV 5, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
 | Graviton4 vs x86 (pip OpenCV 5, 4 vCPUs, 4 threads) | faster on 5 of 6 ops, up to **2.07x** (cvtColor) | `bench/results/pip-graviton4-c8g.xlarge.json`, `pip-x86-c7i.xlarge.json` |
-| Agent, 8 pre-registered FRED scenarios | Bedrock **4 / 8, 0 false alerts**, 12.25 mean tool calls vs 17.38 for the rule planner (also 4 / 8) | `results/agent/eval_v3/results.json` |
+| Agent, 8 pre-registered FRED scenarios | Bedrock **4 / 8, 0 false alerts**, the same score as the hand-tuned rule planner with **30% fewer tool calls** (12.25 vs 17.38 per episode); critical alerts wait for a human (simulated in the evaluation) | `results/agent/eval_v3/results.json` |
 
 Every number, with its denominator, is in [`docs/REPORT.md`](docs/REPORT.md).
 
@@ -105,7 +106,22 @@ COOL wins on the three ops that carry the confirm step: blur, `dft` and connecte
 
 ![Known frequency](docs/figures/fig_g_known_freq.png)
 
-On 12 EEPPR clips with stated frequencies (1 s window), 7 land within 3% (LED 2,000 Hz, screen 240 Hz, four patterns at 3 to 21 Hz, hand spinner 4.58 vs 4.7 Hz). Three read exactly twice the stated rate because each cycle makes two edges. The two chain clips are non-sinusoidal and read wrong.
+On 12 EEPPR clips with stated frequencies (1 s window), the pipeline signal (ON minus OFF events per 0.1 ms bin) lands within 2% of the stated frequency on 6 (LED 2,000 Hz, speaker 98 Hz, chain side 28.7 Hz, line 20 Hz, hand spinner 4.7 Hz, spider 3.2 Hz) and at exactly twice it on 3 (screen, motor, velcro side), where each cycle makes two edges. Velcro front reads 100.01 Hz (4.7 times) and dot 78.58 Hz (4.0 times), and chain top is wrong. The plain event-count signal lands within 3% on 7 and at twice the rate on 3. The Prophesee 40 and 50 Hz monitoring clip reads 99.95 Hz (ON minus OFF) and 79.95 Hz (count). Source: `results/engine/known_freq.json`.
+
+| Clip | Stated (Hz) | ON-minus-OFF, the pipeline signal (Hz) | Event count (Hz) |
+|---|---|---|---|
+| led | 2,000 | 2,000.0 | 1,999.99 |
+| screen | 240 | 479.97 | 239.99 |
+| speaker | 98 | 97.82 | 195.66 |
+| motor | 40 | 79.95 | 79.95 |
+| chain_side | 28.7 | 28.23 | 3.82 |
+| velcro_side | 26.3 | 52.62 | 52.62 |
+| chain_top | 23 | 3.48 | 2.67 |
+| velcro_front | 21.1 | 100.01 | 21.1 |
+| highcontrastline | 20 | 19.92 | 19.92 |
+| highcontrastdot | 19.6 | 78.58 | 19.63 |
+| handspinner | 4.7 | 4.65 | 4.58 |
+| spider | 3.2 | 3.23 | 3.21 |
 
 ### (h) Hum score ROC
 
@@ -170,7 +186,7 @@ After **ambiguous**, the Bedrock planner asked for a new window 6 of 9 times. Af
 
 ## One real trace: `bedrock_late_142`
 
-FRED test sequence 142: a DJI Tello EDU enters at 26.0 s and the DNN never proposes it. Source: [`results/agent/eval_v3/traces/bedrock_late_142.jsonl`](results/agent/eval_v3/traces/bedrock_late_142.jsonl).
+FRED test sequence 142: a DJI Tello EDU enters at 26.0 s and the DNN proposes nothing in three looks. The agent chooses the whole-frame frequency map, finds a 545 Hz spot and confirms a drone the detector missed. Source: [`results/agent/eval_v3/traces/bedrock_late_142.jsonl`](results/agent/eval_v3/traces/bedrock_late_142.jsonl).
 
 ```mermaid
 sequenceDiagram
@@ -207,6 +223,8 @@ sequenceDiagram
     B->>G: finish drone_alerted
     Note over B,CV: 11 steps, 18.0 s wall time, 0 guard rejections
 ```
+
+**What the agent adds.** On the 8 scenarios, the Bedrock planner ties rules we hand-tuned for these tools (4 / 8, 0 false alerts each) while using 30% fewer tool calls, and it puts every critical alert behind a human approval gate. In the evaluation that approval is a SIMULATED automatic stand-in, labelled in every trace. The agent slide on the live page is a recorded replay of these real traces; its Approve and Reject buttons record the viewer's decision on the server and trigger nothing else. Two earlier development runs on the same scenarios are in `results/agent/dev_runs/`.
 
 ## Try it from a terminal
 
@@ -279,7 +297,7 @@ A steady tone's peak power grows with $T^2$ while broadband noise power grows wi
 | 64-bit integer Mats | `CV_64S` | **Yes**: 64-bit integer types |
 | Proof of build | `cv.getBuildInformation`, `cv.__file__` | KleidiCV HAL is **new in 5.x** |
 
-The ONNX detector in OpenCV 5.0.0 matches PyTorch to 4.6e-4 on box coordinates and 7.5e-7 on scores (`results/detector/check_strobe_drone_yolov8n_960x544.json`). The full table with reasons is in [`docs/REPORT.md`](docs/REPORT.md) §4.
+The ONNX detector in OpenCV 5.0.0 matches PyTorch to 4.6e-4 on box coordinates and 7.5e-7 on scores ([detector ONNX check](results/detector/check_strobe_drone_yolov8n_960x544.json)). The full table with reasons is in [`docs/REPORT.md`](docs/REPORT.md) §4.
 
 </details>
 
@@ -301,7 +319,7 @@ cv.add CV_64S       [809271298, 809271396, 1316134912] expected [340000000000000
 float64 workaround correct: True | int64 input silently wrong: True
 ```
 
-The engine subtracts each window's start and passes relative int32 microseconds (`hertz/freq.py`, `_rel_us`). Upstream issue draft: [`docs/UPSTREAM_ISSUE_int64.md`](docs/UPSTREAM_ISSUE_int64.md). Other 5.0.0 traps handled: `readNetFromONNX(bytes)` crashes (pass a `np.uint8` buffer), and the default `findHomography` is not USAC (pass `cv.USAC_MAGSAC`).
+The engine subtracts each window's start and passes relative int32 microseconds (`hertz/freq.py`, `_rel_us`). Upstream issue draft: [`docs/UPSTREAM_ISSUE_int64.md`](docs/UPSTREAM_ISSUE_int64.md). One more 5.0.0 trap handled: `readNetFromONNX(bytes)` crashes, so `hertz/detect.py` passes a `np.uint8` buffer.
 
 </details>
 
@@ -343,7 +361,7 @@ Python 3.12 or 3.13, pinned dependencies, pip OpenCV 5.0.0 locally. The demo cli
 
 ```bash
 pip install -r requirements-dev.txt
-pytest -q
+pytest -q                      # fresh clone: 39 passed, 0 skipped
 python tools/int64_repro.py
 uvicorn app.main:app --port 8080
 python docs/figures/make_figures.py
@@ -393,7 +411,7 @@ AWS: `python deploy/aws.py cool` launches or updates the COOL endpoint, and `pyt
 | `eval/` | Detector training and export, full-pipeline eval, event-only baseline, agent eval, frozen scenarios |
 | `bench/` | Benchmark runner, comparisons, price lookup; results in `bench/results/` |
 | `deploy/` | AWS launch and update (`aws.py`), instance provisioning |
-| `results/` | Every reported number: `detector/`, `engine/`, `agent/eval_v3/` with traces |
+| `results/` | Every reported number: `detector/`, `engine/`, `agent/eval_v3/` with traces; `agent/dev_runs/` holds two earlier development runs on the same scenarios |
 | `tests/` | 39 tests: engine, endpoint, guard, injected planner and tool faults |
 | `tools/` | `int64_repro.py`, web export |
 | `docs/` | Report, Devpost text, diagrams, figures and their script |
