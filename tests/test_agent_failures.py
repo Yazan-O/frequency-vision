@@ -8,9 +8,8 @@ from hertz.agent.faults import DownClient, ScriptedClient, TextOnlyClient, slow
 from hertz.agent.guard import Budget
 from hertz.agent.runner import run_episode
 
-DATA = Path(__file__).resolve().parents[1] / "data" / "fred_slices"
+DATA = Path(__file__).resolve().parent / "fixtures" / "fred"
 SCN = {"id": "clear_111", "kind": "clear", "seq": "111", "t0": 25.0, "t1": 28.0, "drone": True, "entry": None}
-pytestmark = pytest.mark.skipif(not (DATA / "clear_111" / "meta.json").exists(), reason="FRED slices not exported")
 
 
 @pytest.fixture(scope="module")
