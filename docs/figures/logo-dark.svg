@@ -7,5 +7,5 @@
 <animateTransform attributeName="transform" type="translate" from="160 0" to="116 0" dur="0.5s" repeatCount="indefinite"/></polyline></g>
 <text x="262" y="76" font-family="Archivo, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="44" font-weight="700" letter-spacing="-1" fill="#EDEDED">Vision</text>
 <rect x="420" y="42" width="128" height="38" fill="none" stroke="#FF5A1F" stroke-width="2"/>
-<text x="484" y="69" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'DejaVu Sans Mono', monospace" font-size="22" font-weight="500" fill="#FF5A1F">321 Hz</text>
+<text x="484" y="69" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'DejaVu Sans Mono', monospace" font-size="22" font-weight="500" fill="#FF5A1F">316 Hz</text>
 </svg>

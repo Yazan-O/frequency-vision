@@ -15,12 +15,14 @@ OUT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from hertz import freq
 
-HUM, INK, GREY, SOFT, BLUE = "#FF5A1F", "#1E1E1E", "#8C8C8C", "#DEDEDE", "#2E5AA8"
+HUM, INK, GREY, SOFT, BLUE = "#FF5A1F", "#1E1E1E", "#8A847C", "#DDD8D2", "#2E5AA8"
+PALE, DEEP, PAPER = "#FFB596", "#B8400F", "#F3F1EE"
+DEMO, DEMO_T, DEMO_FRAME = "clear_mini2_seq202", 1.767, 14
 plt.rcParams.update({
     "font.family": "DejaVu Sans", "font.size": 10, "axes.edgecolor": INK, "axes.labelcolor": INK,
     "xtick.color": INK, "ytick.color": INK, "axes.spines.top": False, "axes.spines.right": False,
     "axes.titleweight": "bold", "axes.titlesize": 11, "axes.titlelocation": "left", "figure.facecolor": "white",
-    "savefig.facecolor": "white", "legend.frameon": False,
+    "savefig.facecolor": "white", "legend.frameon": False, "axes.grid": False, "figure.titleweight": "bold",
 })
 
 
@@ -44,24 +46,30 @@ def events(cid):
             "p": z["p"].astype(np.int8)}, float(z["origin_s"])
 
 
+def demo_window():
+    c = clip(DEMO)
+    ev, origin = events(DEMO)
+    fr = c["frames"][DEMO_FRAME]
+    box = [int(v) for v in fr["boxes"][0]["box"]]
+    other = [int(v) for v in fr["boxes"][1]["box"]]
+    t1 = int(round((DEMO_T - origin) * 1e6))
+    return c, ev, origin, fr, box, other, t1 - 100_000, t1
+
+
 def fig_alias():
-    c = clip("clear_210")
+    c, ev, origin, _, box, _, t0, t1 = demo_window()
     f, fps = c["hum"]["median_hz"], 30.0
     k = round(f / fps)
     fa = f - k * fps
     fig, ax = plt.subplots(3, 1, figsize=(10, 7.4), gridspec_kw={"height_ratios": [1.2, 1.2, 0.55], "hspace": 0.62})
     t = np.linspace(0, 0.3, 30000)
-    ax[0].plot(t * 1e3, np.sin(2 * np.pi * f * t), color=SOFT, lw=0.6, label=f"blade-pass signal, {f:.1f} Hz")
+    ax[0].plot(t * 1e3, np.sin(2 * np.pi * f * t), color=SOFT, lw=0.6, label=f"blade-pass signal, {f:.0f} Hz")
     tn = np.arange(0, 0.3, 1 / fps)
-    ax[0].plot(t * 1e3, np.sin(2 * np.pi * fa * t), "--", color=INK, lw=1.4, label=f"what 30 fps reconstructs: {abs(fa):.1f} Hz")
+    ax[0].plot(t * 1e3, np.sin(2 * np.pi * fa * t), "--", color=INK, lw=1.4, label=f"what 30 fps reconstructs: {abs(fa):.0f} Hz")
     ax[0].plot(tn * 1e3, np.sin(2 * np.pi * f * tn), "o", color=HUM, ms=7, label="30 fps samples")
     ax[0].set(xlabel="time (ms)", yticks=[], xlim=(0, 300))
     ax[0].set_title(f"(a) {f:.0f} Hz sampled at 30 fps looks like {abs(fa):.0f} Hz", pad=22)
     ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=3, fontsize=9)
-    ev, origin = events("clear_210")
-    box = c["cloud"]["crop"]["box"]
-    t1 = int(round((20.5 - origin) * 1e6))
-    t0 = t1 - 100_000
     w, _ = freq._in_box(freq._window(ev, t0, t1), box)
     fs = 4000
     on = w["p"] > 0
@@ -72,19 +80,19 @@ def fig_alias():
     for i, ft in enumerate(frames):
         ax[1].axvline((ft - origin) * 1e6 / 1e3 - t0 / 1e3, color=INK, lw=1.4, ls=":", label="RGB frame instants (30 fps)" if i == 0 else None)
     ax[1].set(xlabel="time in window (ms)", ylabel="ON − OFF events / 0.25 ms", xlim=(0, 100))
-    ax[1].set_title(f"Real FRED events in the DJI Mini 2 box, 100 ms ({len(w['t']):,} events, seq 210): about {f * 0.1:.0f} cycles between {len(frames)} RGB frames", pad=8)
+    ax[1].set_title(f"Real FRED events in the DJI Mini 2 box, 100 ms ({len(w['t']):,} events, seq {c['seq']}): about {f * 0.1:.0f} cycles between {len(frames)} RGB frames", pad=8)
     ax[1].legend(loc="upper right", fontsize=9)
     a = ax[2]
     a.set_xscale("symlog", linthresh=10)
-    a.axvspan(0, fps / 2, color=GREY, alpha=0.25)
+    a.axvspan(0, fps / 2, color=SOFT, alpha=0.7)
     a.axvspan(150, 1000, color=HUM, alpha=0.15)
     a.text(1.2, 0.5, "what 30 fps can show\n(0 to 15 Hz)", va="center", fontsize=8.5)
     a.text(200, 0.5, "drone blade-pass band\n150 to 1,000 Hz", va="center", fontsize=8.5, color=HUM)
     a.annotate("", xy=(abs(fa), 0.12), xytext=(f, 0.12), arrowprops=dict(arrowstyle="->", color=INK, lw=1.4, connectionstyle="arc3,rad=0.25"))
     a.plot([f], [0.12], "o", color=HUM)
     a.plot([abs(fa)], [0.12], "o", color=INK)
-    a.text(f * 1.05, 0.12, f" {f:.1f} Hz", va="center", fontsize=8.5)
-    a.text(abs(fa) * 0.94, 0.12, f"{abs(fa):.1f} Hz ", va="center", ha="right", fontsize=8.5)
+    a.text(f * 1.05, 0.12, f" {f:.0f} Hz", va="center", fontsize=8.5)
+    a.text(abs(fa) * 0.94, 0.12, f"{abs(fa):.0f} Hz ", va="center", ha="right", fontsize=8.5)
     a.set(xlim=(0, 3000), ylim=(0, 1), yticks=[], xlabel="frequency (Hz, log above 10)")
     a.spines["left"].set_visible(False)
     save(fig, "fig_a_alias.png")
@@ -113,26 +121,26 @@ def cloud(ax, w, box, color, title):
     ax.scatter(t[on], w["x"][on], w["y"][on], s=1.5, c=color, alpha=0.6, linewidths=0)
     ax.scatter(t[~on], w["x"][~on], w["y"][~on], s=1.5, c=INK, alpha=0.4, linewidths=0)
     ax.set(xlabel="time (ms)", ylabel="x (px)", zlabel="y (px)", ylim=(box[0], box[2]), zlim=(box[3], box[1]))
-    ax.set_box_aspect((2.2, 1, 0.75), zoom=1.15)
-    ax.set_title(title, fontsize=9.5, loc="center")
+    ax.set_box_aspect((2.2, 1, 0.75), zoom=1.3)
+    ax.set_title(title, fontsize=9.5, loc="center", fontweight="bold", y=0.93)
+    for a in (ax.xaxis, ax.yaxis, ax.zaxis):
+        a.pane.set_facecolor(PAPER)
+        a.pane.set_edgecolor(SOFT)
+        a._axinfo["grid"]["linewidth"] = 0
     ax.view_init(elev=18, azim=-72)
     ax.tick_params(labelsize=7)
 
 
 def fig_events():
-    c = clip("clear_210")
-    ev, origin = events("clear_210")
-    box = c["cloud"]["crop"]["box"]
-    te = int(round((c["cloud"]["t_end"] - origin) * 1e6))
+    c, ev, origin, _, box, _, t0, t1 = demo_window()
+    te = t1
     tc0 = te - c["cloud"]["ms"] * 1000
-    t1 = int(round((20.5 - origin) * 1e6))
-    t0 = t1 - 100_000
     bg = busiest_patch(ev, box, t0, t1)
-    fig = plt.figure(figsize=(14, 9))
-    gs = fig.add_gridspec(2, 2, height_ratios=[1.25, 1], hspace=0.12, wspace=0.02)
+    fig = plt.figure(figsize=(14, 6.6))
+    gs = fig.add_gridspec(1, 2, wspace=-0.08, left=-0.04, right=1.0, top=1.04, bottom=0.42)
     ax1 = fig.add_subplot(gs[0, 0], projection="3d")
     ax2 = fig.add_subplot(gs[0, 1], projection="3d")
-    ax3 = fig.add_subplot(gs[1, :])
+    ax3 = fig.add_axes([0.06, 0.08, 0.9, 0.34])
     wd, _ = freq._in_box(freq._window(ev, tc0, te), box)
     wb, _ = freq._in_box(freq._window(ev, tc0, te), bg)
     cloud(ax1, wd, box, HUM, f"drone box {box}\n{len(wd['t']):,} events in {c['cloud']['ms']} ms")
@@ -142,13 +150,13 @@ def fig_events():
     for r, col, lab in ((rd, HUM, "drone box"), (rb, GREY, "non-drone patch")):
         m = (r["freqs"] >= 50) & (r["freqs"] <= 1200)
         p = r["power"][m]
-        ax3.plot(r["freqs"][m], p, color=col, lw=1.3, label=f"{lab}: peak {r['peak_hz']:.1f} Hz, score {r['snr']:.0f}")
+        ax3.plot(r["freqs"][m], p, color=col, lw=1.3, label=f"{lab}: peak {r['peak_hz']:.1f} Hz, score {r['snr']:,.0f}")
     ax3.axvspan(*freq.BAND, color=HUM, alpha=0.06)
     ax3.axvline(rd["peak_hz"], color=HUM, ls=":", lw=1)
     ax3.set(xlabel="frequency (Hz)", ylabel="power (log)", xlim=(50, 1200), yscale="log")
-    ax3.set_title("spectrum, 100 ms window (cv.calcHist + cv.dft)", fontsize=10)
+    ax3.set_title("Spectrum, 100 ms window (cv.calcHist + cv.dft)", fontsize=10)
     ax3.legend(loc="upper right", fontsize=9.5)
-    fig.suptitle("(b) Real FRED events (seq 210, DJI Mini 2) as an x-y-t cloud: the propeller is a periodic stripe", x=0.07, y=0.99, ha="left", fontweight="bold")
+    fig.suptitle(f"(b) Real FRED events (seq {c['seq']}, DJI Mini 2) as an x-y-t cloud: the propeller is a periodic stripe", x=0.06, y=1.07, ha="left", fontweight="bold")
     save(fig, "fig_b_events.png")
     return {"drone": [rd["peak_hz"], rd["snr"]], "bg": [rb["peak_hz"], rb["snr"]], "bg_box": bg}
 
@@ -189,7 +197,7 @@ def fig_detector():
     ax.plot([rules[k]["recall"] for k in chain], [rules[k]["false_alarms_per_min"] for k in chain], color=HUM, lw=1.2, alpha=0.6, zorder=1)
     for k, v in rules.items():
         hum = "hum" in k and "motion" not in k
-        col = INK if k == "a_rgb_only" else HUM if hum else BLUE
+        col = INK if k == "a_rgb_only" else HUM if hum else GREY
         ax.scatter(v["recall"], v["false_alarms_per_min"], s=70, color=col, zorder=3, edgecolor="white")
         ax.annotate(f"{DET_LABEL.get(k, k)}\nP {v['precision']:.3f} · mAP {v['ap50']:.3f}", (v["recall"], v["false_alarms_per_min"]),
                     xytext=(8, -4) if k != "b_hum_train_chosen" else (-150, -30), textcoords="offset points", fontsize=8)
@@ -241,8 +249,8 @@ def fig_bench():
     save(fig, "fig_e_bench.png")
 
 
-TOOL_COL = {"detect_frame": GREY, "frequency_map": BLUE, "box_spectrum": HUM, "request_window": HUM, "track": "#6B8E23",
-            "ask_human": "#8E44AD", "raise_alert": "#C0392B", "finish": INK}
+TOOL_COL = {"detect_frame": GREY, "frequency_map": INK, "box_spectrum": HUM, "request_window": HUM, "track": PALE,
+            "ask_human": "#5A544E", "raise_alert": DEEP, "finish": "#6E2608"}
 
 
 def step_note(s):
@@ -384,7 +392,7 @@ def bars(cx, cy, r0, n, lens, flare, ink, dur):
 
 
 def logo(ink, name):
-    hz = clip("clear_210")["hum"]["median_hz"]
+    hz = clip(DEMO)["hum"]["median_hz"]
     n = 28
     flare = round((min(max(hz, 150), 1000) - 150) / 850 * (n - 1))
     rng = np.random.default_rng(7)
@@ -409,14 +417,69 @@ def logo(ink, name):
     print("wrote", name)
 
 
+def fig_hero():
+    import cv2 as cv
+    from matplotlib.patches import Rectangle
+    c, ev, origin, fr, box, other, t0, t1 = demo_window()
+    img = cv.cvtColor(cv.imread(str(ROOT / "app/static" / fr["src"])), cv.COLOR_BGR2RGB)
+    s = img.shape[1] / c["width"]
+    rd, ro = freq.box_spectrum(ev, box, t0, t1), freq.box_spectrum(ev, other, t0, t1)
+    hz = c["hum"]["median_hz"]
+    LIGHT = "#F3F1EE"
+    fig = plt.figure(figsize=(10, 4.375), dpi=160)
+    fig.patch.set_facecolor(INK)
+    ax = fig.add_axes([0.03, 0.2, 0.48, 0.48 * 10 / 4.375 * img.shape[0] / img.shape[1]])
+    ax.imshow(img)
+    x0, y0, x1, y1 = [v * s for v in box]
+    ax.add_patch(Rectangle((x0, y0), x1 - x0, y1 - y0, fill=False, ec=HUM, lw=2))
+    ax.text(x0, y1 + 9, "drone", color=HUM, fontsize=9, fontweight="bold", va="top")
+    ax.set_axis_off()
+    m = 14
+    cy0, cy1, cx0, cx1 = int(y0 - m), int(y1 + m), int(x0 - m), int(x1 + m)
+    crop = cv.resize(img[cy0:cy1, cx0:cx1], None, fx=4, fy=4, interpolation=cv.INTER_CUBIC)
+    ins = ax.inset_axes([0.02, 0.6, 0.38, 0.38 * (cy1 - cy0) / (cx1 - cx0) * img.shape[1] / img.shape[0]])
+    ins.imshow(crop)
+    ins.add_patch(Rectangle((m * 4, m * 4), (x1 - x0) * 4, (y1 - y0) * 4, fill=False, ec=HUM, lw=1.5))
+    ins.set_xticks([])
+    ins.set_yticks([])
+    for sp in ins.spines.values():
+        sp.set_color(HUM)
+        sp.set_linewidth(1.5)
+    fig.text(0.03, 0.9, "What a 30 fps camera sees", color=LIGHT, fontsize=15, fontweight="bold")
+    fig.text(0.03, 0.835, "A drone or a bird? The rotors are a blur.", color=GREY, fontsize=10.5)
+    bx = fig.add_axes([0.6, 0.24, 0.37, 0.52])
+    bx.set_facecolor(INK)
+    for r, col, lw in ((ro, GREY, 1.4), (rd, HUM, 2.2)):
+        k = (r["freqs"] >= 50) & (r["freqs"] <= 1000)
+        band = (r["freqs"] >= freq.BAND[0]) & (r["freqs"] <= freq.BAND[1])
+        y = r["power"][k] / np.median(r["power"][band])
+        bx.plot(r["freqs"][k], y, color=col, lw=lw)
+        if col == HUM:
+            bx.fill_between(r["freqs"][k], y, color=HUM, alpha=0.25, lw=0)
+            top = y.max()
+    bx.annotate(f"{hz:.0f} Hz", (rd["peak_hz"], top), xytext=(rd["peak_hz"] + 70, top * 0.82), color=HUM, fontsize=30,
+                fontweight="bold", va="center", arrowprops=dict(arrowstyle="-", color=HUM, lw=1))
+    bx.text(1000, top * 0.07, "no drone: flat", color=GREY, fontsize=9.5, ha="right", va="bottom")
+    bx.set(xlim=(50, 1000), ylim=(0, top * 1.08), yticks=[])
+    bx.set_xlabel("frequency (Hz)", color=LIGHT, fontsize=9.5, labelpad=2)
+    bx.tick_params(colors=LIGHT, labelsize=9)
+    for k_, sp in bx.spines.items():
+        sp.set_color(GREY)
+        sp.set_visible(k_ == "bottom")
+    fig.text(0.6, 0.9, "What the event camera hears", color=LIGHT, fontsize=15, fontweight="bold")
+    fig.text(0.6, 0.835, "Events in the same box: the propeller hum.", color=GREY, fontsize=10.5)
+    fig.text(0.03, 0.03, f"Real FRED test sequence {c['seq']}, DJI Mini 2. Spectrum of 100 ms of events in the drone box (cv.calcHist + cv.dft): "
+             f"peak {rd['peak_hz']:.1f} Hz, score {rd['snr']:,.0f}.\nGrey: busiest patch with no drone, score {ro['snr']:,.0f}. "
+             f"Clip median {hz:.0f} Hz over {c['hum']['n_windows']} windows of 100 ms.", color=GREY, fontsize=7.6, linespacing=1.5)
+    fig.savefig(OUT / "hero.png", dpi=160, facecolor=INK)
+    plt.close(fig)
+    print("wrote hero.png", round(rd["peak_hz"], 1), round(rd["snr"]), round(ro["peak_hz"], 1), round(ro["snr"], 1))
+
+
+FIGS = {"logo": lambda: (logo(INK, "logo.svg"), logo("#EDEDED", "logo-dark.svg")), "hero": fig_hero, "a": fig_alias,
+        "b": lambda: print(json.dumps(fig_events())), "c": fig_models, "d": fig_detector, "e": fig_bench, "f": fig_agent,
+        "g": fig_known, "h": fig_roc}
+
 if __name__ == "__main__":
-    logo(INK, "logo.svg")
-    logo("#EDEDED", "logo-dark.svg")
-    fig_alias()
-    print(json.dumps(fig_events()))
-    fig_models()
-    fig_detector()
-    fig_bench()
-    fig_agent()
-    fig_known()
-    fig_roc()
+    for k in sys.argv[1:] or FIGS:
+        FIGS[k]()
