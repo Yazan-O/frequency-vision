@@ -156,9 +156,13 @@ def keep_mask(D, v, mot):
     return k
 
 
-def evaluate(D, G, tp, minutes, s_thr, v, mot):
+def evaluate(D, G, tp, minutes, s_thr, v, mot, tp30=None):
     k = keep_mask(D, v, mot)
-    return {"ap50": ap_curve(D[k, 6], tp[k], len(G)), **op_point((D[:, 6] >= s_thr) & k, tp, len(G), minutes, D)}
+    r = {"ap50": ap_curve(D[k, 6], tp[k], len(G)), **op_point((D[:, 6] >= s_thr) & k, tp, len(G), minutes, D)}
+    if tp30 is not None:
+        r["ap30"] = ap_curve(D[k, 6], tp30[k], len(G))
+        r["false_alarms_per_min_iou30"] = int(((D[:, 6] >= s_thr) & k & ~tp30).sum()) / minutes
+    return r
 
 
 def choose(npzs):
@@ -246,6 +250,7 @@ def main():
     (out / "thresholds_trainval.json").write_text(json.dumps(sel, indent=1))
     D, G, nfr, lat = load(te)
     tp = match(D, G)
+    tp30 = match(D, G, 0.3)
     minutes = nfr / FPS / 60.0
     s_thr = sel["score_thr"]
     mot = motion_px(D, s_thr, a.stride)
@@ -254,11 +259,11 @@ def main():
            "detect_ms_median_per_frame": float(np.median(lat) * 1e3), "detect_threads": a.threads,
            "score_thr": s_thr, "win_ms": a.win_ms, "spec_conf": a.spec_conf, "motion_lag_frames": MOTION_LAG, "motion_radius_px": MOTION_RADIUS,
            "onnx": a.onnx, "opencv": cv.__version__, "thresholds_from": "held-out train sequences (thresholds_trainval.json); test never used to choose",
-           "a_rgb_only": evaluate(D, G, tp, minutes, s_thr, {}, mot)}
+           "a_rgb_only": evaluate(D, G, tp, minutes, s_thr, {}, mot, tp30)}
     base = D[:, 6] >= s_thr
     for n, v in sel["variants"].items():
         k = keep_mask(D, v, mot)
-        res[f"b_{n}"] = {"rule": v, **evaluate(D, G, tp, minutes, s_thr, v, mot),
+        res[f"b_{n}"] = {"rule": v, **evaluate(D, G, tp, minutes, s_thr, v, mot, tp30),
                          "removed_fp": int((base & ~tp & ~k).sum()), "removed_tp": int((base & tp & ~k).sum())}
     (out / "results_test.json").write_text(json.dumps(res, indent=1))
     pick = sel["web_pick"]
