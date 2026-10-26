@@ -11,7 +11,7 @@ SEV = {"type": "string", "enum": ["info", "warning", "critical"]}
 SPECS = [
     ("detect_frame", "Run the detector on the frame at stream time t (seconds). Moves the clock forward to t. Returns candidate boxes.",
      {"seq": SEQ, "t": {"type": "number"}}),
-    ("box_spectrum", "Event-count spectrum inside a box over [t0, t1] (seconds, t1 <= now). Returns the blade-pass peak in Hz, its strength snr (peak power over median power in the 150-1000 Hz band), and a verdict hum / ambiguous / none.",
+    ("box_spectrum", "Event-count spectrum inside a box over [t0, t1] (seconds, t1 <= now). Returns the blade-pass peak in Hz, its strength snr (peak power over the local spectral floor within +-100 Hz, 150-1000 Hz band; hum at 98 or more, ambiguous from 7.9), and a verdict hum / ambiguous / none.",
      {"seq": SEQ, "box": BOX, "t0": {"type": "number"}, "t1": {"type": "number"}}),
     ("request_window", "Re-check a box with a longer or tighter event window of length_ms ending now. Longer windows give finer frequency resolution and more events; tighter windows follow a fast mover. Returns the new spectrum and how it differs from the last check on that box.",
      {"seq": SEQ, "box": BOX, "length_ms": {"type": "number"}}),

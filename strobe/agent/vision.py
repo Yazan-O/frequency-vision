@@ -14,9 +14,9 @@ FS = L1.FS if L1 else 10000
 BAND = L1.BAND if L1 else (150.0, 1000.0)
 CLEAR_SNR = L1.CLEAR_SNR if L1 else 15.0
 MIN_EVENTS = L1.MIN_EVENTS if L1 else 200
-AMB_SNR = 0.5 * CLEAR_SNR
+AMB_SNR = L1.AMBIGUOUS_SNR if L1 else 7.9
 MIN_AMB_EVENTS = 100
-SOURCE = {"spectrum": "strobe.freq (lane L1)" if L1 else "agent stub (lane L1 missing)", "detect": "event blobs (agent, cv.connectedComponentsWithStats)"}
+SOURCE = {"spectrum": "strobe.freq (lane L1)" if L1 else "agent stub (lane L1 missing)", "detect": "not loaded yet"}
 
 
 def mains_like(f):
@@ -93,33 +93,25 @@ def frequency_map(sl, t0, t1):
             "hum_spots": spots[:6], "source": SOURCE["spectrum"]}
 
 
-_DNN = {"net": None, "tried": False}
+DNN_PATH = os.environ.get("STROBE_DETECTOR_ONNX", str(Path(__file__).resolve().parents[3] / "build" / "models" / "strobe_drone_960x544.onnx"))
+DNN_CONF = 0.125
+_DNN = {"net": None, "tried": False, "error": None}
 
 
 def _dnn():
     if not _DNN["tried"]:
         _DNN["tried"] = True
-        path = os.environ.get("STROBE_DETECTOR_ONNX", "")
-        if path and Path(path).exists():
+        try:
             from strobe.detect import Detector
-            _DNN["net"] = Detector(path)
-            SOURCE["detect"] = f"strobe.detect.Detector (lane L2, {Path(path).name}) + event blobs"
+            _DNN["net"] = Detector(DNN_PATH, conf=DNN_CONF)
+            SOURCE["detect"] = f"strobe.detect.Detector (lane L2, {Path(DNN_PATH).name}, score >= {DNN_CONF})"
+        except Exception as e:
+            _DNN["error"] = f"{type(e).__name__}: {str(e)[:150]}"
+            SOURCE["detect"] = f"FALLBACK event blobs (detector unavailable: {_DNN['error']})"
     return _DNN["net"]
 
 
-def _dnn_boxes(sl, t):
-    net = _dnn()
-    if net is None:
-        return []
-    img, ft = sl.frame(t)
-    if img is None:
-        return []
-    b, s, c = net.detect(img)
-    return [{"box": [int(v) for v in bb], "score": round(float(sc), 3), "label": f"dnn_class_{int(cc)}", "frame_t": round(ft, 4)}
-            for bb, sc, cc in zip(b, s, c)]
-
-
-def detect(sl, t, win=0.033, k=5):
+def _blobs(sl, t, win):
     x, y, _ = sl.events(t - win, t)
     img = np.bincount(y.astype(np.int64) * sl.width + x, minlength=sl.width * sl.height).reshape(sl.height, sl.width)
     img = np.minimum(img, 255).astype(np.uint8)
@@ -133,19 +125,22 @@ def detect(sl, t, win=0.033, k=5):
         if area < 20 or bw_ > 400 or bh > 400:
             continue
         m = (x >= bx) & (x < bx + bw_) & (y >= by) & (y < by + bh)
-        out.append({"box": [bx, by, bx + bw_, by + bh], "score": int(m.sum()), "label": "event_blob"})
+        out.append({"box": [bx, by, bx + bw_, by + bh], "score": int(m.sum()), "label": "event_blob (fallback)"})
     out.sort(key=lambda d: -d["score"])
-    dnn = _dnn_boxes(sl, t)
-    blobs = [o for o in out if all(iou_(o["box"], d["box"]) < 0.3 for d in dnn)]
-    dets = (dnn + blobs)[:k]
-    return {"t": round(t, 4), "detections": dets, "n_candidates": len(dnn) + len(out), "source": SOURCE["detect"]}
+    return out
 
 
-def iou_(a, b):
-    ix = max(0, min(a[2], b[2]) - max(a[0], b[0]))
-    iy = max(0, min(a[3], b[3]) - max(a[1], b[1]))
-    u = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - ix * iy
-    return ix * iy / u if u > 0 else 0.0
+def detect(sl, t, win=0.033, k=5):
+    net = _dnn()
+    img, ft = sl.frame(t) if net is not None else (None, None)
+    if net is not None and img is not None:
+        b, s, _ = net.detect(img)
+        dets = [{"box": [int(v) for v in bb], "score": round(float(sc), 3), "label": "drone (dnn)"} for bb, sc in zip(b, s)]
+        dets.sort(key=lambda d: -d["score"])
+        return {"t": round(t, 4), "frame_t": round(ft, 4), "detections": dets[:k], "n_candidates": len(dets), "source": SOURCE["detect"]}
+    why = "no RGB frame at t" if net is not None else SOURCE["detect"]
+    out = _blobs(sl, t, win)
+    return {"t": round(t, 4), "detections": out[:k], "n_candidates": len(out), "source": f"FALLBACK event blobs ({why})"}
 
 
 def track(sl, box, t0, t1, step=0.01):
