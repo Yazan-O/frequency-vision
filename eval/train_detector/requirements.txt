@@ -1,0 +1,4 @@
+ultralytics==8.3.236
+onnx==1.20.1
+onnxslim==0.1.98
+opencv-python-headless==4.12.0.88
