@@ -43,7 +43,7 @@ Detector weights: fine-tuned from Ultralytics YOLOv8n pretrained weights (AGPL-3
 
 | Dataset | Licence | How it is used |
 |---|---|---|
-| FRED, huggingface.co/datasets/GabrieleMagrini/FRED | Apache-2.0, as stated on its Hugging Face card (its GitHub repository has no licence file) | Training, thresholds and every evaluation number. Two short demo clips (sequences 210 and 138) ship in `app/data` and `app/static/data` |
+| FRED, huggingface.co/datasets/GabrieleMagrini/FRED | Apache-2.0, as stated on its Hugging Face card (its GitHub repository has no licence file) | Training, thresholds and every evaluation number. Seven short demo clips from the test split (sequences 210, 138, 64, 202, 93, 195 and 20) ship in `app/data` and `app/static/data` |
 | EEPPR (github.com/JackPieCZ/EEPPR, arXiv:2408.06899) | GPL-3.0 | Known-frequency check only. Downloaded at run time by the user and never committed or redistributed |
 | Prophesee sample recording `monitoring_40_50hz` (docs.prophesee.ai) | CC0, per the Prophesee datasets page | Mains-frequency check only. Downloaded at run time, not committed |
 | OpenCV sample image `fruits.jpg` (github.com/opencv/opencv, samples/data) | OpenCV repository sample data | Benchmark input, fetched at run time by `bench/bench.py`, not redistributed |

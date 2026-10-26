@@ -43,7 +43,7 @@ $PY -c "import cv2,platform;print('cv2',cv2.__version__,cv2.__file__,platform.ma
 
 cat > /etc/systemd/system/strobe.service <<EOF
 [Unit]
-Description=Hertz API
+Description=Frequency Vision API
 After=network-online.target
 [Service]
 WorkingDirectory=$DST
@@ -59,14 +59,14 @@ EOF
 
 cat > /etc/systemd/system/strobe-health.service <<'EOF'
 [Unit]
-Description=Hertz health probe
+Description=Frequency Vision health probe
 [Service]
 Type=oneshot
 ExecStart=/bin/sh -c 'curl -fsS -m 5 http://127.0.0.1:8080/health >/dev/null || systemctl restart strobe'
 EOF
 cat > /etc/systemd/system/strobe-health.timer <<'EOF'
 [Unit]
-Description=Hertz health probe every minute
+Description=Frequency Vision health probe every minute
 [Timer]
 OnBootSec=2min
 OnUnitActiveSec=1min

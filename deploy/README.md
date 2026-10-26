@@ -14,7 +14,7 @@ Live endpoint: `https://<public-ip-with-dashes>.sslip.io` (`/health`, `/version`
 | CloudWatch | log group `/opencv26/strobe`, namespace `opencv26/strobe`, alarm `strobe-auto-recover` | app log, memory and disk, EC2 auto-recover |
 | Budgets | `opencv26-alert`, `opencv26-daily` | email when actual monthly or daily spend passes the limit |
 
-On the COOL instance the app runs on COOL's own Python build through `/usr/local/bin/coolpy` (OpenCV from `/opt/cool`, KleidiCV HAL). On the pip instance: a Python venv at `/srv/strobe/venv` with `requirements.txt` (pip `opencv-contrib-python-headless==5.0.0.93`), `uvicorn` on 127.0.0.1:8080 as systemd unit `strobe`, Caddy in front with an automatic Let's Encrypt certificate for the free `sslip.io` name of the public IP, and a one-minute timer `strobe-health` that restarts the app if `/health` stops answering. No Elastic IP, NAT gateway or load balancer.
+On the COOL instance the app runs on COOL's own Python build through `/usr/local/bin/coolpy` (OpenCV from `/opt/cool`, KleidiCV HAL). On the pip instance: a Python venv at `/srv/strobe/venv` with `requirements.txt` (pip `opencv-contrib-python-headless==5.0.0.93`), `uvicorn` on 127.0.0.1:8080 as systemd unit `strobe`, Caddy in front with an automatic Let's Encrypt certificate for the free `sslip.io` name of the public IP, and a one-minute timer `strobe-health` that restarts the app if `/health` stops answering. No Elastic IP, NAT gateway or load balancer. Resource, unit and path names keep the project's earlier working name `strobe`.
 
 ## Reproduce
 
