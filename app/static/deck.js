@@ -10,7 +10,8 @@ const HUM = css.getPropertyValue("--hum").trim();
 const fmt = (v, d = 1) => (v == null || Number.isNaN(+v) ? "–" : Number(v).toFixed(d));
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const icon = (id, cls = "ic") => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("class", cls); s.setAttribute("aria-hidden", "true"); const u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", "#" + id); s.append(u); return s; };
-const txt = (ctx, s, x, y, o = {}) => { ctx.save(); ctx.font = o.font || "400 18px 'JetBrains Mono', monospace"; ctx.textAlign = o.align || "left"; ctx.lineWidth = 6; ctx.lineJoin = "round"; ctx.strokeStyle = o.back || "#FEFEFE"; ctx.strokeText(s, x, y); ctx.fillStyle = o.color || "#777"; ctx.fillText(s, x, y); ctx.restore(); };
+const minPx = (ctx, f) => { const cw = ctx.canvas.clientWidth; if (!cw || cw >= 600) return f; const m = 12 * ctx.canvas.width / cw; return f.replace(/(\d+(?:\.\d+)?)px/, (_, v) => `${Math.ceil(Math.max(+v, m))}px`); };
+const txt = (ctx, s, x, y, o = {}) => { ctx.save(); ctx.font = minPx(ctx, o.font || "400 18px 'JetBrains Mono', monospace"); ctx.textAlign = o.align || "left"; ctx.lineWidth = 6; ctx.lineJoin = "round"; ctx.strokeStyle = o.back || "#FEFEFE"; ctx.strokeText(s, x, y); ctx.fillStyle = o.color || "#777"; ctx.fillText(s, x, y); ctx.restore(); };
 if (reduce) document.querySelectorAll("svg").forEach((s) => s.pauseAnimations && s.pauseAnimations());
 
 const [clipsDoc, tracesDoc] = await Promise.all([fetch("/data/clips.json").then((r) => r.json()), fetch("/data/traces.json").then((r) => r.json())]);
@@ -80,8 +81,7 @@ function drawRhythm(cv, opt) {
     const back = "#0b0b0b";
     txt(ctx, "0 ms", 16, H - 26, { font: "500 28px 'JetBrains Mono', monospace", color: "#fff", back });
     txt(ctx, `${cur.clip.cloud.ms} ms`, W - 16, H - 26, { font: "500 28px 'JetBrains Mono', monospace", color: "#fff", back, align: "right" });
-    txt(ctx, HZ ? `${Math.round(HZ)} blade passes a second` : "no steady rhythm", 16, 46, { font: "500 32px 'JetBrains Mono', monospace", color: HZ ? HUM : "#aaa", back });
-    if (HZ) txt(ctx, `one tick = ${(1000 / HZ).toFixed(1)} ms`, W - 16, 46, { font: "500 26px 'JetBrains Mono', monospace", color: HUM, back, align: "right" });
+    txt(ctx, HZ ? `orange tick = one blade pass, every ${(1000 / HZ).toFixed(1)} ms` : "no steady rhythm", 16, 46, { font: "500 32px 'JetBrains Mono', monospace", color: HZ ? HUM : "#aaa", back });
   }
 }
 
@@ -149,7 +149,7 @@ function slide1() {
 
 function applySlide1() {
   const c = cur.clip, HZ = cur.HZ, h = c.hum || {}, model = modelOf(c);
-  $("headline").textContent = HZ ? `A 30 fps camera sees a blur. The event camera hears the ${shortName(c)} at ${Math.round(HZ)} Hz.`
+  $("headline").textContent = HZ ? `A 30 fps camera sees a blur. The event camera hears the ${shortName(c)}'s propellers.`
     : `Hard case: this ${shortName(c)} gives no clean hum.`;
   $("hz").textContent = HZ ? `${Math.round(HZ)} Hz` : "no peak";
   $("hz").classList.toggle("none", !HZ);
@@ -841,13 +841,14 @@ function drawNyq(t) {
   for (let s = 0; s < 24; s++) blades(nc, 170, 130, R, th(t + s / 60 / 24), 0.07, INK);
   blades(nc, 470, 130, R, th(Math.floor(t * 30) / 30), 0.9, INK);
   [[170, 130], [470, 130]].forEach(([x, y]) => { nc.fillStyle = "#2a2a2a"; nc.beginPath(); nc.arc(x, y, 12, 0, 7); nc.fill(); });
-  txt(nc, `${Math.round(HZ)} Hz`, 640, 110, { font: "500 30px 'JetBrains Mono', monospace", color: HUM });
-  if (!cur.HZ) txt(nc, `(${M.refName})`, 640, 60, { font: "400 16px 'JetBrains Mono', monospace" });
-  txt(nc, `${alias.toFixed(1)} Hz`, 640, 170, { font: "500 30px 'JetBrains Mono', monospace", color: INK });
-  txt(nc, "real propeller", 170, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
-  txt(nc, "what 30 fps sees", 470, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
-  txt(nc, "real", 800, 110, { font: "400 20px 'JetBrains Mono', monospace" });
-  txt(nc, "at 30 fps", 800, 170, { font: "400 20px 'JetBrains Mono', monospace" });
+  const ph = nyq.clientWidth > 0 && nyq.clientWidth < 600, hx = ph ? 600 : 640, lx = ph ? 770 : 800;
+  txt(nc, `${Math.round(HZ)} Hz`, hx, 110, { font: "500 30px 'JetBrains Mono', monospace", color: HUM });
+  if (!cur.HZ) txt(nc, `(${M.refName})`, hx, 60, { font: "400 16px 'JetBrains Mono', monospace" });
+  txt(nc, `${alias.toFixed(1)} Hz`, hx, 170, { font: "500 30px 'JetBrains Mono', monospace", color: INK });
+  txt(nc, ph ? "real" : "real propeller", 170, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
+  txt(nc, ph ? "at 30 fps" : "what 30 fps sees", 470, 22, { font: "400 18px 'JetBrains Mono', monospace", align: "center" });
+  txt(nc, "real", lx, 110, { font: "400 20px 'JetBrains Mono', monospace" });
+  txt(nc, "at 30 fps", lx, 170, { font: "400 20px 'JetBrains Mono', monospace" });
   const ax0 = 40, ax1 = W - 30, ay = 330;
   nc.fillStyle = "rgba(255,90,31,.14)"; nc.fillRect(ax0, ay - 34, logx(M.fs / 2, ax0, ax1) - ax0, 26);
   nc.fillStyle = "#CFCFCF"; nc.fillRect(ax0, ay - 34, logx(15, ax0, ax1) - ax0, 26);
@@ -875,7 +876,7 @@ function drawFt() {
     fc.fillStyle = v >= 0 ? INK : OFF; fc.fillRect(30 + n * bw, vw >= 0 ? mid - vw : mid, Math.max(bw, 1), Math.abs(vw));
   }
   if (M.stage >= 1) { fc.strokeStyle = HUM; fc.lineWidth = 2; fc.beginPath(); for (let n = 0; n < N; n++) { const x = 30 + n * bw, y = mid - hann(n) * (hh / 2 - 6); if (n) fc.lineTo(x, y); else fc.moveTo(x, y); } fc.stroke(); }
-  txt(fc, M.stage === 0 ? "brighter minus darker, per 0.1 ms" : M.stage === 1 ? "× Hanning window" : "windowed signal", 30, 22, { font: "400 16px 'JetBrains Mono', monospace" });
+  txt(fc, M.stage === 0 ? "brighter minus darker, per 0.1 ms" : M.stage === 1 ? "× Hanning window" : "windowed signal", 30, 28, { font: "400 16px 'JetBrains Mono', monospace" });
   txt(fc, "0", 30, y0 + hh + 20, { font: "400 16px 'JetBrains Mono', monospace" });
   txt(fc, `${cur.clip.cloud.ms} ms`, W - 30, y0 + hh + 20, { font: "400 16px 'JetBrains Mono', monospace", align: "right" });
   if (M.stage === 2) {
@@ -896,7 +897,7 @@ function drawSnr() {
   const med = loc[Math.floor(loc.length / 2)];
   scx.strokeStyle = INK; scx.lineWidth = 2; scx.setLineDash([8, 6]); scx.beginPath(); scx.moveTo(X(d.peak_hz - M.local), Y(med)); scx.lineTo(X(d.peak_hz + M.local), Y(med)); scx.stroke(); scx.setLineDash([]);
   txt(scx, "median within ±100 Hz", X(d.peak_hz - M.local) + 4, Y(med) + 22, { font: "500 16px 'JetBrains Mono', monospace", color: INK });
-  const gx = 770, gy0 = 24, gy1 = H - 40, GY = (v) => gy1 - Math.min(4, Math.log10(Math.max(v, 1))) / 4 * (gy1 - gy0);
+  const ph = snr.clientWidth > 0 && snr.clientWidth < 600, gx = ph ? 680 : 770, gy0 = 24, gy1 = H - 40, GY = (v) => gy1 - Math.min(4, Math.log10(Math.max(v, 1))) / 4 * (gy1 - gy0);
   scx.fillStyle = "rgba(255,90,31,.16)"; scx.fillRect(gx - 26, gy0, 52, GY(M.clear) - gy0);
   scx.fillStyle = "#E6E6E6"; scx.fillRect(gx - 26, GY(M.clear), 52, GY(M.amb) - GY(M.clear));
   scx.strokeStyle = INK; scx.lineWidth = 2; scx.strokeRect(gx - 26, gy0, 52, gy1 - gy0);
@@ -905,8 +906,8 @@ function drawSnr() {
   txt(scx, "no", gx, (GY(M.amb) + gy1) / 2 + 5, { font: "500 14px 'JetBrains Mono', monospace", color: "#555", align: "center" });
   [[M.amb, `${M.amb}`], [M.clear, `${M.clear}`]].forEach(([v, l]) => { scx.fillStyle = INK; scx.fillRect(gx - 34, GY(v) - 1, 68, 2); txt(scx, l, gx - 40, GY(v) + 6, { font: "500 18px 'JetBrains Mono', monospace", color: INK, align: "right" }); });
   const mark = (v, color, lab, dy) => { const y = GY(v); scx.fillStyle = color; scx.beginPath(); scx.moveTo(gx + 30, y); scx.lineTo(gx + 44, y - 9); scx.lineTo(gx + 44, y + 9); scx.fill(); txt(scx, `${lab} ${Math.round(v)}`, gx + 48, y + 7 + dy, { font: "500 18px 'JetBrains Mono', monospace", color }); };
-  mark(d.snr, HUM, "drone box", 0);
-  if (M.dbg) mark(M.dbg.snr, INK, "no drone", Math.abs(GY(M.dbg.snr) - GY(d.snr)) < 22 ? 20 : 0);
+  mark(d.snr, HUM, ph ? "drone" : "drone box", 0);
+  if (M.dbg) mark(M.dbg.snr, INK, ph ? "empty" : "no drone", Math.abs(GY(M.dbg.snr) - GY(d.snr)) < 22 ? 20 : 0);
 }
 
 const WINS = [20, 50, 100, 150, 200, 300];
