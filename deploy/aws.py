@@ -286,6 +286,7 @@ def main():
     elif a.cmd == "cool":
         ami = a.ami or cool_ami()["ImageId"]
         i = up(a.name, a.type, "arm64", ami=ami)
+        alarm(i["InstanceId"], a.name)
         print(json.dumps({"instance": i["InstanceId"], "ami": ami, "url": "https://" + push(a.name, "cool", True)}))
     elif a.cmd == "bench-host":
         i = up(a.name, a.type, a.arch)
