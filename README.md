@@ -241,7 +241,7 @@ cv.add CV_64S       [809271298, 809271396, 1316134912] expected [340000000000000
 float64 workaround correct: True | int64 input silently wrong: True
 ```
 
-The engine subtracts each window's start and passes relative int32 microseconds (`hertz/freq.py`, `_rel_us`). Upstream issue draft: [`docs/UPSTREAM_ISSUE_int64.md`](docs/UPSTREAM_ISSUE_int64.md). One more 5.0.0 trap handled: `readNetFromONNX(bytes)` crashes, so `hertz/detect.py` passes a `np.uint8` buffer.
+The engine subtracts each window's start and passes relative int32 microseconds (`hertz/freq.py`, `_rel_us`). Upstream issue write-up with its repro: [`docs/UPSTREAM_ISSUE_int64.md`](docs/UPSTREAM_ISSUE_int64.md). One more 5.0.0 trap handled: `readNetFromONNX(bytes)` crashes, so `hertz/detect.py` passes a `np.uint8` buffer.
 
 </details>
 

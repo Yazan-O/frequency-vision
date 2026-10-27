@@ -19,7 +19,7 @@
   "detector_engine": "classic",
   "detector_target": "default",
   "price_usd_hour": 0.1785,
-  "workload": "each worker process runs the full E2E window (detector + hum checks + frequency map) over all 210 windows x reps; wall time from the first worker's start after warm-up to the last worker's end"
+  "workload": "each worker process runs the full E2E window (detector + hum checks + frequency map) over all 180 windows x reps; wall time from the first worker's start after warm-up to the last worker's end"
  },
  "rows": [
   {

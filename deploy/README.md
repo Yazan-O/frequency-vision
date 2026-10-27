@@ -12,13 +12,15 @@ Live endpoint: `https://<public-ip-with-dashes>.sslip.io` (`/health`, `/version`
 | IAM role and instance profile | `opencv26-strobe-ec2` | SSM, CloudWatch agent, S3 bucket, Bedrock InvokeModel |
 | S3 bucket | `opencv26-strobe-<random>` | release bundles and benchmark outputs |
 | CloudWatch | log group `/opencv26/strobe`, namespace `opencv26/strobe`, alarm `strobe-auto-recover` | app log, memory and disk, EC2 auto-recover |
-| Budgets | `opencv26-alert`, `opencv26-daily` | email when actual monthly or daily spend passes the limit |
+| Budgets | `opencv26-alert` (monthly, by `aws.py budget`), `opencv26-daily` (daily, created in the console) | email when actual monthly or daily spend passes the limit |
 
 On the COOL instance the app runs on COOL's own Python build through `/usr/local/bin/coolpy` (OpenCV from `/opt/cool`, KleidiCV HAL). On the pip instance: a Python venv at `/srv/strobe/venv` with `requirements.txt` (pip `opencv-contrib-python-headless==5.0.0.93`), `uvicorn` on 127.0.0.1:8080 as systemd unit `strobe`, Caddy in front with an automatic Let's Encrypt certificate for the free `sslip.io` name of the public IP, and a one-minute timer `strobe-health` that restarts the app if `/health` stops answering. No Elastic IP, NAT gateway or load balancer. Resource, unit and path names keep the project's earlier working name `strobe`.
 
 ## Reproduce
 
 Needs Python 3.10+, `pip install boto3==1.43.118`, and an AWS CLI profile (default name `opencv26`, override with `AWS_PROFILE`).
+
+The deploy uploads the detector model from `build/models/strobe_drone_960x544.onnx` beside the repo folder (`MODEL` in `deploy/aws.py`). The model is not in the repo: train and export it as in [`THIRD_PARTY.md`](../THIRD_PARTY.md), then copy the exported file to that path.
 
 ```
 python deploy/aws.py budget --amount 5 --email you@example.com
@@ -52,8 +54,8 @@ OptInRequired: In order to use this AWS Marketplace product you need to accept t
 ```
 python deploy/aws.py bench --name strobe-bench-g4 --type c8g.xlarge --arch arm64 --label pip-graviton4-c8g.xlarge
 python deploy/aws.py bench --name strobe-bench-x86 --type c7i.xlarge --arch x86_64 --label pip-x86-c7i.xlarge
-python bench/table.py bench/results/*.json
+python bench/table.py bench/results/cool-graviton4-*.json bench/results/pip-*.json
 python bench/compare.py bench/results/pip-graviton4-c8g.xlarge.npz bench/results/pip-x86-c7i.xlarge.npz
 ```
 
-Each `bench` call launches a fresh instance, installs the pinned requirements, runs `bench/bench.py`, copies the JSON and outputs back through S3, and terminates the instance. Prices come from the AWS Pricing API at run time (`bench/price.py`).
+`compare.py` reads the `.npz` outputs that the two `bench` commands above copy back. Each `bench` call launches a fresh instance, installs the pinned requirements, runs `bench/bench.py`, copies the JSON and outputs back through S3, and terminates the instance. Prices come from the AWS Pricing API at run time (`bench/price.py`).

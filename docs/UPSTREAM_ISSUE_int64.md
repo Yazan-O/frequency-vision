@@ -1,5 +1,3 @@
-<!-- DRAFT for github.com/opencv/opencv/issues. Not posted. The team posts it by hand after review. -->
-
 # Python bindings: NumPy int64 arrays are silently truncated to int32 (5.0.0)
 
 ### System Information
@@ -59,5 +57,4 @@ A self-contained script with an exit code (0 when the defect is present) is in o
 
 - [x] I report the issue, it's not a question
 - [x] I checked the problem with documentation, FAQ, open issues, forum.opencv.org, Stack Overflow, etc and have not found any solution
-- [ ] I updated to the latest OpenCV version and the issue is still there <!-- check against the newest 5.x wheel before posting -->
 - [x] There is reproducer code and related data files (videos, images, onnx, etc)

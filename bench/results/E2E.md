@@ -30,9 +30,9 @@ Each setting ran once over all 180 windows after 5 warm-up windows. "Correct" me
 |---|---|---|---|---|
 | new engine, default target, 4 threads (current) | 103.5 | 99.8 | 73.4 | 0 |
 | new engine, CPU target, 4 threads | 103.3 | 95.4 | 72.6 | 0 |
-| classic engine, default target, 4 threads | **55.0** | **51.2** | **67.9** | 9.2e-5 (x86: 0) |
-| classic engine, CPU target, 4 threads | 56.3 | 51.3 | 70.6 | 9.2e-5 (x86: 0) |
-| classic engine, default target, 2 threads | 96.8 | 91.0 | 86.7 | 9.2e-5 (x86: 0) |
+| classic engine, default target, 4 threads | **55.0** | **51.2** | **67.9** | 9.2e-5 |
+| classic engine, CPU target, 4 threads | 56.3 | 51.3 | 70.6 | 9.2e-5 |
+| classic engine, default target, 2 threads | 96.8 | 91.0 | 86.7 | 9.2e-5 |
 | new engine, default target, 2 threads | 177.2 | 166.0 | 78.4 | 0 |
 
 - Every setting tried was correct. The best on all three hosts is the classic engine, default target, 4 threads.
@@ -71,7 +71,7 @@ The round-1 table below used 7 clips and 210 windows (the demo set before the Te
 | 4 | 100 ms | 7.15 | 9.05 | 1.26x | 12.84 | 1.992 | 1.955 |
 | 4 | 500 ms | 149.90 | 217.92 | 1.45x | 433.30 | 9.102 | 8.949 |
 
-- The COOL gain grows with window length and needs threads. From 1 to 4 threads at 500 ms, COOL's map time falls from 221 to 150 ms and pip's from 229 to 218 ms. The likely cause is the map's row DFT and per-row arithmetic being parallelised in the COOL build (not profiled). The per-box hum check is small and single-threaded, so it is equal (within 3%).
+- The COOL gain grows with window length and needs threads. From 1 to 4 threads at 500 ms, COOL's map time falls from 221 to 150 ms and pip's from 229 to 218 ms. The likely cause is the map's row DFT and per-row arithmetic being parallelised in the COOL build (not profiled). The per-box hum check is small and single-threaded, so it is equal (within 5%).
 - Outputs match (`ev-diff-cool-vs-pip-graviton4-c8g.xlarge.json`): 576 windows, 0 with different active or hum pixel counts, largest hum peak difference 0.0001 Hz (rounding), largest relative SNR difference 1.3e-6, 0 hum verdict flips.
 - The x86 timings are noisy (p50 well under the mean, for example 5.06 vs 12.84 ms at 100 ms and 4 threads). c7i.xlarge has 4 vCPUs on 2 physical cores.
 
@@ -83,7 +83,7 @@ Several worker processes, each running the full E2E window over all 180 windows,
 
 ## Round 2 sources
 
-- Scripts: `bench/tune.py` (det, ev, tput, evcmp), `bench/e2e.py` (new `--engine` and `--target` options), `bench/l17_remote.sh`, `bench/l17.py`.
+- Scripts: `bench/tune.py` (det, ev, tput, evcmp), `bench/e2e.py` (new `--engine` and `--target` options), the round-2 runner `bench/l17.py` and its on-host script `bench/l17_remote.sh`.
 - Hosts, all tagged `Project=opencv26` and confirmed `terminated` with `describe-instances` on 2026-10-27: c8g.xlarge i-023086dd938ee50bf (COOL AMI, 04:09 to 05:17 UTC), c7i.xlarge i-09e52a1e0521efa56 (04:10 to 04:15 UTC; detector sweep and E2E, its event stage failed on a stale box file) and c7i.xlarge i-05060f09fb77316b8 (04:22 to 04:29 UTC; event and throughput stages).
 - The event-engine stage reads its boxes from the same host's `e2e-pip-best-*-r3.json`.
 
@@ -101,7 +101,7 @@ Each window is the 100 ms of events ending at the frame time. JPEG decode is exc
 | pip, run 1 | 5.0.0 (opencv-contrib-python-headless 5.0.0.93) | 98.9 | 129.2 | 9.32 | 91.8 | 0.00475 | 95.8 | 0.80 | 2.08 |
 | pip, run 2 | 5.0.0 (opencv-contrib-python-headless 5.0.0.93) | 98.9 | 129.2 | 9.31 | 91.8 | 0.00476 | 95.9 | 0.78 | 2.02 |
 
-Result: on this workload pip OpenCV 5.0.0 is about 7% faster than COOL end to end (p50 98.9 vs 106.2 ms). The detector forward pass decides the total, and it is slower under COOL (95.8 vs 103.3 ms). COOL is about 10% faster on the frequency map (1.85 vs 2.08 ms). The hum checks are equal within noise. The two runs of each runtime agree within 0.3 ms at p50.
+Result: on this workload pip OpenCV 5.0.0 is about 7% faster than COOL end to end (p50 98.9 vs 106.2 ms). The detector forward pass decides the total, and it is slower under COOL (95.8 vs 103.3 ms). COOL is 12% faster on the frequency map (1.85 vs 2.08 ms, 1.12x). The hum checks are equal within noise. The two runs of each runtime agree within 0.3 ms at p50.
 
 Cost is the c8g.xlarge on-demand price (0.15952 USD per hour, us-east-1, from the AWS Price List API) times the measured wall time per window. The COOL Marketplace software fee is not included.
 

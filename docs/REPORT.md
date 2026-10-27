@@ -83,7 +83,7 @@ cv.add CV_64S       [809271298, 809271396, 1316134912] expected [340000000000000
 float64 workaround correct: True | int64 input silently wrong: True
 ```
 
-Frequency Vision works around it by subtracting each window's start time and passing relative int32 microseconds (`hertz/freq.py`, `_rel_us`). The upstream issue draft is `docs/UPSTREAM_ISSUE_int64.md`.
+Frequency Vision works around it by subtracting each window's start time and passing relative int32 microseconds (`hertz/freq.py`, `_rel_us`). The upstream issue write-up with its repro is `docs/UPSTREAM_ISSUE_int64.md`.
 
 One more 5.0.0 trap we hit and worked around: `readNetFromONNX(bytes)` crashes, so `hertz/detect.py` passes a `np.uint8` buffer.
 

@@ -31,13 +31,14 @@ Frequency Vision's own code is Apache-2.0 (`LICENSE`). It uses the following.
 | onnxslim | 0.1.98 | MIT | Export |
 | opencv-python-headless | 4.12.0.88 | Apache-2.0 | Data preparation in the training environment |
 
-Detector weights: fine-tuned with Ultralytics (AGPL-3.0) from its YOLOv8n pretrained weights. They are not distributed: they are not in this repository or the Docker image, and our own instances copy the ONNX file from a private S3 bucket at deploy time. To get them, retrain them: fetch the FRED training split (`eval/train_detector/get_fred_train.sh`), build the YOLO dataset and fine-tune YOLOv8n (`eval/train_detector/prep_and_train.sh`, which runs `prep_yolo.py` and `train_yolo.py`), then export the 960x544 ONNX with `eval/train_detector/export_onnx.py --weights runs/<name>/weights/best.pt --out drone_960x544.onnx --frames <three frames>` and point `HERTZ_DETECTOR_ONNX` at it. Anyone who redistributes the weights follows the AGPL-3.0 terms of Ultralytics.
+Detector weights: fine-tuned with Ultralytics (AGPL-3.0) from its YOLOv8n pretrained weights. They are not distributed: they are not in this repository or the Docker image, and our own instances copy the ONNX file from a private S3 bucket at deploy time. To get them, retrain them: fetch the FRED training split (`eval/train_detector/get_fred_train.sh`), build the YOLO dataset and fine-tune YOLOv8n (`eval/train_detector/prep_and_train.sh`, which runs `prep_yolo.py` and `train_yolo.py`), then export the 960x544 ONNX with `eval/train_detector/export_onnx.py --weights runs/<name>/weights/best.pt --out strobe_drone_960x544.onnx --frames <three frames>` and point `HERTZ_DETECTOR_ONNX` at it. Anyone who redistributes the weights follows the AGPL-3.0 terms of Ultralytics.
 
 ## Vendored code
 
 | Path | What | Licence |
 |---|---|---|
 | `hertz/ecf/ecf_codec.cpp`, `ecf_codec.h`, `ecf_codec_export.h` | Prophesee ECF event decoder, used to read FRED event files | Apache-2.0 (`hertz/ecf/LICENSE`) |
+| `hertz/ecf/ecf_shim.cpp` | Our own C shim around the decoder | Apache-2.0, this project |
 
 ## Data
 
@@ -55,5 +56,10 @@ Detector weights: fine-tuned with Ultralytics (AGPL-3.0) from its YOLOv8n pretra
 | Caddy (HTTPS reverse proxy on the endpoint) | Apache-2.0 |
 | Amazon Bedrock, Claude Sonnet 4.6 (`us.anthropic.claude-sonnet-4-6`) | AWS Service Terms and the model provider's terms; called through the Bedrock API, nothing redistributed |
 | COOL, Cloud Optimized OpenCV for AWS Graviton4 (AWS Marketplace) | Commercial Marketplace licence; runs the live endpoint and the benchmark on our own subscribed instances, nothing redistributed |
+| three.js 0.160.0 (loaded from cdn.jsdelivr.net by `app/static/deck.html`) | MIT |
 | sslip.io | Free wildcard DNS service for the endpoint host name |
 | Fonts Archivo, Unbounded and JetBrains Mono (Google Fonts; the README logo embeds Unbounded SemiBold outlines in `docs/figures/wordmark.json`) | SIL Open Font License 1.1 |
+
+## Cited reference values
+
+The PropPulse / DENSE-CUAS per-model medians and the DDHF results quoted in the README and the report are reference numbers cited from their published work; they are not produced by this project.

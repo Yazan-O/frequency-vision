@@ -1,6 +1,6 @@
 # Frequency Vision on COOL
 
-COOL runs the whole live workload of Frequency Vision on one AWS Graviton4 host: the web page, the event hum engine, the drone detector and the agent's vision tools. On the same Graviton4 host, COOL runs the engine's FFT 1.54x faster and its Gaussian blur 1.89x faster than pip OpenCV 5, and the two builds give identical detections and hum verdicts.
+COOL runs the whole live workload of Frequency Vision on one AWS Graviton4 host: the web page, the event hum engine, the drone detector and the agent's vision tools. On real FRED events, COOL computes the full-sensor frequency map 1.26x faster than pip OpenCV 5 on the same Graviton4 at 100 ms windows and 1.45x faster at 500 ms, with identical outputs. Per window of the full confirm step, Graviton4 with COOL is 30 to 33% cheaper and 17 to 22% faster than x86 `c7i.xlarge`, and 2.9x faster on 500 ms event windows.
 
 <p align="center"><img src="cool_architecture.png" alt="COOL-accelerated OpenCV calls per stage on Graviton4" width="900"></p>
 
@@ -80,20 +80,38 @@ COOL and pip `opencv-contrib-python-headless` 5.0.0, run back to back on `c8g.xl
 
 Cost is the `c8g.xlarge` on-demand price, 0.15952 USD per hour (`meta.price_usd_hour`), times the measured time per call. The COOL Marketplace software fee is not included.
 
-Output agreement, COOL vs pip ([`diff-cool-vs-pip-c8g.xlarge.json`](../bench/results/diff-cool-vs-pip-c8g.xlarge.json)): resize, cvtColor and GaussianBlur differ by at most 1 grey level; `dft` by at most 8.7e-8 of the output range; DNN by at most 3.3e-5.
+Output agreement, COOL vs pip ([`diff-cool-vs-pip-c8g.xlarge.json`](../bench/results/diff-cool-vs-pip-c8g.xlarge.json)): resize, cvtColor and GaussianBlur differ by at most 1 grey level; `dft` by at most 8.7e-8 of the output range; DNN by at most 3.3e-5; `connectedComponentsWithStats` gives the same number of components, with 0.19% of label entries numbered differently.
 
 ### End to end, the confirm step on real FRED data
 
-210 windows from 7 FRED clips, 3 passes each after 10 warm-up windows, same `c8g.xlarge`, 4 threads, alternating COOL, pip, COOL, pip ([`E2E.md`](../bench/results/E2E.md)).
+180 windows from 6 FRED clips (147 detector boxes). Each window runs the detector, a hum check on each box and the full-sensor frequency map. Each runtime runs at its fastest correct setting: the classic DNN engine loaded from the model path, 4 threads. 3 passes after 10 warm-up windows, two runs each, COOL and pip alternating on one `c8g.xlarge`; the x86 `c7i.xlarge` ran the same script ([`E2E.md`](../bench/results/E2E.md)).
 
-| Runtime | p50 ms per window | windows/s | detector p50 ms | hum checks p50 ms | frequency map p50 ms |
-|---|---|---|---|---|---|
-| COOL, run 1 | 106.2 | 8.83 | 103.3 | 0.83 | 1.85 |
-| COOL, run 2 | 106.5 | 8.80 | 103.7 | 0.82 | 1.86 |
-| pip, run 1 | 98.9 | 9.32 | 95.8 | 0.80 | 2.08 |
-| pip, run 2 | 98.9 | 9.31 | 95.9 | 0.78 | 2.02 |
+| Runtime | p50 ms per window | windows/s | detector p50 ms | hum checks p50 ms | frequency map p50 ms | USD per 1,000 windows |
+|---|---|---|---|---|---|---|
+| Graviton4 + COOL, run 3 | 60.44 | 14.94 | 55.48 | 0.77 | 4.06 | 0.00297 |
+| Graviton4 + COOL, run 4 | 60.42 | 14.94 | 55.53 | 0.78 | 3.84 | 0.00297 |
+| Graviton4 + pip, run 3 | 57.55 | 15.34 | 51.82 | 0.74 | 4.61 | 0.00289 |
+| Graviton4 + pip, run 4 | 57.64 | 15.25 | 51.89 | 0.73 | 4.51 | 0.00290 |
+| x86 c7i.xlarge + pip, run 3 | 77.05 | 11.23 | 69.14 | 1.05 | 6.78 | 0.00441 |
+| x86 c7i.xlarge + pip, run 4 | 72.61 | 11.71 | 65.05 | 1.04 | 6.57 | 0.00423 |
 
-COOL computes the full-sensor frequency map 1.13x faster (1.85 vs 2.08 ms, run 1). The detector's DNN forward pass sets the window total. Both builds return the same 169 boxes, equal detector scores, hum peaks within 0.0001 Hz and zero verdict changes ([`e2e-diff-cool-vs-pip-c8g.xlarge.json`](../bench/results/e2e-diff-cool-vs-pip-c8g.xlarge.json)). COOL ships OpenCV 5.1.0-dev, and the baseline is the newest OpenCV 5 wheel on PyPI, 5.0.0.93.
+- Graviton4 + COOL takes 17 to 22% less time and costs 30 to 33% less per window than x86 (on-demand EC2; the COOL Marketplace fee is not included).
+- The classic DNN engine cut the detector under COOL from 103.5 to 55.0 ms (setting sweep, `bench/results/det-*.json`).
+- pip on the same Graviton4 is 5% faster end to end (57.6 vs 60.4 ms), because its detector forward pass is faster (51.2 vs 55.0 ms).
+- COOL and pip return the same 147 boxes in 180 of 180 windows, with 0.0 px and 0.0 score difference and 0 hum verdict flips ([`e2e-diff-cool-vs-pip-best-graviton4-c8g.xlarge.json`](../bench/results/e2e-diff-cool-vs-pip-best-graviton4-c8g.xlarge.json)).
+
+### The event engine on real FRED events
+
+The full-sensor frequency map on windows ending at each frame, 4 threads, mean ms ([`E2E.md`](../bench/results/E2E.md) §3, `bench/results/ev-*.json`):
+
+| Window | COOL | pip, same Graviton4 | COOL speed-up | x86 pip |
+|---|---|---|---|---|
+| 20 ms | 1.51 | 1.61 | 1.07x | 2.25 |
+| 50 ms | 2.99 | 3.64 | 1.22x | 5.09 |
+| 100 ms | 7.15 | 9.05 | **1.26x** | 12.84 |
+| 500 ms | 149.90 | 217.92 | **1.45x** | 433.30 |
+
+Outputs match over 576 windows: 0 with different active or hum pixel counts and 0 hum verdict flips ([`ev-diff-cool-vs-pip-graviton4-c8g.xlarge.json`](../bench/results/ev-diff-cool-vs-pip-graviton4-c8g.xlarge.json)). COOL ships OpenCV 5.1.0-dev, and the baseline is the newest OpenCV 5 wheel on PyPI, 5.0.0.93. Round 1 (7 clips, 210 windows, default DNN engine) stays in `E2E.md` as history.
 
 ## 5. Reproduce
 
@@ -117,4 +135,4 @@ python deploy/aws.py cool-bench --name strobe-cool-bench
 python deploy/aws.py e2e
 ```
 
-`cool-bench` runs [`bench/bench.py`](../bench/bench.py) under COOL and under pip OpenCV 5 on that instance, writes `cool-graviton4-<type>.json`, `pip-graviton4-<type>-samehost.json` and the output diff to `bench/results/`, then terminates it. `e2e` launches its own `c8g.xlarge` from the COOL AMI, runs [`bench/e2e_remote.sh`](../bench/e2e_remote.sh), copies the end-to-end files back and terminates it. Rebuild the table with `python bench/table.py bench/results/*.json`.
+`cool-bench` runs [`bench/bench.py`](../bench/bench.py) under COOL and under pip OpenCV 5 on that instance, writes `cool-graviton4-<type>.json`, `pip-graviton4-<type>-samehost.json` and the output diff to `bench/results/`, then terminates it. `e2e` launches its own `c8g.xlarge` from the COOL AMI, runs [`bench/e2e_remote.sh`](../bench/e2e_remote.sh), copies the end-to-end files back and terminates it. Rebuild the table with `python bench/table.py bench/results/cool-graviton4-*.json bench/results/pip-*.json`.

@@ -115,7 +115,7 @@ What it does **not** do: it never jams, intercepts or chases anything. It confir
 - Tracking: `cv.KalmanFilter` on event centroids from `cv.moments`.
 - Build proof: `cv.getBuildInformation` on `/version`, so anyone can see which OpenCV build and HAL served the request.
 
-**We found and documented an OpenCV 5.0.0 defect:** the Python binding silently cuts NumPy int64 arrays to their low 32 bits. Microsecond timestamps break without any error: `cv.minMaxLoc` on `[1.7e15, 5e12]` returns `(404635649, 658067456)`. Repro: `tools/int64_repro.py`. Frequency Vision works around it with relative int32 times, and we wrote an upstream issue draft.
+**We found and documented an OpenCV 5.0.0 defect:** the Python binding silently cuts NumPy int64 arrays to their low 32 bits. Microsecond timestamps break without any error: `cv.minMaxLoc` on `[1.7e15, 5e12]` returns `(404635649, 658067456)`. Repro: `tools/int64_repro.py`. Frequency Vision works around it with relative int32 times, and we wrote it up as an upstream issue with its repro.
 
 **COOL runs the live demo.** The endpoint is a Graviton4 `c8g.medium` launched from the COOL Graviton4 AMI. The app imports COOL's OpenCV 5.1.0-dev with the KleidiCV 0.7.0 HAL from `/opt/cool`, and `/version` proves it on every call.
 
