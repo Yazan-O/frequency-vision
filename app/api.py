@@ -503,7 +503,10 @@ def cool_vs_pip():
     R = ROOT / "bench" / "results"
     try:
         c, p = (json.loads((R / f).read_text()) for f in ("cool-graviton4-c8g.xlarge.json", "pip-graviton4-c8g.xlarge-samehost.json"))
-        ec, ep = (json.loads((R / f).read_text())["summary"] for f in ("e2e-cool-graviton4-c8g.xlarge-r1.json", "e2e-pip-graviton4-c8g.xlarge-r1.json"))
+        ec, ep, ex = (json.loads((R / f).read_text())["summary"] for f in ("e2e-cool-best-graviton4-c8g.xlarge-r3.json", "e2e-pip-best-graviton4-c8g.xlarge-r3.json",
+                                                                          "e2e-pip-best-x86-c7i.xlarge-r3.json"))
+        vc, vp = ({(r["threads"], r["window_ms"]): r for r in json.loads((R / f).read_text())["rows"]}
+                  for f in ("ev-cool-graviton4-c8g.xlarge.json", "ev-pip-graviton4-c8g.xlarge.json"))
     except (OSError, ValueError, KeyError):
         return {"status": "pending"}
     top = max(r["threads"] for r in c["rows"])
@@ -511,12 +514,17 @@ def cool_vs_pip():
     cc = {r["op"]: r["p50_ms"] for r in c["rows"] if r["threads"] == top}
     ops = [{"op": o, "label": lab, "cool_ms": round(cc[o], 3), "pip_ms": round(pc[o], 3), "ratio": round(pc[o] / cc[o], 2), "scope": f"single op, {top} threads"}
            for o, lab in (("GaussianBlur", "blur"), ("dft", "dft"))]
-    ops.append({"op": "frequency_map", "label": "frequency map", "cool_ms": round(ec["stage_p50_ms"]["fmap"], 3), "pip_ms": round(ep["stage_p50_ms"]["fmap"], 3),
-                "ratio": round(ep["stage_p50_ms"]["fmap"] / ec["stage_p50_ms"]["fmap"], 2), "scope": "end-to-end stage on 210 FRED windows"})
+    for w in (100, 500):
+        a, b = vc[(4, w)]["fmap_mean_ms"], vp[(4, w)]["fmap_mean_ms"]
+        ops.append({"op": "frequency_map", "label": f"frequency map, {w} ms", "cool_ms": round(a, 2), "pip_ms": round(b, 2), "ratio": round(b / a, 2),
+                    "scope": f"real FRED events, {w} ms windows, 4 threads"})
     return {"status": "ok", "instance": c["meta"]["instance_type"], "cool": c["meta"]["opencv"], "pip": p["meta"]["opencv"], "ops": ops,
-            "end_to_end": {"cool_p50_ms": round(ec["p50_ms"], 1), "pip_p50_ms": round(ep["p50_ms"], 1), "pip_faster_pct": round(100 * (ec["p50_ms"] / ep["p50_ms"] - 1))},
+            "end_to_end": {"cool_p50_ms": round(ec["p50_ms"], 1), "pip_p50_ms": round(ep["p50_ms"], 1), "x86_p50_ms": round(ex["p50_ms"], 1),
+                           "pip_faster_pct": round(100 * (ec["p50_ms"] / ep["p50_ms"] - 1)), "faster_than_x86_pct": round(100 * (1 - ec["p50_ms"] / ex["p50_ms"]))},
             "files": ["bench/results/cool-graviton4-c8g.xlarge.json", "bench/results/pip-graviton4-c8g.xlarge-samehost.json",
-                      "bench/results/e2e-cool-graviton4-c8g.xlarge-r1.json", "bench/results/e2e-pip-graviton4-c8g.xlarge-r1.json"]}
+                      "bench/results/ev-cool-graviton4-c8g.xlarge.json", "bench/results/ev-pip-graviton4-c8g.xlarge.json",
+                      "bench/results/e2e-cool-best-graviton4-c8g.xlarge-r3.json", "bench/results/e2e-pip-best-graviton4-c8g.xlarge-r3.json",
+                      "bench/results/e2e-pip-best-x86-c7i.xlarge-r3.json"]}
 
 
 def _imds_get(path, token, timeout=0.3):

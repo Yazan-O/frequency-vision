@@ -940,8 +940,8 @@ async function slide5() {
       cb.append(row);
     });
     const e = cp.end_to_end;
-    $("coolnote").textContent = `Times faster under COOL ${cp.cool} than pip ${cp.pip}. End to end, pip is ${e.pip_faster_pct}% faster (${e.pip_p50_ms} vs ${e.cool_p50_ms} ms per window): the detector runs slower under COOL.`;
-    cb.setAttribute("aria-label", `COOL versus pip OpenCV on one ${cp.instance}: ${cp.ops.map((o) => `${o.label} ${o.ratio} times faster under COOL`).join(", ")}. End to end pip is ${e.pip_faster_pct}% faster. Source: ${cp.files.join(", ")}.`);
+    $("coolnote").textContent = `Times faster under COOL ${cp.cool} than pip ${cp.pip}. End to end, Graviton4 with COOL is ${e.faster_than_x86_pct}% faster than x86 c7i.xlarge (${e.cool_p50_ms} vs ${e.x86_p50_ms} ms per window); pip on the same host is ${e.pip_faster_pct}% faster (${e.pip_p50_ms} ms).`;
+    cb.setAttribute("aria-label", `COOL versus pip OpenCV on one ${cp.instance}: ${cp.ops.map((o) => `${o.label} ${o.ratio} times faster under COOL`).join(", ")}. End to end Graviton4 with COOL is ${e.faster_than_x86_pct}% faster than x86. Source: ${cp.files.join(", ")}.`);
   } else cb.append(el("div", "win5", "pending"));
   if (ok) $("hl6").textContent = `${Math.round(100 * (1 - f.rgb_event.false_alarms / f.rgb_only.false_alarms))}% fewer false alarms, a pitch for each drone, and OpenCV 5 speed on Graviton4.`;
   const b = d && d.bench, bb = $("benchbars");
