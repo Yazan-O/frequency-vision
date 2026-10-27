@@ -30,6 +30,7 @@ LIVE_WAIT_S = 60
 _live = {"lock": threading.Lock(), "runs": {}}
 DET_PATH = os.environ.get("HERTZ_DETECTOR_ONNX") or os.environ.get("STROBE_DETECTOR_ONNX", str(ROOT.parent / "build" / "models" / "strobe_drone_960x544.onnx"))
 DET_CONF = 0.125
+HERO = "clear_mini2_seq202"
 router = APIRouter(prefix="/api")
 _hits = defaultdict(deque)
 _hits_lock = threading.Lock()
@@ -322,11 +323,49 @@ def results():
             "end_to_end": e2e(), "live_spectrum": freq is not None, "live_detector": Path(DET_PATH).exists()}
 
 
+JUDGING = {
+    "overall": [
+        {"criterion": "Technical execution", "weight": 30, "evidence": "OpenCV 5 hum engine (calcHist, dft, connectedComponentsWithStats, dnn ENGINE_NEW, KalmanFilter) evaluated on all 47 FRED test sequences: false alarms 412.7 to 308.4 per minute (-25%) at the same recall 0.544; hum-score AUC 0.917 vs random patch, 0.758 vs busiest patch; an OpenCV 5.0.0 int64 defect found and written up for upstream",
+         "where": ["results/detector/results_test.json", "results/engine/summary.json", "docs/REPORT.md section 8", "docs/UPSTREAM_ISSUE_int64.md"]},
+        {"criterion": "Innovation", "weight": 20, "evidence": "the RGB detector proposes, the event camera confirms by the propeller's blade-pass frequency inside each box, and an agent picks the next measurement", "where": ["docs/REPORT.md section 13", "live page slides 1 to 3"]},
+        {"criterion": "Real-world impact", "weight": 20, "evidence": "8,790 of 34,796 false detections removed while 26 of 70,794 true detections are lost; the high-precision setting reaches precision 0.815", "where": ["results/detector/results_test.json", "docs/REPORT.md sections 1 and 2"]},
+        {"criterion": "User experience", "weight": 10, "evidence": "live six-slide page with a clip picker, live detector, live spectrum, 3D event cloud and a live agent run that waits for the visitor's Approve or Reject; keyboard navigation, screen-reader text, phone layout", "where": ["/", "app/static/deck.html"]},
+        {"criterion": "Documentation and presentation", "weight": 10, "evidence": "README with a results table and figures redrawn from result files, technical report, architecture and agent diagrams, video", "where": ["README.md", "docs/REPORT.md", "docs/architecture.svg", "docs/agent_workflow.svg"]},
+        {"criterion": "Cloud delivery, reproducibility, responsible operation", "weight": 10, "evidence": "always-on COOL endpoint on Graviton4 behind HTTPS, deployed by one script, /health and /version, rate limits, no SSH, human approval enforced in code", "where": ["deploy/aws.py", "deploy/README.md", "/health", "/version", "docs/REPORT.md sections 5 and 11"]},
+    ],
+    "best_use_of_cool": [
+        {"criterion": "Verified COOL integration on Graviton", "weight": 30, "evidence": "the live endpoint loads cv2 from /opt/cool (OpenCV 5.1.0-dev, aarch64, KleidiCV HAL); proof file with instance type, AMI and Marketplace product code", "where": ["/version", "bench/results/cool-proof-c8g.xlarge.json"]},
+        {"criterion": "Architecture and technical quality", "weight": 25, "evidence": "COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host; benchmark hosts are separate", "where": ["docs/architecture.svg", "docs/REPORT.md section 6"]},
+        {"criterion": "Measured value", "weight": 20, "evidence": "same Graviton4 host, COOL vs pip OpenCV 5: GaussianBlur 1.89x, dft 1.54x, connectedComponentsWithStats 1.17x faster; frequency map 1.13x faster end to end; outputs identical", "where": ["bench/results/cool-graviton4-c8g.xlarge.json", "bench/results/pip-graviton4-c8g.xlarge-samehost.json", "bench/results/E2E.md"]},
+        {"criterion": "Innovation", "weight": 15, "evidence": "COOL runs signal processing on event-camera time series: a 10 kHz dft per box and a per-pixel frequency map with dft DFT_ROWS", "where": ["hertz/freq.py"]},
+        {"criterion": "Reproducibility and demonstration", "weight": 10, "evidence": "python deploy/aws.py cool deploys the endpoint; python deploy/aws.py cool-bench reruns the same-host benchmark", "where": ["deploy/README.md", "bench/"]},
+    ],
+    "agentic_vision": [
+        {"criterion": "OpenCV 5 and agent integration", "weight": 30, "evidence": "every agent tool is an OpenCV 5 call (detect_frame, box_spectrum, request_window, frequency_map, track); in trace late_142 the detector finds nothing, the frequency map finds a 545 Hz spot and the agent confirms the drone", "where": ["hertz/agent/", "results/agent/eval_v3/traces/bedrock_late_142.jsonl"]},
+        {"criterion": "Orchestration and autonomy", "weight": 25, "evidence": "after an ambiguous spectrum the Bedrock planner asked for a new window 6 of 9 times; a guard checks each call against schema, clock and budgets", "where": ["results/agent/eval_v3/results.json", "hertz/agent/guard.py"]},
+        {"criterion": "Task effectiveness and evaluation", "weight": 20, "evidence": "8 fixed FRED scenarios: Bedrock 4 of 8 with 0 false alerts, the same score as the rule planner with 12.25 vs 17.38 tool calls per episode", "where": ["results/agent/eval_v3/results.json"]},
+        {"criterion": "Failure handling, observability, security, human control", "weight": 15, "evidence": "critical alerts need human approval, enforced by the guard; injected planner and tool faults are tested; every step is logged as JSON lines", "where": ["tests/", "hertz/agent/guard.py", "POST /api/agent/live"]},
+        {"criterion": "User experience, documentation, demonstration", "weight": 10, "evidence": "slide 5 replays real traces and runs the agent live on the server with the visitor's Approve or Reject", "where": ["live page slide 5", "docs/agent_workflow.svg"]},
+    ],
+    "requirements": [
+        {"requirement": "OpenCV 5 for substantive analysis", "where": ["hertz/freq.py", "hertz/detect.py", "/version"]},
+        {"requirement": "Meaningful AWS component", "where": ["COOL on Graviton4 c8g.medium serves this page", "Amazon Bedrock planner", "docs/architecture.svg"]},
+        {"requirement": "Working web endpoint", "where": ["https://100-27-6-111.sslip.io"]},
+        {"requirement": "Video of at most five minutes", "where": ["README.md, Video link"]},
+        {"requirement": "Technical report", "where": ["docs/REPORT.md"]},
+        {"requirement": "Code repository with pinned dependencies and build, deploy and test steps", "where": ["requirements.txt", "requirements-dev.txt", "README.md, Reproduce", "deploy/README.md"]},
+        {"requirement": "Architecture diagram with OpenCV 5, AWS, COOL and agent parts", "where": ["docs/architecture.svg", "docs/agent_workflow.svg"]},
+        {"requirement": "Evaluation with failure cases", "where": ["docs/REPORT.md sections 8 and 9", "results/"]},
+        {"requirement": "Rights to data, models and media", "where": ["THIRD_PARTY.md", "FRED under Apache-2.0", "detector weights not distributed"]},
+    ],
+}
+
+
 @router.get("/summary")
 def summary():
     cs = list(clips().values())
-    demo = [c for c in cs if c.get("role") in ("demo", "hard")] or cs
-    hero = max((c for c in demo if c.get("hum") and c["hum"].get("median_hz") and c["cloud"].get("crop")), key=lambda c: c["cloud"]["crop"]["n_events"], default=cs[0])
+    demo = [c for c in cs if c.get("role") == "demo"] or cs
+    hero = clips().get(HERO) or max((c for c in demo if c.get("hum") and c["hum"].get("median_hz") and c["cloud"].get("crop")), key=lambda c: c["cloud"]["crop"]["n_events"], default=cs[0])
     tr = json.loads((STATIC / "traces.json").read_text())["episodes"]
     return {
         "name": "Frequency Vision",
@@ -344,19 +383,22 @@ def summary():
                  "OpenCV 5 calls: calcHist, dft, connectedComponentsWithStats, dnn"],
         "clips": [{"id": c["id"], "title": c["title"], "fred_sequence": c["seq"], "drone": c["drone"], "role": c.get("role"), "provenance": c["provenance"], "source": c["source"],
                    "hum": {k: v for k, v in (c.get("hum") or {}).items() if k != "by_class"} or None} for c in cs],
-        "clip_roles": {"demo": "clip picker: FRED test segments where every 100 ms window of the drone box passes the hum test", "hard": "clip picker, marked hard case: a drone with no clean peak",
+        "clip_roles": {"demo": "clip picker: FRED test segments with the drone in view and at least 96% of the 100 ms windows of its box passing the hum test",
                        "agent": "used by the recorded agent episode only", None: "no-drone reference"},
+        "default_window_ms": {"value": 100, "why": "best hum-score AUC on the FRED test split against the busiest no-drone patch: 0.758 at 100 ms, 0.753 at 50 ms, 0.702 at 20 ms, 0.727 at 200 ms",
+                              "source": "results/engine/summary.json, variant signed_mask_notch"},
         "agent_episodes": [{"episode": e["episode"], "planner": e["planner"], "model": e["model"], "score_vs_fred": e["score"], "trace_file": e["file"]} for e in tr],
         "approval": "POST /api/approve records approve or reject in a demo log on the server only; nothing external is triggered. The approval inside recorded runs came from an automatic operator stand-in marked SIMULATED.",
         "approval_log": approval_log(),
         "results": results(),
         "slides": [
-            {"title": "the hum", "shows": "30 fps RGB video with a zoom on the drone (blades are a blur) next to the brighter-minus-darker event count in the drone box, one bar per 0.5 ms over 40 ms, with orange ticks one blade pass apart; the big number is the clip's median blade-pass frequency; 'run detector live' sends the shown frame to POST /api/detect, which runs the OpenCV 5 dnn drone detector on the server and draws its boxes"},
+            {"title": "the hum", "shows": "30 fps RGB video played at half speed, with a zoom on the drone (blades are a blur) next to the brighter-minus-darker event count in the drone box, one bar per 0.5 ms over 40 ms, with orange ticks one blade pass apart; the big number is the clip's median blade-pass frequency; 'run detector live' sends the shown frame to POST /api/detect, which runs the OpenCV 5 dnn drone detector on the server and draws its boxes"},
             {"title": "events in 3D", "shows": "orbitable x-y-time point cloud of 40 ms of events on the drone; black = pixel got brighter (ON), grey = darker (OFF); orange lines one blade pass apart; 'vs empty' stacks a same-size patch from the no-drone clip"},
             {"title": "spectrum", "shows": "live spectrum of a drone box next to a no-drone box for a chosen event window; shaded band 150-1000 Hz is the propeller band; power relative to the band median, log scale"},
             {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
             {"title": "agent", "shows": "recorded agent steps as cards in three rows, look, listen and decide; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.6 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the fixed-rule planner on FRED 210 against the live tools and waits for the visitor's approval before the critical alert"},
-            {"title": "results", "shows": "measured median blade-pass frequency per drone clip with the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
+            {"title": "results", "shows": "one card per drone clip, its thumbnail framed on the drone, the measured median blade-pass frequency and the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
+        "judging": JUDGING,
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
                    "approve": "POST /api/approve {episode, step, decision}",
                    "agent_live": "POST /api/agent/live {scenario} starts the fixed-rule planner on the server against the live tools; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "health": "/health", "version": "/version"},

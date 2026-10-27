@@ -16,9 +16,7 @@ if (reduce) document.querySelectorAll("svg").forEach((s) => s.pauseAnimations &&
 const [clipsDoc, tracesDoc] = await Promise.all([fetch("/data/clips.json").then((r) => r.json()), fetch("/data/traces.json").then((r) => r.json())]);
 const clips = clipsDoc.clips;
 const hzOf = (c) => (c.hum && c.hum.median_hz) || null;
-const roled = clips.filter((c) => c.role === "demo" || c.role === "hard");
-const droneClips = (roled.length ? roled : clips.filter((c) => c.drone && c.cloud.crop)).filter((c) => c.cloud.crop)
-  .sort((a, b) => (a.role === "hard") - (b.role === "hard") || (hzOf(a) || 1e9) - (hzOf(b) || 1e9));
+const droneClips = clips.filter((c) => c.role === "demo" && hzOf(c) && c.cloud.crop).sort((a, b) => hzOf(a) - hzOf(b));
 const bg = clips.find((c) => !c.drone) || clips[clips.length - 1];
 const nice = (s) => String(s).replace(/cineape20ger/gi, "Cineape20 (GER)").replace(/cineape20(?! \(GER\))/gi, "Cineape20");
 const modelOf = (c) => nice((c.hum && c.hum.model) || (c.classes && c.classes[0]) || "drone");
@@ -29,10 +27,15 @@ const bufs = {};
 const bufOf = (src) => bufs[src] || (bufs[src] = fetch("/" + src).then((r) => r.arrayBuffer()).then((b) => new Uint16Array(b)));
 const summaryP = fetch("/api/summary").then((r) => r.json());
 const specCache = new Map();
-const fetchSpec = (body) => {
-  const k = JSON.stringify(body);
-  if (!specCache.has(k)) specCache.set(k, fetch("/api/spectrum", { method: "POST", headers: { "Content-Type": "application/json" }, body: k }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).catch((e) => { specCache.delete(k); throw e; }));
-  return specCache.get(k);
+const specKey = (b) => JSON.stringify({ clip: b.clip, window_ms: b.window_ms, t: b.t, box: b.box, frame: b.frame, box_index: b.box_index });
+const postSpec = (k, signal) => fetch("/api/spectrum", { method: "POST", headers: { "Content-Type": "application/json" }, body: k, signal }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+const fetchSpec = (body, signal) => {
+  const k = specKey(body);
+  if (specCache.has(k)) return specCache.get(k);
+  if (signal) return postSpec(k, signal).then((d) => { specCache.set(k, Promise.resolve(d)); return d; });
+  const p = postSpec(k).catch((e) => { specCache.delete(k); throw e; });
+  specCache.set(k, p);
+  return p;
 };
 
 const tip = $("tip");
@@ -113,7 +116,7 @@ function slide1() {
   };
   cur.drawVideo = draw;
   const tick = (now) => {
-    if (playing && cur.imgs && now - last >= 1000 / 30) { cur.i = (cur.i + 1) % cur.imgs.length; last = now; draw(); }
+    if (playing && cur.imgs && now - last >= 1000 / 15) { cur.i = (cur.i + 1) % cur.imgs.length; last = now; draw(); }
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
@@ -138,7 +141,7 @@ function slide1() {
   const scope = $("scope");
   let t0 = performance.now();
   const sweep = (now) => {
-    if (cur.clip) drawRhythm(scope, { dark: true, head: reduce ? null : ((now - t0) / 4000) % 1 });
+    if (cur.clip) drawRhythm(scope, { dark: true, head: reduce ? null : ((now - t0) / 8000) % 1 });
     if (!reduce) requestAnimationFrame(sweep);
   };
   requestAnimationFrame(sweep);
@@ -275,9 +278,10 @@ const spec = { win: 100, sides: {} };
 function slide3() {
   const wins = $("winbtns");
   [20, 50, 100, 300].forEach((w) => {
-    const b = el("button", "btn", `${w} ms`);
+    const b = el("button", "btn", w === 100 ? "100 ms · best" : `${w} ms`);
     b.setAttribute("aria-pressed", String(w === spec.win));
-    b.addEventListener("click", () => { spec.win = w; [...wins.querySelectorAll("button")].forEach((o) => o.setAttribute("aria-pressed", String(o === b))); Object.values(spec.sides).forEach((s) => s.run()); });
+    if (w === 100) b.title = "Best window on the FRED test split: area under the curve 0.758 against the busiest no-drone patch (50 ms: 0.753, 20 ms: 0.702). Source: results/engine/summary.json";
+    b.addEventListener("click", () => { if (spec.win === w) return; spec.win = w; [...wins.querySelectorAll("button")].forEach((o) => o.setAttribute("aria-pressed", String(o === b))); Object.values(spec.sides).forEach((s) => s.run()); });
     wins.append(b);
   });
   document.querySelectorAll(".side").forEach((host) => {
@@ -332,11 +336,15 @@ function slide3() {
     range.addEventListener("input", () => { st.frame = +range.value; st.box = 0; paint(); clearTimeout(st.deb); st.deb = setTimeout(() => st.run(), 150); });
     st.run = async () => {
       const clip = st.clip, f = clip.frames[st.frame], b = f.boxes[st.box];
-      if (!b) { verdict.textContent = "–"; score.textContent = "no box in this frame"; svg.innerHTML = ""; return; }
       const id = ++st.req;
+      if (st.ctl) st.ctl.abort();
+      st.ctl = new AbortController();
+      st.data = null; svg._tok = (svg._tok || 0) + 1; svg.innerHTML = "";
+      verdict.className = "verdict"; verdict.textContent = "…";
+      if (!b) { verdict.textContent = "–"; score.textContent = "no box in this frame"; return; }
       try {
-        const d = await fetchSpec({ clip: clip.id, box: b.box, t: f.t, window_ms: spec.win, frame: st.frame, box_index: st.box });
-        if (id !== st.req) return;
+        const d = await fetchSpec({ clip: clip.id, box: b.box, t: f.t, window_ms: spec.win, frame: st.frame, box_index: st.box }, st.ctl.signal);
+        if (id !== st.req || clip !== st.clip) return;
         st.data = d;
         verdict.className = "verdict" + (d.clear ? " hum" : "");
         verdict.textContent = `${isDrone ? "Drone box" : "No drone"}: ${d.clear ? `${showHz(d, hzOf(clip))} Hz` : "no hum"}`;
@@ -345,7 +353,7 @@ function slide3() {
         svg.setAttribute("aria-label", `${isDrone ? "Drone" : "No-drone"} clip box spectrum: ${d.clear ? "hums at " + showHz(d, hzOf(clip)) + " Hz" : "no hum"}, peak score ${fmt(d.snr, 1)}, ${d.n_events} events, ${d.window_ms} ms window, ${d.mode}`);
         animateSpec(svg, d, current === 2 || st.played, showHz(d, hzOf(clip)));
         st.played = st.played || current === 2;
-      } catch (e) { if (id === st.req) verdict.textContent = "offline"; }
+      } catch (e) { if (id === st.req && e.name !== "AbortError") verdict.textContent = "offline"; }
     };
     st.setClip = (clip) => {
       st.clip = clip; st.frame = firstFrame(clip);
@@ -369,6 +377,7 @@ function animateSpec(svg, d, animate, hzLabel) {
   [0, 300, 600, 900, 1200].forEach((f) => { s += `<text x="${f === 1200 ? W - R : X(f)}" y="${H - 24}" text-anchor="${f === 1200 ? "end" : "middle"}">${f}</text>`; });
   s += `<text x="${W - R}" y="${H - 7}" text-anchor="end">Hz</text>`;
   s += `<path class="curve${d.clear ? " hum" : ""}" d=""/>`;
+  const tok = svg._tok = (svg._tok || 0) + 1;
   svg.innerHTML = s;
   const path = svg.querySelector("path");
   const pts = d.power.map((p, k) => [X(k * d.df), Math.log10(Math.max(p, 0.1))]).filter(([x]) => x <= X(fmax));
@@ -377,7 +386,7 @@ function animateSpec(svg, d, animate, hzLabel) {
     path.setAttribute("d", "M" + pts.map(([x, lv]) => `${x.toFixed(1)},${(T + (1 - (base + (lv - base) * e + 1) / 5) * (H - T - B)).toFixed(1)}`).join("L"));
   };
   const finish = () => {
-    if (!d.clear) return;
+    if (!d.clear || svg._tok !== tok) return;
     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
     const px = X(d.peak_hz), py = Y(pv), right = px < W - 130;
     g.innerHTML = `<circle class="pk pulse" cx="${px}" cy="${py}" r="9" filter="url(#glow)"/><circle class="pk" cx="${px}" cy="${py}" r="4.5"/><text class="pkl" x="${right ? px + 14 : px - 14}" y="${Math.max(py - 12, T + 18)}" text-anchor="${right ? "start" : "end"}">${hzLabel ?? Math.round(d.peak_hz)} Hz</text>`;
@@ -385,7 +394,7 @@ function animateSpec(svg, d, animate, hzLabel) {
   };
   if (!animate || reduce) { frame(1); finish(); return; }
   const t0 = performance.now();
-  const step = (now) => { const u = Math.min((now - t0) / 1100, 1), e = 1 - Math.pow(1 - u, 3); frame(e); if (u < 1) requestAnimationFrame(step); else finish(); };
+  const step = (now) => { if (svg._tok !== tok) return; const u = Math.min((now - t0) / 1100, 1), e = 1 - Math.pow(1 - u, 3); frame(e); if (u < 1) requestAnimationFrame(step); else finish(); };
   requestAnimationFrame(step);
 }
 
@@ -623,24 +632,36 @@ function pickEp(ep, btn) {
   focusCard(-1);
 }
 
+function paintThumb(cv, c) {
+  const fi = Math.floor(c.frames.length / 2), f = c.frames[fi], img = loadFrames(c)[fi];
+  const draw = () => {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    if (!r.width || !r.height || !img.naturalWidth) return;
+    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+    const ctx = cv.getContext("2d"), k = img.naturalWidth / c.width, a = cv.width / cv.height;
+    const db = f.boxes.find((x) => x.kind === "drone"), [x0, y0, x1, y1] = db ? db.box : [0, 0, c.width, c.height];
+    let sw = Math.min(c.width, Math.max((x1 - x0) * 3.2, (y1 - y0) * 3.2 * a, 160)), sh = sw / a;
+    if (sh > c.height) { sh = c.height; sw = sh * a; }
+    const sx = Math.min(c.width - sw, Math.max(0, (x0 + x1) / 2 - sw / 2)), sy = Math.max(0, Math.min(c.height * 0.95 - sh, (y0 + y1) / 2 - sh / 2));
+    ctx.drawImage(img, sx * k, sy * k, sw * k, sh * k, 0, 0, cv.width, cv.height);
+    if (db) { const z = cv.width / sw, p = 6 * dpr; ctx.lineWidth = 2.5 * dpr; ctx.strokeStyle = HUM; ctx.strokeRect((x0 - sx) * z - p, (y0 - sy) * z - p, (x1 - x0) * z + 2 * p, (y1 - y0) * z + 2 * p); }
+  };
+  if (img.complete && img.naturalWidth) draw(); else img.addEventListener("load", draw);
+  new ResizeObserver(draw).observe(cv);
+}
+
 function clipCards() {
   const host = $("clipcards");
   host.replaceChildren(...droneClips.map((c) => {
-    const HZ = hzOf(c), h = c.hum || {}, b = el("button", "cc" + (HZ ? "" : " hard"));
+    const HZ = hzOf(c), h = c.hum || {}, b = el("button", "cc");
     b.dataset.clip = c.id;
-    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}${HZ ? "" : ", hard case"}: ${HZ ? "median " + HZ + " Hz" : "no clean peak"}, ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test. Show this clip.`);
+    b.setAttribute("aria-label", `${modelOf(c)}, FRED sequence ${c.seq}: median ${HZ} Hz, ${h.n_clear} of ${h.n_windows} windows of ${h.window_ms} ms pass the hum test. Show this clip.`);
     b.title = `${modelOf(c)} · FRED seq ${c.seq} · ${h.n_clear}/${h.n_windows} windows pass`;
-    const cv = el("canvas"); cv.width = 320; cv.height = 180; const ctx = cv.getContext("2d");
-    const fi = Math.floor(c.frames.length / 2), f = c.frames[fi], img = loadFrames(c)[fi];
-    const paint = () => {
-      ctx.drawImage(img, 0, 0, cv.width, cv.height);
-      const sx = cv.width / c.width, sy = cv.height / c.height;
-      f.boxes.filter((x) => x.kind === "drone").slice(0, 1).forEach(({ box: [x0, y0, x1, y1] }) => { ctx.lineWidth = 3; ctx.strokeStyle = HZ ? HUM : "#fff"; ctx.strokeRect(x0 * sx - 4, y0 * sy - 4, (x1 - x0) * sx + 8, (y1 - y0) * sy + 8); });
-    };
-    if (img.complete && img.naturalWidth) paint(); else img.addEventListener("load", paint);
+    const cv = el("canvas");
     const meter = el("span", "meter"); const fill = el("i"); fill.style.width = `${h.n_windows ? (100 * h.n_clear / h.n_windows) : 0}%`; meter.append(fill);
-    b.append(cv, el("span", "model", HZ ? shortName(c) : `hard · ${shortName(c)}`), el("span", "v" + (HZ ? "" : " none"), HZ ? `${Math.round(HZ)} Hz` : "no peak"), meter);
+    b.append(cv, el("span", "model", shortName(c)), el("span", "v", `${Math.round(HZ)} Hz`), meter);
     b.addEventListener("click", () => { setClip(c); go(0); });
+    paintThumb(cv, c);
     return b;
   }));
 }
@@ -867,46 +888,18 @@ async function drawWin() {
   mp.title = `${d.window_ms} ms window, peak ${d.peak_hz} Hz, score ${d.snr}, ${d.compute_ms ?? "–"} ms live on the server with OpenCV 5`;
 }
 
-const logo = { hz: null, from: 0, shown: 0, t0: 0, phase: 0, last: 0 };
+const logo = { hz: null, from: 0, shown: 0, t0: 0 };
 function drawLogo(now) {
-  const t = now / 1000, dt = logo.last ? Math.min(0.05, t - logo.last) : 0; logo.last = t;
-  const hz = logo.hz;
-  const eye = $("eye"), e = eye.getContext("2d"), W = eye.width, H = eye.height, cx = W / 2, cy = H / 2;
-  e.clearRect(0, 0, W, H);
-  const almond = () => { e.beginPath(); e.moveTo(4, cy); e.quadraticCurveTo(cx, -10, W - 4, cy); e.quadraticCurveTo(cx, H + 10, 4, cy); e.closePath(); };
-  e.save(); almond(); e.clip();
-  const N = 28, flare = hz ? Math.round((Math.min(Math.max(hz, 150), 1000) - 150) / 850 * (N - 1)) : -1;
-  e.lineCap = "round";
-  for (let i = 0; i < N; i++) {
-    const a = -Math.PI / 2 + i / N * 2 * Math.PI;
-    const pulse = 0.5 + 0.5 * Math.sin(t * (hz ? 5 + hz / 120 : 2) + i * 2.3) * Math.sin(t * 1.7 + i * 0.9);
-    const isF = i === flare, beat = isF ? 0.75 + 0.25 * Math.sin(t * Math.PI * 2 * (hz / 100)) : 0;
-    const len = isF ? 15 + 4 * beat : 3 + (hz ? 7 : 3) * pulse;
-    e.strokeStyle = isF ? HUM : hz ? "#3a3a3a" : "#9a9a9a"; e.lineWidth = isF ? 3.6 : 2.2;
-    e.beginPath(); e.moveTo(cx + Math.cos(a) * 9, cy + Math.sin(a) * 9); e.lineTo(cx + Math.cos(a) * (9 + len), cy + Math.sin(a) * (9 + len)); e.stroke();
-  }
-  e.fillStyle = INK; e.beginPath(); e.arc(cx, cy, 7, 0, 7); e.fill();
-  e.fillStyle = "#fff"; e.beginPath(); e.arc(cx - 2.4, cy - 2.4, 1.8, 0, 7); e.fill();
-  e.restore();
-  almond(); e.strokeStyle = INK; e.lineWidth = 3; e.lineJoin = "round"; e.stroke();
-  const sv = $("sine"), s = sv.getContext("2d"), SW = sv.width, SH = sv.height;
-  s.clearRect(0, 0, SW, SH);
-  logo.phase += dt * (hz ? hz / 60 : 0.6) * 2 * Math.PI;
-  s.lineWidth = 3.4; s.lineCap = "round"; s.lineJoin = "round"; s.strokeStyle = hz ? HUM : "#9a9a9a"; s.beginPath();
-  for (let x = 3; x <= SW - 3; x += 1) {
-    const y = SH / 2 + (hz ? SH * 0.34 : SH * 0.06) * Math.sin(2 * Math.PI * (x / SW) * 2 - logo.phase);
-    if (x === 3) s.moveTo(x, y); else s.lineTo(x, y);
-  }
-  s.stroke();
-  const c = $("hzc"), u = Math.min(1, (now - logo.t0) / 700), k = 1 - Math.pow(1 - u, 3);
+  const hz = logo.hz, c = $("hzc"), u = Math.min(1, (now - logo.t0) / 700), k = 1 - Math.pow(1 - u, 3);
   if (hz) { logo.shown = logo.from + (hz - logo.from) * k; c.textContent = `${Math.round(logo.shown)} Hz`; } else c.textContent = "— Hz";
   c.classList.toggle("none", !hz);
+  return u < 1;
 }
-function logoLoop(now) { drawLogo(now); requestAnimationFrame(logoLoop); }
+function logoLoop(now) { if (drawLogo(now)) requestAnimationFrame(logoLoop); }
 function setLogoHz(hz) {
   logo.from = logo.shown || (hz ? hz * 0.6 : 0); logo.hz = hz; logo.t0 = performance.now();
   $("hzc").setAttribute("aria-label", hz ? `Selected clip: measured propeller frequency ${Math.round(hz)} Hz` : "Selected clip: hard case, no clean propeller frequency");
-  if (reduce) { logo.t0 = -1e9; drawLogo(performance.now()); }
+  if (reduce) { logo.t0 = -1e9; drawLogo(performance.now()); } else requestAnimationFrame(logoLoop);
 }
 
 function clipBar() {
@@ -1007,13 +1000,11 @@ addEventListener("pointerup", (e) => { if (!drag) return; const dx = e.clientX -
 
 clipBar();
 mathTabs();
-if (reduce) drawLogo(0); else requestAnimationFrame(logoLoop);
 slide1();
 slide3();
 slide4();
 slide5();
-const strongest = droneClips.filter((c) => hzOf(c)).sort((a, b) => b.cloud.crop.n_events - a.cloud.crop.n_events)[0] || droneClips[0];
-await setClip(strongest);
+await setClip(droneClips.find((c) => c.id === "clear_mini2_seq202") || droneClips[0]);
 preload();
 const start = Math.max(0, slides.findIndex((s) => location.hash.startsWith("#" + s.id)));
 go(start, false);
