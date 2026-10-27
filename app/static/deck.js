@@ -551,7 +551,7 @@ function readout(r) {
     case "box_spectrum": case "request_window": return { v: `${Math.round(x.peak_hz)} Hz`, d: x.verdict, s: `score ${fmt(x.snr, x.snr < 10 ? 1 : 0)}`, cls: x.verdict === "hum" ? "hum" : x.verdict === "ambiguous" ? "maybe" : "nohum" };
     case "frequency_map": case "event_map": { const s = (x.hum_spots || [])[0]; return s ? { v: `${Math.round(s.median_hz)} Hz`, d: "hum spot", s: `score ${fmt(s.max_snr, 0)}`, cls: "maybe" } : { v: "no spot", d: "none", cls: "nohum" }; }
     case "track": return x.lost ? { v: "lost", d: "track", cls: "nohum" } : { v: `${Math.round(x.displacement_px || 0)} px`, d: `moving ${heading(x.velocity_px_s || [0, 0])}`, cls: "" };
-    case "raise_alert": return { v: "alert sent", d: x.severity || "", cls: "alert" };
+    case "raise_alert": return { v: "alert logged", d: x.severity || "", cls: "alert" };
     case "ask_human": return x.timeout ? { v: "no answer", d: "alert withheld", cls: "maybe" } : { v: x.approved ? "approved" : "rejected", d: /^live page visitor/.test(x.responder || "") ? "by you" : "operator", cls: x.approved ? "" : "nohum" };
     case "finish": return { v: x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict), d: "final answer", cls: "fin" };
   }

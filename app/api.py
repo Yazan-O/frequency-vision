@@ -113,7 +113,7 @@ def spectrum(r: SpecReq):
     if s is None:
         raise HTTPException(503, "live spectrum unavailable and no precomputed spectrum for this box")
     return {"mode": "precomputed", "source": "precomputed by the exporter with the same spectrum code", "window_ms": 100.0,
-            "band": [150.0, 1000.0], "clear_snr": 15.0, **s}
+            "band": [150.0, 1000.0], "clear_snr": 98.0, **s}
 
 
 class Approval(BaseModel):
@@ -125,8 +125,10 @@ class Approval(BaseModel):
 @router.post("/approve")
 def approve(a: Approval, req: Request):
     limit(req, "approve")
-    if a.decision not in ("approve", "reject") or not re.fullmatch(r"[\w.-]+", a.episode):
+    if a.decision not in ("approve", "reject"):
         raise HTTPException(422, "decision must be approve or reject")
+    if not re.fullmatch(r"[\w.-]+", a.episode):
+        raise HTTPException(422, "invalid episode id")
     STATE.mkdir(parents=True, exist_ok=True)
     f = STATE / "approvals.jsonl"
     rows = f.read_text().splitlines() if f.exists() else []
@@ -624,17 +626,17 @@ JUDGING = {
         {"criterion": "Cloud delivery, reproducibility, responsible operation", "weight": 10, "evidence": "always-on COOL endpoint on Graviton4 behind HTTPS, deployed by one script, /health and /version, rate limits, no SSH, human approval enforced in code", "where": ["deploy/aws.py", "deploy/README.md", "/health", "/version", "docs/REPORT.md sections 5 and 11"]},
     ],
     "best_use_of_cool": [
-        {"criterion": "Verified COOL integration on Graviton", "weight": 30, "evidence": "the live endpoint loads cv2 from /opt/cool (OpenCV 5.1.0-dev, aarch64, KleidiCV HAL); proof file with instance type, AMI and Marketplace product code", "where": ["/version", "/api/cool", "bench/results/cool-proof-c8g.xlarge.json"]},
+        {"criterion": "Verified COOL integration on Graviton", "weight": 30, "evidence": "the live endpoint loads cv2 from /opt/cool (OpenCV 5.1.0-dev, aarch64, KleidiCV HAL); proof file with instance type, AMI and Marketplace product code", "where": ["/version", "/api/cool", "bench/results/cool-proof-live-c8g.medium.json", "bench/results/cool-proof-c8g.xlarge.json"]},
         {"criterion": "Architecture and technical quality", "weight": 25, "evidence": "COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host; benchmark hosts are separate", "where": ["docs/architecture.svg", "docs/REPORT.md section 6"]},
-        {"criterion": "Measured value", "weight": 20, "evidence": "same Graviton4 host, COOL vs pip OpenCV 5: GaussianBlur 1.89x, dft 1.54x, connectedComponentsWithStats 1.17x faster; frequency map 1.13x faster end to end; outputs identical", "where": ["bench/results/cool-graviton4-c8g.xlarge.json", "bench/results/pip-graviton4-c8g.xlarge-samehost.json", "bench/results/E2E.md"]},
+        {"criterion": "Measured value", "weight": 20, "evidence": "same Graviton4 host, COOL vs pip OpenCV 5: GaussianBlur 1.89x, dft 1.54x, connectedComponentsWithStats 1.17x faster; frequency map 1.26x faster at 100 ms of events and 1.45x at 500 ms; outputs identical", "where": ["bench/results/cool-graviton4-c8g.xlarge.json", "bench/results/pip-graviton4-c8g.xlarge-samehost.json", "bench/results/E2E.md"]},
         {"criterion": "Innovation", "weight": 15, "evidence": "COOL runs signal processing on event-camera time series: a 10 kHz dft per box and a per-pixel frequency map with dft DFT_ROWS", "where": ["hertz/freq.py"]},
         {"criterion": "Reproducibility and demonstration", "weight": 10, "evidence": "python deploy/aws.py cool deploys the endpoint; python deploy/aws.py cool-bench reruns the same-host benchmark", "where": ["deploy/README.md", "bench/"]},
     ],
     "agentic_vision": [
-        {"criterion": "OpenCV 5 and agent integration", "weight": 30, "evidence": "every agent tool is an OpenCV 5 call (detect_frame, box_spectrum, request_window, frequency_map, track); in trace late_142 the detector finds nothing, the frequency map finds a 545 Hz spot and the agent confirms the drone", "where": ["hertz/agent/", "results/agent/eval_v3/traces/bedrock_late_142.jsonl"]},
-        {"criterion": "Orchestration and autonomy", "weight": 25, "evidence": "after an ambiguous spectrum the Bedrock planner asked for a new window 6 of 9 times; a guard checks each call against schema, clock and budgets", "where": ["results/agent/eval_v3/results.json", "hertz/agent/guard.py"]},
-        {"criterion": "Task effectiveness and evaluation", "weight": 20, "evidence": "8 fixed FRED scenarios: Bedrock 4 of 8 with 0 false alerts, the same score as the rule planner with 12.25 vs 17.38 tool calls per episode", "where": ["results/agent/eval_v3/results.json"]},
-        {"criterion": "Failure handling, observability, security, human control", "weight": 15, "evidence": "critical alerts need human approval, enforced by the guard; injected planner and tool faults are tested; every step is logged as JSON lines", "where": ["tests/", "hertz/agent/guard.py", "POST /api/agent/live"]},
+        {"criterion": "OpenCV 5 and agent integration", "weight": 30, "evidence": "every agent tool is an OpenCV 5 call (detect_frame, box_spectrum, request_window, frequency_map, track); in trace late_142 the detector finds nothing, the frequency map finds a 545 Hz spot and the agent confirms the drone", "where": ["hertz/agent/", "results/agent/eval_v4/traces/bedrock_late_142.jsonl"]},
+        {"criterion": "Orchestration and autonomy", "weight": 25, "evidence": "with its OpenCV spectrum blinded, the Bedrock planner solves 6 of 24 scenarios and confirms 0 of 18 drones; a blinded result changes its next action at 39 of 130 vision steps; a guard checks each call against schema, clock and budgets", "where": ["results/agent/eval_v4/vision_ablation.json", "hertz/agent/guard.py"]},
+        {"criterion": "Task effectiveness and evaluation", "weight": 20, "evidence": "24 FRED scenarios: Bedrock 12 of 24 with 0 false alerts, rule planner 10 (1 false alert), fixed schedule 9; on the 16 held-out scenarios 8 vs 6 vs 6", "where": ["results/agent/eval_v4/results.json", "results/agent/eval_v4/SUMMARY.json"]},
+        {"criterion": "Failure handling, observability, security, human control", "weight": 15, "evidence": "critical alerts need human approval, enforced by the guard; 21 fault cases (20 injected faults plus a no-fault control) all handled with 0 unsafe alerts; every step is logged as JSON lines", "where": ["results/agent/faults/TABLE.md", "tests/", "hertz/agent/guard.py", "POST /api/agent/live"]},
         {"criterion": "User experience, documentation, demonstration", "weight": 10, "evidence": "slide 5 replays real traces and runs the Bedrock agent live on the server on the picked clip with the visitor's Approve or Reject", "where": ["live page slide 5", "docs/agent_workflow.svg"]},
     ],
     "requirements": [
@@ -686,7 +688,9 @@ def summary():
             {"title": "events in 3D", "shows": "orbitable x-y-time point cloud of 40 ms of events on the drone; black = pixel got brighter (ON), grey = darker (OFF); orange lines one blade pass apart; 'vs empty' stacks a same-size patch from the no-drone clip"},
             {"title": "spectrum", "shows": "live spectrum of a drone box next to a no-drone box for a chosen event window; shaded band 150-1000 Hz is the propeller band; power relative to the band median, log scale"},
             {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
-            {"title": "agent", "shows": "recorded agent steps as cards in call order; each card shows what OpenCV returned for that step (the camera crop around its box, a mini spectrum with the peak Hz and score, recomputed on the server by POST /api/agent/step_vision when the events are kept there, and the verdict hum, ambiguous or none) and an arrow naming the result that led to the next call, e.g. ambiguous -> request 300 ms window; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.9 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the agent (Claude Sonnet 4.6 on Amazon Bedrock, fixed rules after 15 Bedrock runs a UTC day or on a Bedrock error) on the picked clip against the live tools, waits up to 60 s for the visitor's approval before a critical alert, ends unconfirmed with no alert when nobody answers, and reports the clip's expected Hz and the IoU with the FRED box"},
+            {"title": "agent", "shows": "recorded agent steps as cards in call order; each card shows what OpenCV returned for that step (the camera crop around its box, a mini spectrum with the peak Hz and score, recomputed on the server by POST /api/agent/step_vision when the events are kept there, and the verdict hum, ambiguous or none) and an arrow naming the result that led to the next call, e.g. ambiguous -> request 300 ms window; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.9 s and stops at the approval card until Approve or Reject.",
+             "default_episode": "the late drone (FRED 142) that the camera detector misses and the frequency map finds.",
+             "live_run": "'Run agent live' runs the agent on the picked clip against the live tools: Claude Sonnet 4.6 on Amazon Bedrock, or the rule planner after 15 Bedrock runs a UTC day or on a Bedrock error. It waits up to 60 s for the visitor's approval before a critical alert. With no answer it ends unconfirmed and raises no alert. It reports the clip's expected Hz and the IoU with the FRED box."},
             {"title": "results", "shows": "one card per drone clip, its thumbnail framed on the drone, the measured median blade-pass frequency and the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
         "judging": JUDGING,
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",

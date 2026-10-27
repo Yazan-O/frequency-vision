@@ -13,9 +13,6 @@ import fault_eval as fe
 from hertz.agent import vision
 from hertz.agent.data import Store
 
-CORRUPT_BUG = "runner.py run_episode catches only KeyError/OSError/ValueError around store.get, so zipfile.BadZipFile and zlib.error escape"
-
-
 @pytest.fixture(scope="module")
 def cases(tmp_path_factory):
     d = tmp_path_factory.mktemp("faults")
@@ -47,7 +44,6 @@ def test_corrupt_event_file_never_alerts(cases, cid):
     assert fe.run_case(cs[cid], d)["alert_raised"] is False
 
 
-@pytest.mark.xfail(reason=CORRUPT_BUG, strict=False)
 @pytest.mark.parametrize("cid", ["corrupt_truncated", "corrupt_bitflip"])
 def test_corrupt_event_file_ends_as_missing_data(cases, cid):
     cs, d = cases

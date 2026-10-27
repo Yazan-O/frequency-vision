@@ -13,11 +13,11 @@ except Exception:
 
 FS = L1.FS if L1 else 10000
 BAND = L1.BAND if L1 else (150.0, 1000.0)
-CLEAR_SNR = L1.CLEAR_SNR if L1 else 15.0
+CLEAR_SNR = L1.CLEAR_SNR if L1 else 98.0
 MIN_EVENTS = L1.MIN_EVENTS if L1 else 200
 AMB_SNR = L1.AMBIGUOUS_SNR if L1 else 7.9
 MIN_AMB_EVENTS = 100
-SOURCE = {"spectrum": "hertz.freq (lane L1)" if L1 else "agent stub (lane L1 missing)", "detect": "not loaded yet"}
+SOURCE = {"spectrum": "hertz.freq (event hum engine)" if L1 else "agent stub (event hum engine missing)", "detect": "not loaded yet"}
 
 
 def mains_like(f):
@@ -69,7 +69,7 @@ def box_spectrum(sl, box, t0, t1):
 
 def frequency_map(sl, t0, t1):
     if L1 is None:
-        return {"error": "frequency_map needs hertz.freq (lane L1)"}
+        return {"error": "frequency_map needs hertz.freq (event hum engine)"}
     ev = _ev(sl, t0, t1)
     fmap, smap = L1.frequency_map(ev, sl.us(t0), sl.us(t1), (0, 0, sl.width, sl.height))
     act = smap > 0
@@ -111,7 +111,7 @@ def _dnn_load():
         try:
             from hertz.detect import Detector
             _DNN["net"] = Detector(DNN_PATH, conf=DNN_CONF)
-            SOURCE["detect"] = f"hertz.detect.Detector (lane L2, {Path(DNN_PATH).name}, score >= {DNN_CONF})"
+            SOURCE["detect"] = f"hertz.detect.Detector (FRED-trained drone detector, {Path(DNN_PATH).name}, score >= {DNN_CONF})"
         except Exception as e:
             _DNN["error"] = f"{type(e).__name__}: {str(e)[:150]}"
             SOURCE["detect"] = f"FALLBACK event blobs (detector unavailable: {_DNN['error']})"
@@ -132,7 +132,7 @@ def _blobs(sl, t, win):
         if area < 20 or bw_ > 400 or bh > 400:
             continue
         m = (x >= bx) & (x < bx + bw_) & (y >= by) & (y < by + bh)
-        out.append({"box": [bx, by, bx + bw_, by + bh], "score": int(m.sum()), "label": "event_blob (fallback)"})
+        out.append({"box": [bx, by, bx + bw_, by + bh], "score": int(m.sum()), "label": "event blob"})
     out.sort(key=lambda d: -d["score"])
     return out
 

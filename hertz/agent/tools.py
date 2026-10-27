@@ -17,7 +17,7 @@ SPECS = [
      {"seq": SEQ, "box": BOX, "t0": {"type": "number"}, "t1": {"type": "number"}}),
     ("request_window", "Re-check a box with a longer or tighter event window of length_ms ending now. Longer windows give finer frequency resolution and more events; tighter windows follow a fast mover. Returns the new spectrum and how it differs from the last check on that box.",
      {"seq": SEQ, "box": BOX, "length_ms": {"type": "number"}}),
-    ("frequency_map", "Per-pixel spectrum of the whole frame over [t0, t1] (at most 300 ms). Returns humming spots (boxes) the detector may have missed, the dominant frequency and the share of active pixels humming at it. Finds humming spots the detector missed and tells whether one frequency fills the whole scene (flicker, not a drone).",
+    ("frequency_map", "Per-pixel spectrum of the whole frame over [t0, t1] (at most 300 ms). Returns humming spots (boxes) the detector may have missed, the dominant frequency and the share of active pixels humming at it; one frequency filling the whole scene means flicker, not a drone.",
      {"seq": SEQ, "t0": {"type": "number"}, "t1": {"type": "number"}}),
     ("track", "Follow a box over [t0, t1] with an OpenCV Kalman filter on event centroids. t1 may be in the future: the watch waits until t1 and the clock moves there. Returns the end box at t1, velocity, displacement and whether the target was lost.",
      {"seq": SEQ, "box": BOX, "t0": {"type": "number"}, "t1": {"type": "number"}}),

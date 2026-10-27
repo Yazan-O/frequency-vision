@@ -110,7 +110,7 @@ def _tokens(rs):
     return {"input": i, "output": o, "converse_calls": sum(x["calls"] for x in u),
             "mean_converse_ms": round(sum(x["latency_ms"] for x in u) / max(1, sum(x["calls"] for x in u)), 1),
             "usd_estimate": round(i / 1e6 * PRICE_PER_MTOK["input"] + o / 1e6 * PRICE_PER_MTOK["output"], 3),
-            "price_basis": "USD per million tokens in/out " + str(PRICE_PER_MTOK) + ", Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"}
+            "price_basis": "USD per million tokens in/out " + str(PRICE_PER_MTOK) + ", Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"}
 
 
 def _tally(rs):

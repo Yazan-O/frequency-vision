@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api import STATIC, router, summary
 
-app = FastAPI()
+app = FastAPI(title="Frequency Vision")
 STARTED = time.time()
 app.include_router(router)
 app.mount("/data", StaticFiles(directory=STATIC), name="data")
