@@ -27,7 +27,11 @@ MAX_APPROVALS = 20000
 LIMITS = {"approve": (10, 60.0), "detect": (30, 60.0), "agent": (4, 60.0)}
 AGENT_DATA = DATA / "agent"
 LIVE_WAIT_S = 60
-_live = {"lock": threading.Lock(), "runs": {}}
+LIVE_MAX = 3
+LIVE_MAX_S = LIVE_WAIT_S + 30
+BEDROCK_DAY_CAP = 100
+LIVE_PLANNER = os.environ.get("HERTZ_LIVE_PLANNER", "bedrock")
+_live = {"lock": threading.Lock(), "runs": {}, "client": None}
 DET_PATH = os.environ.get("HERTZ_DETECTOR_ONNX") or os.environ.get("STROBE_DETECTOR_ONNX", str(ROOT.parent / "build" / "models" / "strobe_drone_960x544.onnx"))
 DET_CONF = 0.125
 HERO = "clear_mini2_seq202"
@@ -39,8 +43,7 @@ _det = {"net": None, "error": None, "lock": threading.Lock()}
 
 def limit(req: Request, kind):
     n, span = LIMITS[kind]
-    fwd = req.headers.get("x-forwarded-for")
-    ip = fwd.split(",")[-1].strip() if fwd else (req.client.host if req.client else "?")
+    ip = _client_ip(req)
     now = time.monotonic()
     with _hits_lock:
         q = _hits[(kind, ip)]
@@ -203,6 +206,37 @@ def live_scenarios():
     return {p.parent.name: json.loads(p.read_text())["scenario"] for p in sorted(AGENT_DATA.glob("*/meta.json"))}
 
 
+def _client_ip(req):
+    fwd = req.headers.get("x-forwarded-for")
+    return fwd.split(",")[-1].strip() if fwd else (req.client.host if req.client else "?")
+
+
+def _bedrock_slot():
+    if LIVE_PLANNER != "bedrock":
+        return None, f"live planner set to {LIVE_PLANNER}"
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    f = STATE / "bedrock_runs.json"
+    with _live["lock"]:
+        try:
+            d = json.loads(f.read_text())
+        except (OSError, ValueError):
+            d = {}
+        n = d.get("n", 0) if d.get("day") == day else 0
+        if n >= BEDROCK_DAY_CAP:
+            return None, f"daily cap of {BEDROCK_DAY_CAP} Bedrock runs reached for {day} UTC"
+        STATE.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps({"day": day, "n": n + 1}))
+    try:
+        if _live["client"] is None:
+            import boto3
+            from botocore.config import Config
+            _live["client"] = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION", "us-east-1"),
+                                           config=Config(read_timeout=30, connect_timeout=5, retries={"max_attempts": 2}))
+        return _live["client"], None
+    except Exception as e:
+        return None, f"Bedrock client unavailable: {type(e).__name__}: {str(e)[:150]}"
+
+
 def _live_run(rid, scn):
     from hertz.agent.guard import Budget
     from hertz.agent.runner import run_episode
@@ -214,37 +248,53 @@ def _live_run(rid, scn):
         answered = run["event"].wait(LIVE_WAIT_S)
         run["ask"], run["status"] = None, "running"
         d = run["decision"] if answered else None
-        return {"approved": d == "approve", "responder": f"live page visitor: {d}" if d else f"no answer within {LIVE_WAIT_S} s"}
+        if d is None:
+            return {"approved": False, "timeout": True, "responder": f"no answer within {LIVE_WAIT_S} s"}
+        return {"approved": d == "approve", "responder": f"live page visitor: {d}"}
 
     try:
+        client, why = _bedrock_slot()
+        run["planner_note"] = why
+        name = "bedrock" if client is not None else "rule"
         budget = Budget(max_compute_ms=30000.0 + LIVE_WAIT_S * 1000.0)
-        run["summary"], _ = run_episode(scn, agent_store(), "rule", run["path"], budget=budget, timeout_s=LIVE_WAIT_S + 10.0, approver=approver)
+        run["summary"], _ = run_episode(scn, agent_store(), name, run["path"], budget=budget, timeout_s=LIVE_WAIT_S + 10.0,
+                                        approver=approver, client=client)
     except Exception as e:
         run["error"] = f"{type(e).__name__}: {str(e)[:200]}"
     run["status"] = "done"
 
 
 class LiveReq(BaseModel):
-    scenario: str = Field(default="clear_210", max_length=40)
+    clip: str = Field(default="clear_mini2_seq202", max_length=40)
 
 
 @router.post("/agent/live")
 def agent_live(r: LiveReq, req: Request):
-    scn = live_scenarios().get(r.scenario)
+    scn = live_scenarios().get(r.clip)
     if scn is None:
-        raise HTTPException(404, "unknown scenario")
-    limit(req, "agent")
+        raise HTTPException(404, "no live agent data for this clip")
+    ip = _client_ip(req)
     with _live["lock"]:
         now = time.time()
         for k in [k for k, v in _live["runs"].items() if v["status"] == "done" and now - v["started"] > 600]:
             del _live["runs"][k]
-        if any(v["status"] != "done" for v in _live["runs"].values()):
-            raise HTTPException(429, "another live run is going; try again in a minute")
+        active = [v for v in _live["runs"].values() if v["status"] != "done"]
+        mine = [v for v in active if v["ip"] == ip]
+        if mine:
+            raise HTTPException(429, {"busy": "you", "message": "your live run is still going", "retry_s": _left(mine[0], now)})
+        if len(active) >= LIVE_MAX:
+            raise HTTPException(429, {"busy": "full", "message": f"{LIVE_MAX} live runs are going", "retry_s": min(_left(v, now) for v in active)})
+    limit(req, "agent")
+    with _live["lock"]:
         rid = os.urandom(6).hex()
-        _live["runs"][rid] = {"status": "running", "ask": None, "decision": None, "event": threading.Event(), "started": now,
-                              "scenario": r.scenario, "path": STATE / "agent_live" / f"{rid}.jsonl"}
+        _live["runs"][rid] = {"status": "running", "ask": None, "decision": None, "event": threading.Event(), "started": time.time(), "ip": ip,
+                              "clip": r.clip, "path": STATE / "agent_live" / f"{rid}.jsonl"}
     threading.Thread(target=_live_run, args=(rid, scn), daemon=True).start()
-    return {"id": rid, "scenario": scn, "planner": "rule", "wait_s": LIVE_WAIT_S}
+    return {"id": rid, "clip": r.clip, "scenario": scn, "wait_s": LIVE_WAIT_S}
+
+
+def _left(v, now):
+    return max(5, int(v["started"] + LIVE_MAX_S - now))
 
 
 def _run(rid):
@@ -252,6 +302,31 @@ def _run(rid):
     if run is None:
         raise HTTPException(404, "unknown run")
     return run
+
+
+def _iou(a, b):
+    ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+    iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+    u = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - ix * iy
+    return ix * iy / u if u > 0 else 0.0
+
+
+def _gt_check(clip, rows):
+    try:
+        sl = agent_store().get(live_scenarios()[clip]["seq"])
+    except Exception:
+        return []
+    out = []
+    for r in rows:
+        if r.get("kind") != "step" or r.get("tool") not in ("box_spectrum", "request_window", "track", "ask_human", "raise_alert"):
+            continue
+        box = (r.get("result") or {}).get("box") if r["tool"] == "track" else (r.get("args_checked") or r.get("args") or {}).get("box")
+        t = r.get("now_after") if r.get("now_after") is not None else r.get("now_before")
+        gts = [g for g in sl.meta["gt"] if abs(g["t"] - t) <= 0.05] if box and t is not None else []
+        if gts:
+            g = min(gts, key=lambda g: abs(g["t"] - t))
+            out.append({"step": r["step"], "tool": r["tool"], "iou": round(_iou(box, g["box"]), 2), "gt_box": g["box"], "gt_t": g["t"]})
+    return out
 
 
 @router.get("/agent/live/{rid}")
@@ -264,7 +339,18 @@ def agent_live_get(rid: str):
                 rows.append(json.loads(line))
             except ValueError:
                 pass
-    return {"status": run["status"], "ask": run["ask"], "rows": rows, "summary": run.get("summary"), "error": run.get("error")}
+    start = next((x for x in rows if x.get("kind") == "start"), {})
+    fb = [x.get("reason") for x in rows if x.get("kind") == "fallback"]
+    s = run.get("summary") or {}
+    planner = {"ran": s.get("planner_final") or start.get("planner"), "first": start.get("planner"), "model": start.get("model"),
+               "fallback": fb, "note": run.get("planner_note")}
+    c = clips().get(run["clip"]) or {}
+    hum = c.get("hum") or {}
+    expected = {"median_hz": hum.get("median_hz"), "n_clear": hum.get("n_clear"), "n_windows": hum.get("n_windows"), "window_ms": hum.get("window_ms"),
+                "seq": c.get("seq"), "what": "median blade-pass frequency of this clip over its 100 ms windows that pass the hum test (app/static/data/clips.json)"}
+    return {"status": run["status"], "ask": run["ask"], "rows": rows, "summary": run.get("summary"), "error": run.get("error"),
+            "clip": run["clip"], "planner": planner, "expected": expected, "gt": _gt_check(run["clip"], rows),
+            "wait_s": LIVE_WAIT_S, "age_s": round(time.time() - run["started"], 1)}
 
 
 class LiveDecision(BaseModel):
@@ -345,7 +431,7 @@ JUDGING = {
         {"criterion": "Orchestration and autonomy", "weight": 25, "evidence": "after an ambiguous spectrum the Bedrock planner asked for a new window 6 of 9 times; a guard checks each call against schema, clock and budgets", "where": ["results/agent/eval_v3/results.json", "hertz/agent/guard.py"]},
         {"criterion": "Task effectiveness and evaluation", "weight": 20, "evidence": "8 fixed FRED scenarios: Bedrock 4 of 8 with 0 false alerts, the same score as the rule planner with 12.25 vs 17.38 tool calls per episode", "where": ["results/agent/eval_v3/results.json"]},
         {"criterion": "Failure handling, observability, security, human control", "weight": 15, "evidence": "critical alerts need human approval, enforced by the guard; injected planner and tool faults are tested; every step is logged as JSON lines", "where": ["tests/", "hertz/agent/guard.py", "POST /api/agent/live"]},
-        {"criterion": "User experience, documentation, demonstration", "weight": 10, "evidence": "slide 5 replays real traces and runs the agent live on the server with the visitor's Approve or Reject", "where": ["live page slide 5", "docs/agent_workflow.svg"]},
+        {"criterion": "User experience, documentation, demonstration", "weight": 10, "evidence": "slide 5 replays real traces and runs the Bedrock agent live on the server on the picked clip with the visitor's Approve or Reject", "where": ["live page slide 5", "docs/agent_workflow.svg"]},
     ],
     "requirements": [
         {"requirement": "OpenCV 5 for substantive analysis", "where": ["hertz/freq.py", "hertz/detect.py", "/version"]},
@@ -396,10 +482,10 @@ def summary():
             {"title": "events in 3D", "shows": "orbitable x-y-time point cloud of 40 ms of events on the drone; black = pixel got brighter (ON), grey = darker (OFF); orange lines one blade pass apart; 'vs empty' stacks a same-size patch from the no-drone clip"},
             {"title": "spectrum", "shows": "live spectrum of a drone box next to a no-drone box for a chosen event window; shaded band 150-1000 Hz is the propeller band; power relative to the band median, log scale"},
             {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
-            {"title": "agent", "shows": "recorded agent steps as cards in three rows, look, listen and decide; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.6 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the fixed-rule planner on FRED 210 against the live tools and waits for the visitor's approval before the critical alert"},
+            {"title": "agent", "shows": "recorded agent steps as cards in three rows, look, listen and decide; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.6 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the agent (Claude Sonnet 4.6 on Amazon Bedrock, fixed rules after 100 Bedrock runs a UTC day or on a Bedrock error) on the picked clip against the live tools, waits up to 60 s for the visitor's approval before a critical alert, ends unconfirmed with no alert when nobody answers, and reports the clip's expected Hz and the IoU with the FRED box"},
             {"title": "results", "shows": "one card per drone clip, its thumbnail framed on the drone, the measured median blade-pass frequency and the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
         "judging": JUDGING,
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
                    "approve": "POST /api/approve {episode, step, decision}",
-                   "agent_live": "POST /api/agent/live {scenario} starts the fixed-rule planner on the server against the live tools; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "health": "/health", "version": "/version"},
+                   "agent_live": "POST /api/agent/live {clip} starts the agent (Bedrock planner, rule fallback) on the server against the live tools, one run per IP and at most 3 at once; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "health": "/health", "version": "/version"},
     }

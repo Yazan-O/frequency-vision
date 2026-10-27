@@ -426,7 +426,7 @@ function cardFor(r, k, steps) {
     case "frequency_map": case "event_map": { const s = (x.hum_spots || []).length; v = x.dominant_hz ? `${Math.round(x.dominant_hz)} Hz` : "no hum"; w = s ? "humming spot found" : "no humming spot"; cls = s ? "maybe" : "nohum"; break; }
     case "track": v = x.lost ? "lost it" : "still there"; w = x.lost ? null : `moving ${heading(x.velocity_px_s || [0, 0])}`; cls = x.lost ? "nohum" : ""; break;
     case "raise_alert": v = "alert sent"; w = x.severity || null; cls = "alert"; break;
-    case "ask_human": v = x.approved ? "approved" : "not approved"; w = /^live page visitor/.test(x.responder || "") ? "by you" : x.responder || null; cls = x.approved ? "" : "nohum"; break;
+    case "ask_human": if (x.timeout) { v = "no answer"; w = "alert withheld"; cls = "maybe"; break; } v = x.approved ? "approved" : "not approved"; w = /^live page visitor/.test(x.responder || "") ? "by you" : x.responder || null; cls = x.approved ? "" : "nohum"; break;
     case "finish": v = x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict); w = "final answer"; cls = "fin"; break;
   }
   if (cls) li.classList.add(cls);
@@ -555,30 +555,55 @@ function liveAsk(id, ask) {
   const j = el("button", "btn no"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
   acts.append(a, j);
   li.append(top, q, acts);
-  li.setAttribute("aria-label", `The live agent asks you: ${q.textContent} Approve or Reject; it waits up to 60 seconds.`);
+  li.setAttribute("aria-label", `The live agent asks you: ${q.textContent} Approve or Reject; it waits up to ${agent.live ? agent.live.wait : 60} seconds.`);
   return li;
 }
 
-function stopLive() { if (agent.live) { clearTimeout(agent.live.t); agent.live = null; } $("live").disabled = false; }
+function stopLive() { if (agent.live) { clearTimeout(agent.live.t); agent.live = null; } clearInterval(agent.busyT); $("live").disabled = false; }
+const LIVE_PLANNER = (p) => !p || !p.ran ? "" : p.ran === "bedrock" ? "Claude Sonnet 4.6 on Amazon Bedrock" : "fixed rules";
+
+function busyNote(d) {
+  clearInterval(agent.busyT);
+  let left = Math.max(1, +d.retry_s || 30);
+  const msg = d.busy === "you" ? "Your live run is still going." : `${d.message || "The server is busy"}.`;
+  const show = () => { $("agentnote").textContent = left > 0 ? `${msg} Try again in ${left} s.` : `${msg} Try again now.`; if (left <= 0) { clearInterval(agent.busyT); $("live").disabled = false; } left -= 1; };
+  $("live").disabled = true; show(); agent.busyT = setInterval(show, 1000);
+}
+
+function liveDone(d) {
+  const s = d.summary || {}, ex = d.expected || {}, p = d.planner || {};
+  if (d.error) return `Live run failed: ${d.error}`;
+  const hum = d.rows.filter((r) => r.kind === "step" && r.result && r.result.verdict === "hum").map((r) => r.result.peak_hz);
+  const last = d.gt.length ? d.gt[d.gt.length - 1] : null;
+  const al = s.alerts && s.alerts[0];
+  const head = s.verdict === "unconfirmed_waiting_for_operator" ? `No answer in ${d.wait_s} s, so the run ends unconfirmed, waiting for an operator. The alert was withheld.`
+    : al ? (al.severity === "critical" ? "Critical alert raised after your approval." : `Alert raised at ${al.severity} level.`)
+    : s.verdict === "drone_alerted" ? "Drone reported." : "No alert.";
+  const hz = ex.median_hz ? ` Expected about ${Math.round(ex.median_hz)} Hz (this clip's median)${hum.length ? `; measured ${Math.round(hum[hum.length - 1])} Hz` : "; no hum measured"}.` : "";
+  const ov = last ? ` Its box overlaps the FRED ground-truth box: IoU ${fmt(last.iou, 2)}.` : "";
+  const by = ` Planner: ${LIVE_PLANNER(p)}${p.fallback && p.fallback.length ? ` (switched from Bedrock: ${p.fallback[0]})` : p.note ? ` (${p.note})` : ""}. ${s.steps} steps in ${fmt(s.wall_s, 1)} s.`;
+  return head + hz + ov + by;
+}
 
 async function runLive() {
   if (agent.live) return;
   stopPlay();
-  const btn = $("live"); btn.disabled = true;
+  const btn = $("live"), clip = cur.clip; btn.disabled = true;
   let id;
   try {
-    const r = await fetch("/api/agent/live", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario: "clear_210" }) });
+    const r = await fetch("/api/agent/live", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: clip.id }) });
     const d = await r.json();
-    if (!r.ok) throw new Error(d.detail || r.status);
-    id = d.id;
+    if (r.status === 429 && d.detail && d.detail.retry_s) { busyNote(d.detail); return; }
+    if (!r.ok) throw new Error(typeof d.detail === "string" ? d.detail : r.status);
+    id = d.id; agent.wait_s = d.wait_s;
   } catch (e) { $("agentnote").textContent = `Live run not started: ${e.message}`; btn.disabled = false; return; }
   [...$("epbtns").children].forEach((o) => o.setAttribute("aria-pressed", "false"));
-  agent.live = { id, n: 0, t: null };
+  agent.live = { id, n: 0, t: null, wait: agent.wait_s || 60 };
   const lanes = makeLanes();
   $("cards").classList.remove("anim");
   $("cards").replaceChildren(...lanes); agent.items = [];
-  $("story").textContent = "Live: the fixed-rule planner is calling the real tools on the server now. It waits for you before a critical alert.";
-  $("replaytag").textContent = "Live run on the server · FRED sequence 210 · fixed rules";
+  $("story").textContent = "Live: the agent is calling the real OpenCV 5 tools on the server now. It waits for you before a critical alert.";
+  $("replaytag").textContent = `Live run on the server · ${modelOf(clip)} · FRED sequence ${clip.seq}`;
   $("replaytag").title = "";
   $("agentnote").textContent = "Running on the server…";
   const poll = async () => {
@@ -587,6 +612,8 @@ async function runLive() {
     try { d = await fetch(`/api/agent/live/${id}`).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }); }
     catch (e) { agent.live.t = setTimeout(poll, 800); return; }
     if (!agent.live || agent.live.id !== id) return;
+    const pn = LIVE_PLANNER(d.planner);
+    if (pn) $("replaytag").textContent = `Live run on the server · ${modelOf(clip)} · FRED sequence ${clip.seq} · planned by ${pn}`;
     const steps = d.rows.filter((r) => r.kind === "step");
     for (let k = agent.live.n; k < steps.length; k++) {
       const c = cardFor(steps[k], k, steps); agent.items.push(c); addCard(lanes, c); focusCard(agent.items.length - 1);
@@ -597,14 +624,8 @@ async function runLive() {
     const pend = $("cards").querySelector(".pending");
     if (d.status === "waiting" && d.ask && !pend) { const c = liveAsk(id, d.ask); addCard(lanes, c); c.querySelector(".yes").focus({ preventScroll: true }); }
     if (d.status !== "waiting" && pend) pend.remove();
-    if (d.status === "done") {
-      const s = d.summary;
-      const al = s && s.alerts && s.alerts[0];
-      $("agentnote").textContent = d.error ? `Live run failed: ${d.error}` : `Done in ${fmt(s.wall_s, 1)} s, ${s.steps} steps, all run live on the server. ${al ? (al.severity === "critical" ? "Critical alert raised after your approval." : `Without your approval the planner only raised a ${al.severity}.`) : "No alert."}`;
-      stopLive();
-      return;
-    }
-    $("agentnote").textContent = d.status === "waiting" ? "Waiting for you: Approve or Reject (60 s)." : "Running on the server…";
+    if (d.status === "done") { $("agentnote").textContent = liveDone(d); stopLive(); return; }
+    $("agentnote").textContent = d.status === "waiting" ? `Waiting for you: Approve or Reject (${d.wait_s} s).` : `Running on the server${pn ? `, planned by ${pn}` : ""}…`;
     agent.live.t = setTimeout(poll, 400);
   };
   poll();
