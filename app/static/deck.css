@@ -204,6 +204,21 @@ body[data-slide="0"] .mark .hzc{visibility:hidden}
 .cool .bb{margin-top:8px}
 .cool .bbrow{grid-template-columns:118px 1fr 56px}
 .coolnote{font:500 13px/1.35 var(--font);color:var(--ink-2);margin-top:10px}
+.bench.cool{position:relative}
+.coolbtn{margin-top:10px}
+.coolv{position:absolute;inset:0 0 auto 0;z-index:3;max-height:min(66vh,560px);overflow:auto;background:var(--bg);border:1px solid var(--ink);padding:12px;font:400 12px/1.35 var(--mono);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.coolv .hd{display:flex;align-items:center;gap:8px;font:500 13px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.coolv .hd .iconbtn{margin-left:auto;width:30px;height:30px}
+.coolv .ok{color:var(--hum)}
+.coolv dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0}
+.coolv dt{color:var(--ink-2)}
+.coolv dd{margin:0;overflow-wrap:anywhere}
+.coolv table{width:100%;border-collapse:collapse;margin-top:10px}
+.coolv th,.coolv td{text-align:right;padding:3px 0;border-bottom:1px solid var(--line);font-weight:400}
+.coolv th:first-child,.coolv td:first-child{text-align:left}
+.coolv td.ms{color:var(--hum);font-weight:500}
+.coolv .src{color:var(--ink-2);margin-top:8px}
+.coolv a{color:var(--link)}
 .replaytag{display:none;font:500 13px/1.2 var(--mono);text-align:center}
 body[data-slide="4"] .clipbar>.btn{display:none}
 body[data-slide="4"] .replaytag{display:block}

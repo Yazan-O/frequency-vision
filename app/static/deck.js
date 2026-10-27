@@ -687,6 +687,44 @@ function clipCards() {
   }));
 }
 
+const COOL_CPU = ["sve", "sve2", "asimd", "asimddp", "asimdhp", "bf16", "i8mm", "avx2", "avx512f"];
+async function verifyCool() {
+  const b = $("coolbtn"), box = $("coolv");
+  b.disabled = true; b.querySelector("span").textContent = "Checking…";
+  box.replaceChildren(); box.hidden = false;
+  const hd = el("div", "hd"); hd.append(icon("i-chip"), el("span", "", "Live from this server"));
+  const x = el("button", "iconbtn"); x.setAttribute("aria-label", "Close the COOL check"); x.append(icon("i-x")); x.onclick = () => { box.hidden = true; b.focus(); };
+  hd.append(x); box.append(hd);
+  try {
+    const r = await fetch("/api/cool", { cache: "no-store" });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(typeof d.detail === "string" ? d.detail : `HTTP ${r.status}`);
+    const i = d.instance || {}, hal = (d.build_hal || []).find((l) => /HAL/.test(l)) || "–";
+    const cpu = (d.cpu_features || []).filter((f) => COOL_CPU.includes(f));
+    const dl = el("dl"), row = (k, v, cls) => { dl.append(el("dt", "", k), el("dd", cls || "", v)); };
+    row("cv2 loaded from", d.cv2_file);
+    row("OpenCV", `${d.opencv} · ${d.cool ? "COOL build (/opt/cool)" : "not the COOL build"}`, d.cool ? "ok" : "");
+    row("HAL", hal.replace(/^Custom HAL:\s*/, ""), d.kleidicv ? "ok" : "");
+    row("instance", i.instance_type ? `${i.instance_type} · ${i.instance_id} · ${i.ami_id}` : i.source || "–");
+    if (i.product_codes) row("Marketplace product", i.product_codes);
+    row("CPU features", cpu.length ? cpu.join(" ") : (d.cpu_features_opencv || "–"));
+    row("OpenCV threads", String(d.threads));
+    box.append(dl);
+    const t = d.timing || {};
+    if (t.status === "ok") {
+      const tb = el("table"), h = el("tr"); ["op", "runs", "p50 ms"].forEach((s) => h.append(el("th", "", s))); tb.append(h);
+      t.ops.forEach((o) => { const tr = el("tr"); tr.append(el("td", "", o.op), el("td", "", String(o.runs)), el("td", "ms", fmt(o.p50_ms, 3))); tb.append(tr); });
+      tb.setAttribute("aria-label", `Timed on this server just now: ${t.ops.map((o) => `${o.op} ${fmt(o.p50_ms, 3)} ms median over ${o.runs} runs`).join(", ")}`);
+      box.append(tb, el("p", "src", `Timed now in ${fmt(t.total_ms, 0)} ms on ${t.input}.`));
+    } else box.append(el("p", "src", `Timing ${t.status || "unavailable"}.`));
+    const a = el("a", "", "raw JSON"); a.href = "/api/cool"; a.target = "_blank"; a.rel = "noopener";
+    const p = el("p", "src"); p.append(a); box.append(p);
+  } catch (e) {
+    box.append(el("p", "src", `Check failed: ${e.message}`));
+  } finally { b.disabled = false; b.querySelector("span").textContent = "Verify COOL live"; }
+}
+$("coolbtn").addEventListener("click", verifyCool);
+
 async function slide5() {
   clipCards();
   const d = await fetch("/api/results").then((r) => r.json()).catch(() => null);

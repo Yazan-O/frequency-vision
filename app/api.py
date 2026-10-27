@@ -24,7 +24,10 @@ STATIC = HERE / "static" / "data"
 STATE = Path(os.environ.get("HERTZ_STATE", str(Path.home() / ".hertz")))
 FMAX = 1200.0
 MAX_APPROVALS = 20000
-LIMITS = {"approve": (10, 60.0), "detect": (30, 60.0), "agent": (4, 60.0)}
+LIMITS = {"approve": (10, 60.0), "detect": (30, 60.0), "agent": (4, 60.0), "cool": (10, 60.0)}
+IMDS = "http://169.254.169.254/latest"
+COOL_RUNS = 20
+COOL_BUDGET_S = 0.8
 AGENT_DATA = DATA / "agent"
 LIVE_WAIT_S = 60
 LIVE_MAX = 3
@@ -369,6 +372,94 @@ def agent_live_decide(rid: str, d: LiveDecision):
     return {"ok": True, "decision": d.decision}
 
 
+LIMITS["vision"] = (300, 60.0)
+
+
+class StepVisionReq(BaseModel):
+    seq: str = Field(max_length=12, pattern=r"^\d+$")
+    t: float = Field(ge=0, le=100000)
+    box: list[int] | None = Field(default=None, min_length=4, max_length=4)
+    t0: float | None = Field(default=None, ge=0, le=100000)
+    t1: float | None = Field(default=None, ge=0, le=100000)
+
+
+def _step_frame(seq, t, tol=0.05):
+    import cv2 as cv
+    try:
+        sl = agent_store().get(seq)
+        img, ft = sl.frame(t)
+        if img is not None and t - ft <= tol:
+            return img, ft, "agent data slice"
+    except KeyError:
+        pass
+    for c in clips().values():
+        if str(c.get("seq")) != seq or not c.get("frames"):
+            continue
+        f = min(c["frames"], key=lambda f: abs(f["t"] - t))
+        if abs(f["t"] - t) <= tol:
+            img = cv.imread(str(STATIC.parent / f["src"]))
+            if img is not None:
+                return cv.resize(img, (c["width"], c["height"]), interpolation=cv.INTER_LINEAR), f["t"], "page clip frames"
+    return None, None, None
+
+
+@lru_cache(maxsize=512)
+def _step_crop(seq, t, box):
+    import base64
+    import cv2 as cv
+    img, ft, src = _step_frame(seq, t)
+    if img is None:
+        return None
+    H, W = img.shape[:2]
+    x0, y0, x1, y1 = box if box else (0, 0, W, H)
+    if box:
+        s = max(x1 - x0, y1 - y0, 24) * 0.9
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+        x0, y0, x1, y1 = int(max(0, cx - s * 4 / 3)), int(max(0, cy - s)), int(min(W, cx + s * 4 / 3)), int(min(H, cy + s))
+    crop = img[y0:y1, x0:x1]
+    z = 192 / max(crop.shape[1], 1)
+    crop = cv.resize(crop, (192, max(1, int(round(crop.shape[0] * z)))), interpolation=cv.INTER_AREA if z < 1 else cv.INTER_CUBIC)
+    ok, buf = cv.imencode(".jpg", crop, [cv.IMWRITE_JPEG_QUALITY, 80])
+    if not ok:
+        return None
+    return {"jpeg": base64.b64encode(buf.tobytes()).decode(), "rect": [x0, y0, x1, y1], "frame_t": round(float(ft), 4), "source": src}
+
+
+@lru_cache(maxsize=512)
+def _step_spectrum(seq, box, t0, t1):
+    from hertz.agent import vision
+    if vision.L1 is None:
+        return None
+    try:
+        sl = agent_store().get(seq)
+    except KeyError:
+        return None
+    if t0 < sl.t_lo - 1e-6 or t1 > sl.t_hi + 1e-6 or not 0 < t1 - t0 <= 1.0:
+        return None
+    r = vision.L1.box_spectrum(vision._ev(sl, t0, t1), list(box), sl.us(t0), sl.us(t1))
+    f, p = r["freqs"], r["power"]
+    lo, hi = vision.BAND[0] - 50, vision.BAND[1] + 50
+    med = float(np.median(p[(f >= vision.BAND[0]) & (f <= vision.BAND[1])])) or 1.0
+    k = (f >= lo) & (f <= hi)
+    n = 96
+    idx = np.clip(((f[k] - lo) / (hi - lo) * n).astype(int), 0, n - 1)
+    pooled = np.zeros(n)
+    np.maximum.at(pooled, idx, p[k] / med)
+    return {"f_lo": lo, "f_hi": hi, "power": np.round(pooled, 3).tolist(), "peak_hz": round(float(r["peak_hz"]), 1), "snr": round(float(r["snr"]), 2),
+            "n_events": int(r["n_events"]), "band": list(vision.BAND), "hum_snr": vision.CLEAR_SNR, "ambiguous_snr": vision.AMB_SNR,
+            "how": "recomputed from the same events with the agent's box_spectrum (OpenCV calcHist + dft); power over the band median, max-pooled to 96 bins"}
+
+
+@router.post("/agent/step_vision")
+def agent_step_vision(r: StepVisionReq, req: Request):
+    limit(req, "vision")
+    box = tuple(int(v) for v in r.box) if r.box else None
+    if box and not (0 <= box[0] < box[2] <= 1280 and 0 <= box[1] < box[3] <= 720):
+        raise HTTPException(422, "box outside the frame")
+    spec = _step_spectrum(r.seq, box, round(r.t0, 4), round(r.t1, 4)) if box and r.t0 is not None and r.t1 is not None else None
+    return {"seq": r.seq, "t": r.t, "box": box, "crop": _step_crop(r.seq, round(r.t, 4), box), "spectrum": spec}
+
+
 def e2e():
     out = []
     for f in sorted((ROOT / "bench" / "results").glob("e2e-*.json")):
@@ -422,6 +513,95 @@ def cool_vs_pip():
                       "bench/results/e2e-cool-graviton4-c8g.xlarge-r1.json", "bench/results/e2e-pip-graviton4-c8g.xlarge-r1.json"]}
 
 
+def _imds_get(path, token, timeout=0.3):
+    import urllib.request
+    req = urllib.request.Request(f"{IMDS}/{path}", headers={"X-aws-ec2-metadata-token": token})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode()
+
+
+@lru_cache(maxsize=1)
+def imds():
+    import urllib.request
+    try:
+        req = urllib.request.Request(f"{IMDS}/api/token", method="PUT", headers={"X-aws-ec2-metadata-token-ttl-seconds": "60"})
+        with urllib.request.urlopen(req, timeout=0.3) as r:
+            token = r.read().decode()
+    except Exception as e:
+        return {"source": "not on EC2: instance metadata unreachable", "error": type(e).__name__}
+    out = {"source": "EC2 instance metadata (IMDSv2), read by this server"}
+    for k, p in (("instance_type", "meta-data/instance-type"), ("instance_id", "meta-data/instance-id"), ("ami_id", "meta-data/ami-id"),
+                 ("region", "meta-data/placement/region"), ("product_codes", "meta-data/product-codes")):
+        try:
+            out[k] = _imds_get(p, token).strip()
+        except Exception:
+            out[k] = None
+    return out
+
+
+def cpu_features():
+    try:
+        txt = Path("/proc/cpuinfo").read_text()
+    except OSError:
+        return None
+    for ln in txt.splitlines():
+        k, _, v = ln.partition(":")
+        if k.strip() in ("Features", "flags"):
+            return v.split()
+    return None
+
+
+@lru_cache(maxsize=1)
+def cool_window():
+    c = clips()[HERO]
+    ev, origin = events(HERO)
+    t1 = int(round((c["frames"][len(c["frames"]) // 2]["t"] - origin) * 1e6))
+    t0 = t1 - 100_000
+    m = (ev["t"] >= t0) & (ev["t"] < t1)
+    w, h = c["width"], c["height"]
+    img = np.bincount(ev["y"][m] * w + ev["x"][m], minlength=w * h).reshape(h, w).astype(np.float32)
+    return {"ev": ev, "t0": t0, "t1": t1, "w": w, "h": h, "img": img, "n_events": int(m.sum()), "seq": c["seq"]}
+
+
+@router.get("/cool")
+def cool(req: Request):
+    limit(req, "cool")
+    import cv2 as cv
+    hal = [ln.strip() for ln in cv.getBuildInformation().splitlines() if any(k in ln for k in ("HAL", "KleidiCV", "carotene", "Baseline", "Dispatched"))]
+    out = {"opencv": cv.__version__, "cv2_file": cv.__file__, "cool": cv.__file__.startswith("/opt/cool"),
+           "kleidicv": any("KleidiCV" in ln for ln in hal), "build_hal": hal, "threads": cv.getNumThreads(),
+           "cpu_features_opencv": cv.getCPUFeaturesLine() if hasattr(cv, "getCPUFeaturesLine") else None,
+           "cpu_features": cpu_features(), "instance": imds()}
+    if freq is None or not (DATA / f"{HERO}.npz").exists():
+        out["timing"] = {"status": "unavailable: hertz.freq or event data missing"}
+        return out
+    win = cool_window()
+    img, roi = win["img"], (0, 0, win["w"], win["h"])
+    ops = {"GaussianBlur": lambda: cv.GaussianBlur(img, (5, 5), 0),
+           "dft": lambda: cv.dft(img, flags=cv.DFT_COMPLEX_OUTPUT),
+           "frequency_map": lambda: freq.frequency_map(win["ev"], win["t0"], win["t1"], roi)}
+    times = {k: [] for k in ops}
+    res = {}
+    tic0 = time.perf_counter()
+    for k, f in ops.items():
+        start = time.perf_counter()
+        for _ in range(COOL_RUNS):
+            tic = time.perf_counter()
+            res[k] = f()
+            times[k].append(time.perf_counter() - tic)
+            if tic + 2 * times[k][-1] - start > COOL_BUDGET_S / len(ops):
+                break
+    total = (time.perf_counter() - tic0) * 1000
+    smap = res["frequency_map"][1]
+    out["timing"] = {"status": "ok", "runs_max": COOL_RUNS, "budget_ms": int(COOL_BUDGET_S * 1000), "total_ms": round(total, 1),
+                     "ops": [{"op": k, "runs": len(v), "p50_ms": round(float(np.median(v)) * 1000, 3), "min_ms": round(min(v) * 1000, 3)} for k, v in times.items()],
+                     "input": f"real FRED events: clip {HERO} (sequence {win['seq']}), one 100 ms window, {win['n_events']:,} events; "
+                              f"GaussianBlur 5x5 and dft on their {win['w']}x{win['h']} float32 count image; frequency_map over the full sensor",
+                     "fmap_pixels_passing_hum_test": int((smap >= freq.CLEAR_SNR).sum()),
+                     "note": "timed on this server during this request; the COOL vs pip comparison comes from the committed benchmark files, not from this call"}
+    return out
+
+
 @router.get("/results")
 def results():
     fa = DATA / "false_alarms.json"
@@ -440,7 +620,7 @@ JUDGING = {
         {"criterion": "Cloud delivery, reproducibility, responsible operation", "weight": 10, "evidence": "always-on COOL endpoint on Graviton4 behind HTTPS, deployed by one script, /health and /version, rate limits, no SSH, human approval enforced in code", "where": ["deploy/aws.py", "deploy/README.md", "/health", "/version", "docs/REPORT.md sections 5 and 11"]},
     ],
     "best_use_of_cool": [
-        {"criterion": "Verified COOL integration on Graviton", "weight": 30, "evidence": "the live endpoint loads cv2 from /opt/cool (OpenCV 5.1.0-dev, aarch64, KleidiCV HAL); proof file with instance type, AMI and Marketplace product code", "where": ["/version", "bench/results/cool-proof-c8g.xlarge.json"]},
+        {"criterion": "Verified COOL integration on Graviton", "weight": 30, "evidence": "the live endpoint loads cv2 from /opt/cool (OpenCV 5.1.0-dev, aarch64, KleidiCV HAL); proof file with instance type, AMI and Marketplace product code", "where": ["/version", "/api/cool", "bench/results/cool-proof-c8g.xlarge.json"]},
         {"criterion": "Architecture and technical quality", "weight": 25, "evidence": "COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host; benchmark hosts are separate", "where": ["docs/architecture.svg", "docs/REPORT.md section 6"]},
         {"criterion": "Measured value", "weight": 20, "evidence": "same Graviton4 host, COOL vs pip OpenCV 5: GaussianBlur 1.89x, dft 1.54x, connectedComponentsWithStats 1.17x faster; frequency map 1.13x faster end to end; outputs identical", "where": ["bench/results/cool-graviton4-c8g.xlarge.json", "bench/results/pip-graviton4-c8g.xlarge-samehost.json", "bench/results/E2E.md"]},
         {"criterion": "Innovation", "weight": 15, "evidence": "COOL runs signal processing on event-camera time series: a 10 kHz dft per box and a per-pixel frequency map with dft DFT_ROWS", "where": ["hertz/freq.py"]},
@@ -507,5 +687,5 @@ def summary():
         "judging": JUDGING,
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
                    "approve": "POST /api/approve {episode, step, decision}",
-                   "agent_live": "POST /api/agent/live {clip} starts the agent (Bedrock planner, rule fallback) on the server against the live tools, one run per IP and at most 3 at once; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "health": "/health", "version": "/version"},
+                   "agent_live": "POST /api/agent/live {clip} starts the agent (Bedrock planner, rule fallback) on the server against the live tools, one run per IP and at most 3 at once; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "cool": "GET /api/cool: cv2 path, build HAL lines, CPU features, EC2 instance metadata and a live timing of GaussianBlur, dft and frequency_map on a real event window", "health": "/health", "version": "/version"},
     }
