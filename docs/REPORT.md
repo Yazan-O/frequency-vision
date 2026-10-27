@@ -104,7 +104,7 @@ Region us-east-1, every resource tagged `Project=opencv26`. Code: `deploy/README
 | Benchmarks | `c8g.xlarge` and `c7i.xlarge`, launched per run and terminated | Measurement only |
 | Spend guard | AWS Budget `opencv26-alert` with an email alert | Cost control |
 
-`python deploy/aws.py cool` launches or updates the COOL endpoint through SSM Run Command, and `python deploy/aws.py cool-bench` runs the same-host benchmark. On 2026-10-26 the live `/version` returned OpenCV `5.1.0-dev`, `cv2_file` `/opt/cool/python_3.12/site-packages/cv2/__init__.py`, `cool: true`, `aarch64` and `Custom HAL: YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))`; the drone-box spectrum call took 1.63 ms on the server.
+`python deploy/aws.py cool --type c8g.medium` launches or updates the COOL endpoint through SSM Run Command, and `python deploy/aws.py cool-bench` runs the same-host benchmark. On 2026-10-26 the live `/version` returned OpenCV `5.1.0-dev`, `cv2_file` `/opt/cool/python_3.12/site-packages/cv2/__init__.py`, `cool: true`, `aarch64` and `Custom HAL: YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))`; the drone-box spectrum call took 1.63 ms on the server.
 
 ## 6. COOL on Graviton
 
@@ -363,7 +363,7 @@ Detector and pipeline: `eval/train_detector/prep_and_train.sh`, `eval/train_dete
 
 Agent: `python eval/export_fred_slices.py ...` then `python eval/agent_eval.py --out <dir>` (needs Bedrock access in us-east-1; `--planners rule,fixed` runs offline).
 
-AWS and benchmarks: `deploy/README.md` (`python deploy/aws.py cool`, `cool-bench`, `bench`).
+AWS and benchmarks: `deploy/README.md` (`python deploy/aws.py cool --type c8g.medium`, `cool-bench`, `bench`).
 
 All result files cited here are committed under `results/` and `bench/results/`.
 

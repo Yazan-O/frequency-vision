@@ -93,7 +93,7 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Architecture and technical quality (25%) | COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host. Benchmark hosts are separate and terminated after each run. | [Architecture](#architecture), [COOL call map](docs/COOL.md#1-why-event-camera-signal-processing-suits-cool), [`docs/cool_architecture.svg`](docs/cool_architecture.svg), [REPORT §6](docs/REPORT.md) |
 | Measured value (20%) | Per 1,000 windows of the full confirm step, Graviton4 with COOL costs 0.00297 USD against 0.00423 to 0.00441 USD on x86 c7i.xlarge, 30 to 33% less (EC2 on-demand). The event frequency map runs 1.26x faster than pip on the same host at 100 ms of events and 1.45x at 500 ms, with identical outputs. Single ops: GaussianBlur **1.89x**, `dft` **1.54x**, connected components **1.17x**. | [`cool-graviton4-c8g.xlarge.json`](bench/results/cool-graviton4-c8g.xlarge.json), [`pip-graviton4-c8g.xlarge-samehost.json`](bench/results/pip-graviton4-c8g.xlarge-samehost.json), [`E2E.md`](bench/results/E2E.md) |
 | Innovation (15%) | COOL runs signal processing on event-camera time series: a 10 kHz `dft` per box and a per-pixel frequency map with `DFT_ROWS`. | [`hertz/freq.py`](hertz/freq.py) |
-| Reproducibility and demonstration (10%) | `python deploy/aws.py cool` deploys the endpoint. `python deploy/aws.py cool-bench --name strobe-cool-bench` reruns the same-host benchmark on its own instance. | [deploy README](deploy/README.md), [`bench/`](bench/bench.py) |
+| Reproducibility and demonstration (10%) | `python deploy/aws.py cool --type c8g.medium` deploys the endpoint. `python deploy/aws.py cool-bench --name strobe-cool-bench` reruns the same-host benchmark on its own instance. | [deploy README](deploy/README.md), [`bench/`](bench/bench.py) |
 
 ### Agentic Vision rubric
 
@@ -528,7 +528,7 @@ python eval/export_fred_slices.py <fred_test_root> <ecf_dir> <shift_dir> eval/sc
 python eval/agent_eval.py --planners rule,fixed --out runs/agent
 ```
 
-AWS: `python deploy/aws.py cool` launches or updates the COOL endpoint, and `python deploy/aws.py cool-bench --name strobe-cool-bench` runs the same-host benchmark on its own instance. See [`deploy/README.md`](deploy/README.md) and [`docs/REPORT.md`](docs/REPORT.md) §12. Every figure is drawn by [`docs/figures/make_figures.py`](docs/figures/make_figures.py) from committed result files and the committed FRED event slices in `app/data/`.
+AWS: `python deploy/aws.py cool --type c8g.medium` launches or updates the COOL endpoint, and `python deploy/aws.py cool-bench --name strobe-cool-bench` runs the same-host benchmark on its own instance. See [`deploy/README.md`](deploy/README.md) and [`docs/REPORT.md`](docs/REPORT.md) §12. Every figure is drawn by [`docs/figures/make_figures.py`](docs/figures/make_figures.py) from committed result files and the committed FRED event slices in `app/data/`.
 
 </details>
 
