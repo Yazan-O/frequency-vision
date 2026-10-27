@@ -280,7 +280,7 @@ def utc(s):
 
 
 def fig_agent():
-    res = load("results/agent/eval_v3/results.json")
+    res = load("results/agent/eval_v4/results.json")
     sm, bk = res["summary"], res["by_kind"]
     planners = [p for p in ("bedrock", "rule", "fixed") if p in sm]
     pname = {"bedrock": "Bedrock planner\n(Claude Sonnet 4.6)", "rule": "rule planner", "fixed": "fixed schedule"}
@@ -294,8 +294,8 @@ def fig_agent():
         a1.text(sm[p]["success"] + 0.1, i, f"{sm[p]['success']} / {sm[p]['episodes']}, {sm[p]['false_alerts']} false alerts", va="center", fontsize=8.5)
     a1.set_yticks(y, [pname[p] for p in planners], fontsize=8.5)
     a1.invert_yaxis()
-    a1.set(xlim=(0, 8), xlabel="scenarios solved (of 8)")
-    a1.set_title("(f) Agent, 8 pre-registered FRED scenarios")
+    a1.set(xlim=(0, 24), xlabel="scenarios solved (of 24)")
+    a1.set_title("(f) Agent, 24 FRED scenarios, 16 held out")
     a2.barh(y, [sm[p]["mean_steps"] for p in planners], color=cols)
     for i, p in enumerate(planners):
         a2.text(sm[p]["mean_steps"] + 0.2, i, f"{sm[p]['mean_steps']:g} steps", va="center", fontsize=8.5)
@@ -314,7 +314,7 @@ def fig_agent():
     a3.set_title("solved by scenario kind")
     for s in ("top", "right", "left", "bottom"):
         a3.spines[s].set_visible(False)
-    rows_ = [json.loads(l) for l in (ROOT / "results/agent/eval_v3/traces/bedrock_late_142.jsonl").read_text().splitlines() if l.strip()]
+    rows_ = [json.loads(l) for l in (ROOT / "results/agent/eval_v4/traces/bedrock_late_142.jsonl").read_text().splitlines() if l.strip()]
     start = utc(next(r for r in rows_ if r["kind"] == "start")["utc"])
     end = next(r for r in rows_ if r["kind"] == "end")
     steps = [r for r in rows_ if r["kind"] == "step"]
