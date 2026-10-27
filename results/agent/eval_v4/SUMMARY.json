@@ -1,0 +1,278 @@
+{
+ "planners": {
+  "bedrock": {
+   "success": 12,
+   "episodes": 24,
+   "drone_found": 6,
+   "drone_scenarios": 18,
+   "false_alerts": 0,
+   "mean_steps": 13.08,
+   "mean_wall_s": 21.492,
+   "median_stream_latency_s": 1.5,
+   "held_out": [
+    8,
+    16
+   ],
+   "original_8": [
+    4,
+    8
+   ],
+   "bedrock_tokens": {
+    "input": 1246849,
+    "output": 27440,
+    "converse_calls": 307,
+    "mean_converse_ms": 1285.2,
+    "usd_estimate": 4.152,
+    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+   }
+  },
+  "rule": {
+   "success": 10,
+   "episodes": 24,
+   "drone_found": 4,
+   "drone_scenarios": 18,
+   "false_alerts": 1,
+   "mean_steps": 15.71,
+   "mean_wall_s": 10.114,
+   "median_stream_latency_s": 0.45,
+   "held_out": [
+    6,
+    16
+   ],
+   "original_8": [
+    4,
+    8
+   ],
+   "bedrock_tokens": null
+  },
+  "fixed": {
+   "success": 9,
+   "episodes": 24,
+   "drone_found": 3,
+   "drone_scenarios": 18,
+   "false_alerts": 0,
+   "mean_steps": 10.33,
+   "mean_wall_s": 2.53,
+   "median_stream_latency_s": 0.0,
+   "held_out": [
+    6,
+    16
+   ],
+   "original_8": [
+    3,
+    8
+   ],
+   "bedrock_tokens": null
+  }
+ },
+ "ablation_episodes": {
+  "bedrock_blind": {
+   "success": 6,
+   "episodes": 24,
+   "drone_found": 0,
+   "false_alerts": 0,
+   "mean_steps": 14.04,
+   "tool_calls": {
+    "detect_frame": 145,
+    "box_spectrum": 58,
+    "frequency_map": 49,
+    "request_window": 46,
+    "finish": 24,
+    "track": 15
+   }
+  },
+  "rule_blind": {
+   "success": 6,
+   "episodes": 24,
+   "drone_found": 0,
+   "false_alerts": 0,
+   "mean_steps": 19.71,
+   "tool_calls": {
+    "detect_frame": 346,
+    "box_spectrum": 111,
+    "finish": 16
+   }
+  },
+  "bedrock_shuffle": {
+   "success": 6,
+   "episodes": 24,
+   "drone_found": 0,
+   "false_alerts": 0,
+   "mean_steps": 14.21,
+   "tool_calls": {
+    "detect_frame": 150,
+    "box_spectrum": 70,
+    "request_window": 38,
+    "frequency_map": 50,
+    "finish": 21,
+    "track": 10,
+    "ask_human": 1,
+    "raise_alert": 1
+   }
+  },
+  "rule_shuffle": {
+   "success": 6,
+   "episodes": 24,
+   "drone_found": 0,
+   "false_alerts": 0,
+   "mean_steps": 19.71,
+   "tool_calls": {
+    "detect_frame": 346,
+    "box_spectrum": 111,
+    "finish": 16
+   }
+  },
+  "bedrock_real": {
+   "tool_calls": {
+    "detect_frame": 129,
+    "box_spectrum": 52,
+    "frequency_map": 37,
+    "request_window": 41,
+    "finish": 24,
+    "track": 19,
+    "ask_human": 6,
+    "raise_alert": 6
+   }
+  },
+  "rule_real": {
+   "tool_calls": {
+    "detect_frame": 250,
+    "box_spectrum": 58,
+    "track": 5,
+    "ask_human": 5,
+    "raise_alert": 5,
+    "finish": 16,
+    "request_window": 36,
+    "frequency_map": 2
+   }
+  }
+ },
+ "decision_changed_by_vision": {
+  "vision_steps": 130,
+  "episodes": 24,
+  "decision_changed_by_vision_blind": 39,
+  "decision_changed_by_vision_blind_rate": 0.3,
+  "decision_changed_by_vision_shuffle": 53,
+  "decision_changed_by_vision_shuffle_rate": 0.408,
+  "shuffle_steps_where_verdict_differs": 54,
+  "of_which_decision_changed": 40,
+  "control_next_tool_matches_logged_run": 125,
+  "by_real_verdict": {
+   "None": {
+    "steps": 37,
+    "changed_blind": 3,
+    "changed_shuffle": 3
+   },
+   "ambiguous": {
+    "steps": 51,
+    "changed_blind": 17,
+    "changed_shuffle": 31
+   },
+   "hum": {
+    "steps": 10,
+    "changed_blind": 10,
+    "changed_shuffle": 10
+   },
+   "none": {
+    "steps": 32,
+    "changed_blind": 9,
+    "changed_shuffle": 9
+   }
+  },
+  "usage": {
+   "input": 1702541,
+   "output": 31184,
+   "calls": 390
+  }
+ },
+ "human_control": {
+  "bedrock_approve": {
+   "episodes_that_ask": 6,
+   "pass": 6,
+   "rule": "critical alert raised",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "distant_93",
+    "clear_34",
+    "clear_64",
+    "clear_65"
+   ]
+  },
+  "bedrock_reject": {
+   "episodes_that_ask": 6,
+   "pass": 6,
+   "rule": "no alert raised",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "distant_93",
+    "clear_34",
+    "clear_64",
+    "clear_65"
+   ]
+  },
+  "bedrock_reject_before_guard_fix": {
+   "episodes_that_ask": 6,
+   "pass": 5,
+   "rule": "no alert raised",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "distant_93",
+    "clear_34",
+    "clear_64",
+    "clear_65"
+   ]
+  },
+  "bedrock_timeout": {
+   "episodes_that_ask": 6,
+   "pass": 6,
+   "rule": "no alert, verdict unconfirmed",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "distant_93",
+    "clear_34",
+    "clear_64",
+    "clear_65"
+   ]
+  },
+  "rule_approve": {
+   "episodes_that_ask": 5,
+   "pass": 5,
+   "rule": "critical alert raised",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "late_29",
+    "clear_34",
+    "clear_64"
+   ]
+  },
+  "rule_reject": {
+   "episodes_that_ask": 5,
+   "pass": 5,
+   "rule": "no alert raised",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "late_29",
+    "clear_34",
+    "clear_64"
+   ]
+  },
+  "rule_timeout": {
+   "episodes_that_ask": 5,
+   "pass": 5,
+   "rule": "no alert, verdict unconfirmed",
+   "ids": [
+    "clear_210",
+    "late_142",
+    "late_29",
+    "clear_34",
+    "clear_64"
+   ]
+  }
+ }
+}

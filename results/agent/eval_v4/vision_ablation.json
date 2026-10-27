@@ -1,0 +1,5343 @@
+{
+ "generated_utc": "2026-10-27T04:38:18Z",
+ "metric": "decision changed by vision: for each vision step (box_spectrum, request_window, frequency_map) of a real Bedrock run, the model is asked for its next action twice with the identical history: once with the real OpenCV result, once with that one result blinded (verdict, peak, snr removed) or shuffled (the same measurement on a random box of the same size). A step counts as changed when the next tool differs, the target box overlaps under IoU 0.5, or the finish verdict differs. Temperature 0.",
+ "traces": "results/agent/eval_v4/traces",
+ "summary": {
+  "vision_steps": 130,
+  "episodes": 24,
+  "decision_changed_by_vision_blind": 39,
+  "decision_changed_by_vision_blind_rate": 0.3,
+  "decision_changed_by_vision_shuffle": 53,
+  "decision_changed_by_vision_shuffle_rate": 0.408,
+  "shuffle_steps_where_verdict_differs": 54,
+  "of_which_decision_changed": 40,
+  "control_next_tool_matches_logged_run": 125,
+  "by_real_verdict": {
+   "None": {
+    "steps": 37,
+    "changed_blind": 3,
+    "changed_shuffle": 3
+   },
+   "ambiguous": {
+    "steps": 51,
+    "changed_blind": 17,
+    "changed_shuffle": 31
+   },
+   "hum": {
+    "steps": 10,
+    "changed_blind": 10,
+    "changed_shuffle": 10
+   },
+   "none": {
+    "steps": 32,
+    "changed_blind": 9,
+    "changed_shuffle": 9
+   }
+  },
+  "usage": {
+   "input": 1702541,
+   "output": 31184,
+   "calls": 390
+  }
+ },
+ "steps": [
+  {
+   "trace": "bedrock_background_127",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "127",
+     "t": 6.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "127",
+     "t": 6.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "127",
+     "t": 6.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_127",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "127",
+     "t": 7.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "127",
+     "t": 7.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "127",
+     "t": 7.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_138",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "138",
+     "t": 11.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "138",
+     "t": 11.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "138",
+     "t": 11.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_138",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "138",
+     "t": 12.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "138",
+     "t": 12.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "138",
+     "t": 12.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_163",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "163",
+     "t": 11.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "163",
+     "t": 11.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "163",
+     "t": 11.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_163",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "163",
+     "t": 12.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "163",
+     "t": 12.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "163",
+     "t": 12.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_60",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "60",
+     "box": [
+      886,
+      44,
+      920,
+      74
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_60",
+   "step": 3,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "60",
+     "t0": 90.2,
+     "t1": 90.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_60",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      886,
+      44,
+      920,
+      74
+     ],
+     "length_ms": 1000,
+     "seq": "60"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      886,
+      44,
+      920,
+      74
+     ],
+     "length_ms": 1000,
+     "seq": "60"
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      886,
+      44,
+      920,
+      74
+     ],
+     "length_ms": 1000,
+     "seq": "60"
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_60",
+   "step": 5,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_60",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 91.5
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      784,
+      23,
+      821,
+      53
+     ],
+     "seq": "60",
+     "t0": 91.0,
+     "t1": 91.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      886,
+      44,
+      920,
+      74
+     ],
+     "seq": "60",
+     "t0": 90.5,
+     "t1": 91.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_60",
+   "step": 9,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 92
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 92
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "60",
+     "t": 92
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_63",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "63",
+     "t": 6.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "63",
+     "t": 6.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "63",
+     "t": 6.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_63",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "63",
+     "t": 7.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "63",
+     "t": 7.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "63",
+     "t": 7.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_9",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "9",
+     "t": 6.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "9",
+     "t": 6.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "9",
+     "t": 6.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_9",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "9",
+     "t": 7.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "9",
+     "t": 7.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "9",
+     "t": 7.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_9",
+   "step": 10,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "9",
+     "box": [
+      1097,
+      322,
+      1135,
+      350
+     ],
+     "length_ms": 500
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "9",
+     "box": [
+      1097,
+      322,
+      1135,
+      350
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "9",
+     "box": [
+      1097,
+      322,
+      1135,
+      350
+     ],
+     "length_ms": 500
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_9",
+   "step": 11,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "9",
+     "t0": 7.7,
+     "t1": 8
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "9",
+     "t0": 7.7,
+     "t1": 8
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "9",
+     "t0": 7.7,
+     "t1": 8
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_background_9",
+   "step": 12,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No drone confirmed across the full watch window (t=5.0\u20138.0 s). The detector returned zero candidates at t=5.0, 5.5, 6.0, 6.5, 7.0, and 7.5. A marginal low-score detection (score=0.129, just above the 0.125 threshold) appeared at t=8.0 in box [1097,322,1135,350], but spectral analysis at both 200 ms and 500 ms windows returned verdict 'none' (SNR=1.0, only 1 event, far below the 200-event minimum and the hum threshold of 98). Frequency maps at t=5.7\u20136.0 and t=6.7\u20137.0 found no humming spots and no dominant frequency. No propeller hum was detected anywhere in the scene."
+    }
+   },
+   "blind": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No drone confirmed across the full watch window (t=5.0\u20138.0). The detector returned zero candidates at t=5.0, 5.5, 6.0, 6.5, 7.0, and 7.5. A marginal low-score detection (score=0.129, just above the 0.125 threshold) appeared at t=8.0 in box [1097,322,1135,350], but spectral analysis at both 200 ms and 500 ms windows returned verdict 'none' (SNR=1.0, only 1 event, far below the 200-event minimum and the hum threshold of SNR\u226598). The frequency map found no humming spots anywhere in the scene at any time. No propeller hum was detected; the late detection is noise."
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No drone confirmed across the full watch window t=5.0\u20138.0 s. The detector returned zero candidates at t=5.0, 5.5, 6.0, 6.5, 7.0, and 7.5. A marginal low-score detection (score=0.129, just above the 0.125 threshold) appeared at t=8.0 in box [1097,322,1135,350], but spectral analysis at both 200 ms and 500 ms windows returned verdict 'none' (SNR=1.0, only 1 event, far below the 200-event minimum and the 7.9 ambiguous threshold). Two frequency_map sweeps found no humming spots anywhere in the scene. No propeller hum was detected; the late detection is noise."
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 25.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 25.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 25.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 4,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "111",
+     "t0": 25.2,
+     "t1": 25.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 5,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.0
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.0
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.0
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      74,
+      364,
+      106,
+      390
+     ],
+     "seq": "111",
+     "t0": 25.8,
+     "t1": 26
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "111",
+     "box": [
+      420,
+      341,
+      477,
+      377
+     ],
+     "length_ms": 500
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      74,
+      364,
+      106,
+      390
+     ],
+     "seq": "111",
+     "t0": 25.8,
+     "t1": 26
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 8,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": false
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 9,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 26.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 11,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "111",
+     "t0": 26.2,
+     "t1": 26.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": false
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 12,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 14,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "111",
+     "t": 27.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 17,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "111",
+     "t0": 27.7,
+     "t1": 28
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "111",
+     "t0": 27.7,
+     "t1": 28
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "111",
+     "t0": 27.7,
+     "t1": 28
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": false
+  },
+  {
+   "trace": "bedrock_clear_111",
+   "step": 18,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "All candidate boxes detected by the DNN across the full watch window (t=25.0\u201328.0 s) were exhaustively checked with box_spectrum at 200 ms, 500 ms, and 1000 ms windows, plus two frequency_map scans. Every spectrum returned verdict=none with very low event counts (1\u20135 events, far below the 200-event minimum) and SNR well below the ambiguous threshold (7.9). No blade-pass hum was found in any candidate. No humming spots were found by frequency_map either. No drone confirmed."
+    }
+   },
+   "blind": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Throughout the full watch window (t=25.0\u201328.0 s), the DNN detector repeatedly flagged a candidate box near [420,341,477,377] with low confidence scores (0.18\u20130.28) and a secondary candidate near [74,364,107,390]. All spectral checks \u2014 short windows (200 ms), medium (500 ms), and maximum (1000 ms) \u2014 returned verdict 'none' with very low event counts (1\u20135 events, far below the 200-event minimum) and SNR well below the ambiguous threshold of 7.9. No blade-pass hum was detected in any box at any window length. The frequency_map found zero humming spots and no dominant frequency. No confirmed propeller hum was established; no alert is warranted."
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Throughout the full watch window (t=25.0\u201328.0 s), the DNN detector repeatedly flagged two candidate boxes (~[420,341,477,377] and ~[74,364,107,390]) with low confidence scores (0.13\u20130.28). All spectral checks \u2014 short windows (200 ms), extended windows (500 ms, 1000 ms), and two frequency_map scans \u2014 returned verdict 'none' on every candidate. Event counts were extremely low (1\u20135 events per box), SNR never exceeded 6.34 (well below the ambiguous threshold of 7.9), and no blade-pass hum peak was confirmed. No humming spots were found by frequency_map either. Without a hum verdict, no alert is warranted."
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "seq": "210",
+     "t0": 19.85,
+     "t1": 20
+    }
+   },
+   "blind": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "seq": "210",
+     "t0": 19.85,
+     "t1": 20
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "seq": "210",
+     "t0": 19.85,
+     "t1": 20
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 3,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "210",
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "210",
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "210",
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 4,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "length_ms": 300,
+     "seq": "210"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "length_ms": 300,
+     "seq": "210"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "length_ms": 300,
+     "seq": "210"
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 5,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "length_ms": 1000,
+     "seq": "210"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "length_ms": 1000,
+     "seq": "210"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "length_ms": 1000,
+     "seq": "210"
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 6,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "length_ms": 1000,
+     "seq": "210"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "length_ms": 1000,
+     "seq": "210"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      540,
+      397,
+      581,
+      424
+     ],
+     "length_ms": 1000,
+     "seq": "210"
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 7,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "seq": "210",
+     "t0": 20.0,
+     "t1": 20.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "210",
+     "t": 21.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "210",
+     "t": 21.0
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": false
+  },
+  {
+   "trace": "bedrock_clear_210",
+   "step": 9,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      238,
+      335,
+      298,
+      366
+     ],
+     "seq": "210",
+     "t0": 20.5,
+     "t1": 21.0
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      218,
+      350,
+      272,
+      377
+     ],
+     "seq": "210",
+     "t0": 20.0,
+     "t1": 20.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "210",
+     "t0": 20.2,
+     "t1": 20.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_34",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "seq": "34",
+     "box": [
+      232,
+      199,
+      344,
+      248
+     ],
+     "t0": 5.0,
+     "t1": 5.5
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "34",
+     "box": [
+      232,
+      199,
+      344,
+      248
+     ],
+     "length_ms": 200
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "34",
+     "box": [
+      232,
+      199,
+      344,
+      248
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_34",
+   "step": 4,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "ask_human",
+   "real": {
+    "tool": "ask_human",
+    "input": {
+     "seq": "34",
+     "box": [
+      161,
+      171,
+      273,
+      220
+     ],
+     "severity": "critical",
+     "question": "A moving object at [161,171,273,220] shows a strong blade-pass hum at ~200 Hz (SNR >1000), is not mains-like, and has displaced 59 px over 0.5 s. Confident drone detection. Approve critical alert?"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "34",
+     "box": [
+      161,
+      171,
+      273,
+      220
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "34",
+     "box": [
+      161,
+      171,
+      273,
+      220
+     ],
+     "length_ms": 500
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "46",
+     "box": [
+      881,
+      288,
+      946,
+      325
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "46",
+     "box": [
+      881,
+      288,
+      946,
+      325
+     ],
+     "length_ms": 200
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "46",
+     "box": [
+      881,
+      288,
+      946,
+      325
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 3,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      881,
+      288,
+      946,
+      325
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      881,
+      288,
+      946,
+      325
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 4,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      881,
+      288,
+      946,
+      325
+     ],
+     "seq": "46",
+     "t0": 5.0,
+     "t1": 5.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 6,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      947,
+      295,
+      1012,
+      332
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 7,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 5.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 10,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      897,
+      322,
+      959,
+      357
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "46",
+     "t0": 5.7,
+     "t1": 6
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "46",
+     "t0": 5.7,
+     "t1": 6
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 11,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "46",
+     "t0": 5.7,
+     "t1": 6
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "46",
+     "t0": 5.7,
+     "t1": 6.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "46",
+     "t0": 5.7,
+     "t1": 6
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 12,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      897,
+      322,
+      959,
+      357
+     ],
+     "seq": "46",
+     "t0": 6,
+     "t1": 6.5
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      897,
+      322,
+      959,
+      357
+     ],
+     "seq": "46",
+     "t0": 6,
+     "t1": 6.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      897,
+      322,
+      959,
+      357
+     ],
+     "seq": "46",
+     "t0": 6,
+     "t1": 6.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 14,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      773,
+      341,
+      835,
+      376
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 6.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 6.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 15,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 7
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 6.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 6.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 18,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      800,
+      355,
+      853,
+      388
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      800,
+      355,
+      853,
+      388
+     ],
+     "length_ms": 1000,
+     "seq": "46"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 8
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_46",
+   "step": 19,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 8
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 8
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "46",
+     "t": 8
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_64",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "64",
+     "box": [
+      493,
+      260,
+      564,
+      297
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "64",
+     "box": [
+      493,
+      260,
+      564,
+      297
+     ],
+     "length_ms": 200
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "64",
+     "t": 30.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_64",
+   "step": 3,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      493,
+      260,
+      564,
+      297
+     ],
+     "length_ms": 1000,
+     "seq": "64"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      493,
+      260,
+      564,
+      297
+     ],
+     "length_ms": 1000,
+     "seq": "64"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "64",
+     "t": 30.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_64",
+   "step": 4,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "64",
+     "t": 30.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "64",
+     "t": 30.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "64",
+     "t": 30.5
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_64",
+   "step": 6,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      406,
+      244,
+      484,
+      294
+     ],
+     "seq": "64",
+     "t0": 30.5,
+     "t1": 31.0
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      493,
+      260,
+      564,
+      297
+     ],
+     "seq": "64",
+     "t0": 30.0,
+     "t1": 30.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      493,
+      260,
+      564,
+      297
+     ],
+     "seq": "64",
+     "t0": 30.0,
+     "t1": 30.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "65",
+     "box": [
+      727,
+      310,
+      773,
+      342
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "65",
+     "box": [
+      727,
+      310,
+      773,
+      342
+     ],
+     "length_ms": 150
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 3,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      727,
+      310,
+      773,
+      342
+     ],
+     "length_ms": 1000,
+     "seq": "65"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      727,
+      310,
+      773,
+      342
+     ],
+     "length_ms": 1000,
+     "seq": "65"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 4,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.0
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 6,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      673,
+      248,
+      730,
+      291
+     ],
+     "length_ms": 300,
+     "seq": "65"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      673,
+      248,
+      730,
+      291
+     ],
+     "length_ms": 300,
+     "seq": "65"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      727,
+      310,
+      773,
+      342
+     ],
+     "seq": "65",
+     "t0": 71.5,
+     "t1": 72.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 7,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      673,
+      248,
+      730,
+      291
+     ],
+     "length_ms": 1000,
+     "seq": "65"
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      673,
+      248,
+      730,
+      291
+     ],
+     "seq": "65",
+     "t0": 72.0,
+     "t1": 72.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 8,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 72.5
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 10,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      484,
+      200,
+      563,
+      248
+     ],
+     "length_ms": 300,
+     "seq": "65"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      484,
+      200,
+      563,
+      248
+     ],
+     "length_ms": 300,
+     "seq": "65"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "65",
+     "t0": 72.2,
+     "t1": 72.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 11,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      484,
+      200,
+      563,
+      248
+     ],
+     "length_ms": 1000,
+     "seq": "65"
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 12,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "65",
+     "t0": 72.2,
+     "t1": 72.5
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "65",
+     "t0": 72.2,
+     "t1": 72.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 13,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 15,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      248,
+      164,
+      327,
+      218
+     ],
+     "length_ms": 1000,
+     "seq": "65"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      248,
+      164,
+      327,
+      218
+     ],
+     "length_ms": 1000,
+     "seq": "65"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 16,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 73.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_clear_65",
+   "step": 18,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      152,
+      160,
+      223,
+      210
+     ],
+     "seq": "65",
+     "t0": 73.5,
+     "t1": 74
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 74
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "65",
+     "t": 74
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "114",
+     "box": [
+      504,
+      163,
+      555,
+      205
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "114",
+     "box": [
+      504,
+      163,
+      555,
+      205
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 60.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 3,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      504,
+      163,
+      555,
+      205
+     ],
+     "length_ms": 1000,
+     "seq": "114"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      504,
+      163,
+      555,
+      205
+     ],
+     "length_ms": 1000,
+     "seq": "114"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      504,
+      163,
+      555,
+      205
+     ],
+     "length_ms": 1000,
+     "seq": "114"
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 4,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 60.0
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 60.0
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 59.2,
+     "t1": 59.5
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      520,
+      142,
+      571,
+      184
+     ],
+     "length_ms": 1000,
+     "seq": "114"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      520,
+      142,
+      571,
+      184
+     ],
+     "length_ms": 500,
+     "seq": "114"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      520,
+      142,
+      571,
+      184
+     ],
+     "seq": "114",
+     "t0": 59.7,
+     "t1": 60
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 8,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 60.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 60.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 59.7,
+     "t1": 60.0
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 11,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      499,
+      181,
+      550,
+      223
+     ],
+     "length_ms": 1000,
+     "seq": "114"
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 60.2,
+     "t1": 60.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 60.2,
+     "t1": 60.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 12,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 60.2,
+     "t1": 60.5
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 60.2,
+     "t1": 60.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "114",
+     "t0": 60.2,
+     "t1": 60.5
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 13,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      967,
+      517,
+      986,
+      536
+     ],
+     "seq": "114",
+     "t0": 60.3,
+     "t1": 60.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 61
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      661,
+      421,
+      680,
+      440
+     ],
+     "seq": "114",
+     "t0": 60.3,
+     "t1": 60.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 14,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      967,
+      517,
+      986,
+      536
+     ],
+     "length_ms": 1000,
+     "seq": "114"
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 61
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 61
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_114",
+   "step": 15,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      967,
+      517,
+      986,
+      536
+     ],
+     "seq": "114",
+     "t0": 60.5,
+     "t1": 61
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 61
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "114",
+     "t": 61
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 30
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 30
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 30
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 6,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "115",
+     "box": [
+      776,
+      379,
+      813,
+      408
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "115",
+     "box": [
+      776,
+      379,
+      813,
+      408
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "115",
+     "box": [
+      776,
+      379,
+      813,
+      408
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 7,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      776,
+      379,
+      813,
+      408
+     ],
+     "seq": "115",
+     "t0": 30,
+     "t1": 30.5
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      776,
+      379,
+      813,
+      408
+     ],
+     "seq": "115",
+     "t0": 30.0,
+     "t1": 30.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      776,
+      379,
+      813,
+      408
+     ],
+     "seq": "115",
+     "t0": 30.0,
+     "t1": 30.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 9,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "115",
+     "t0": 30.2,
+     "t1": 30.5
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      765,
+      357,
+      802,
+      386
+     ],
+     "length_ms": 500,
+     "seq": "115"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 30.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 10,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      765,
+      357,
+      802,
+      386
+     ],
+     "length_ms": 1000,
+     "seq": "115"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      765,
+      357,
+      802,
+      386
+     ],
+     "length_ms": 1000,
+     "seq": "115"
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      765,
+      357,
+      802,
+      386
+     ],
+     "length_ms": 1000,
+     "seq": "115"
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 11,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      765,
+      357,
+      802,
+      386
+     ],
+     "seq": "115",
+     "t0": 30.5,
+     "t1": 31
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      765,
+      357,
+      802,
+      386
+     ],
+     "seq": "115",
+     "t0": 30.5,
+     "t1": 31
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 31
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 13,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 31.5
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      715,
+      305,
+      752,
+      334
+     ],
+     "length_ms": 300,
+     "seq": "115"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "115",
+     "t": 31
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 15,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      673,
+      199,
+      715,
+      233
+     ],
+     "length_ms": 500,
+     "seq": "115"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      673,
+      199,
+      715,
+      233
+     ],
+     "length_ms": 300,
+     "seq": "115"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Throughout the watch window (28.5\u201331.5 s), the detector found candidate boxes at t=30 and t=31.5. The t=30 candidate was tracked (displacement ~103 px over 1 s, so it is a mover) and its spectrum was checked at 200 ms, 300 ms, and 1000 ms windows \u2014 all verdicts were 'none' or 'ambiguous' (max SNR 11.45, well below the hum threshold of 98). The t=31.5 candidate had only 8 events and SNR 5.16 (verdict none). A frequency_map scan showed no scene-wide hum. No box ever reached a 'hum' verdict, so no drone can be confirmed."
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_115",
+   "step": 16,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Throughout the watch window (28.5\u201331.5 s), the detector found candidates at t=30 and t=31.5, but spectral analysis on all tracked boxes returned verdict 'none' or at best 'ambiguous' with SNR well below the hum threshold (98). The moving object tracked from [776,379] to [715,305] showed only ambiguous SNR (~9\u201311) over a 1-second window, never reaching the hum confirmation level. The final detection at t=31.5 also returned 'none'. No confirmed blade-pass hum was found; no alert is warranted."
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "115",
+     "t0": 31.2,
+     "t1": 31.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Throughout the watch window (28.5\u201331.5 s), the detector found moving candidates at t=30 and t=31.5, but spectral analysis on all candidate boxes \u2014 including extended 300 ms and 1000 ms windows \u2014 never produced a hum verdict (SNR remained well below the 98 threshold). The ambiguous readings (SNR ~9\u201311) at the tracked box were not mains-like and did not escalate to hum even with 1 s windows. The frequency_map showed no scene-wide humming spots. The moving object is not confirmed as a drone."
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_39",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "39",
+     "t": 17.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "39",
+     "t": 17.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "39",
+     "t": 17.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 2,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "80",
+     "box": [
+      564,
+      376,
+      602,
+      406
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "80",
+     "box": [
+      564,
+      376,
+      602,
+      406
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 8.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 3,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      564,
+      376,
+      602,
+      406
+     ],
+     "length_ms": 1000,
+     "seq": "80"
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 8.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      564,
+      376,
+      602,
+      406
+     ],
+     "length_ms": 1000,
+     "seq": "80"
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 4,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 8.5
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      564,
+      376,
+      602,
+      406
+     ],
+     "seq": "80",
+     "t0": 8.0,
+     "t1": 8.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 8.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      663,
+      427,
+      701,
+      457
+     ],
+     "seq": "80",
+     "t0": 8.0,
+     "t1": 8.5
+    }
+   },
+   "blind": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      663,
+      427,
+      701,
+      457
+     ],
+     "seq": "80",
+     "t0": 8.0,
+     "t1": 8.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "80",
+     "t0": 8.2,
+     "t1": 8.5
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 8,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 9.0
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "80",
+     "t0": 8.2,
+     "t1": 8.5
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      663,
+      427,
+      701,
+      457
+     ],
+     "seq": "80",
+     "t0": 8.5,
+     "t1": 9.0
+    }
+   },
+   "shuffle_verdict": "ambiguous",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 10,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 9.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 9.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 9.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_80",
+   "step": 13,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 10.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 10.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "80",
+     "t": 10.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_90",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "90",
+     "t": 21.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "90",
+     "t": 21.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "90",
+     "t": 21.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_90",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "90",
+     "t": 22.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "90",
+     "t": 22.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "90",
+     "t": 22.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_93",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "seq": "93",
+     "box": [
+      502,
+      414,
+      524,
+      430
+     ],
+     "t0": 56.3,
+     "t1": 56.5
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "93",
+     "t": 57.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "seq": "93",
+     "box": [
+      697,
+      270,
+      719,
+      286
+     ],
+     "t0": 56.3,
+     "t1": 56.5
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_93",
+   "step": 5,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "seq": "93",
+     "box": [
+      502,
+      414,
+      524,
+      430
+     ],
+     "t0": 56.5,
+     "t1": 57.0
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "93",
+     "box": [
+      502,
+      414,
+      524,
+      430
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "93",
+     "box": [
+      502,
+      414,
+      524,
+      430
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_distant_93",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "ask_human",
+   "real": {
+    "tool": "ask_human",
+    "input": {
+     "seq": "93",
+     "box": [
+      501,
+      414,
+      523,
+      430
+     ],
+     "severity": "critical",
+     "question": "Drone candidate at box [501,414,523,430] \u2014 consistent blade-pass hum at ~493 Hz (SNR 503 then 137), not mains-like, not moving (displacement 1.6 px over 0.5 s). However the hum is strong and persistent. Confirm critical alert?"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "93",
+     "box": [
+      501,
+      414,
+      523,
+      430
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "93",
+     "box": [
+      501,
+      414,
+      523,
+      430
+     ],
+     "length_ms": 500
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_142",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "seq": "142",
+     "box": [
+      116,
+      461,
+      136,
+      479
+     ],
+     "t0": 26.8,
+     "t1": 27.0
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "142",
+     "t": 28.5
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "seq": "142",
+     "box": [
+      791,
+      493,
+      811,
+      511
+     ],
+     "t0": 26.8,
+     "t1": 27.0
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_142",
+   "step": 5,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "seq": "142",
+     "box": [
+      116,
+      461,
+      136,
+      479
+     ],
+     "t0": 27.0,
+     "t1": 27.5
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "142",
+     "box": [
+      116,
+      461,
+      136,
+      479
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "142",
+     "box": [
+      116,
+      461,
+      136,
+      479
+     ],
+     "length_ms": 500
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_142",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      160,
+      453,
+      180,
+      471
+     ],
+     "seq": "142",
+     "t0": 27.5,
+     "t1": 28
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "142",
+     "box": [
+      160,
+      453,
+      180,
+      471
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "142",
+     "box": [
+      160,
+      453,
+      180,
+      471
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 9.467
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 9.467
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 9.467
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 6,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "20",
+     "box": [
+      1121,
+      450,
+      1175,
+      489
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "20",
+     "box": [
+      1121,
+      450,
+      1175,
+      489
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "20",
+     "box": [
+      1121,
+      450,
+      1175,
+      489
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 7,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "box": [
+      1121,
+      450,
+      1175,
+      489
+     ],
+     "seq": "20",
+     "t0": 9.467,
+     "t1": 9.967
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      1121,
+      450,
+      1175,
+      489
+     ],
+     "seq": "20",
+     "t0": 9.467,
+     "t1": 9.967
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      1121,
+      450,
+      1175,
+      489
+     ],
+     "seq": "20",
+     "t0": 9.467,
+     "t1": 9.967
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 9,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      1023,
+      336,
+      1077,
+      375
+     ],
+     "length_ms": 1000,
+     "seq": "20"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      1023,
+      336,
+      1077,
+      375
+     ],
+     "length_ms": 500,
+     "seq": "20"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 10.467
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 10,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 10.467
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 10.467
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 10.467
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 12,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      869,
+      321,
+      917,
+      357
+     ],
+     "length_ms": 1000,
+     "seq": "20"
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      869,
+      321,
+      917,
+      357
+     ],
+     "length_ms": 300,
+     "seq": "20"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      869,
+      321,
+      917,
+      357
+     ],
+     "seq": "20",
+     "t0": 10.467,
+     "t1": 10.967
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 13,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 11.467
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 11.467
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "20",
+     "t": 11.467
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 15,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "20",
+     "t0": 11.167,
+     "t1": 11.467
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "20",
+     "t0": 11.167,
+     "t1": 11.467
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "20",
+     "t0": 11.167,
+     "t1": 11.467
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_20",
+   "step": 16,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "All detections across the full watch window (t=6.467\u201311.467) were checked with box_spectrum and request_window at up to 1000 ms windows. No candidate box ever reached the hum SNR threshold (\u22657.9 for ambiguous, \u226598 for hum); all verdicts were 'none'. The frequency_map found no missed hum spots and no scene-wide flicker. The moving object tracked from t=9.467 onward showed no propeller blade-pass signature. No confirmed drone hum was detected."
+    }
+   },
+   "blind": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "All detections across the full watch window (t=6.467\u201311.467) were checked with box_spectrum and request_window at up to 1000 ms windows. No candidate box ever reached the hum SNR threshold (\u22657.9 for ambiguous, \u226598 for hum); all verdicts were 'none'. The mains_like flag on the final detection was confirmed as scene-wide flicker (frequency_map showed no localised hum spots). No propeller blade-pass hum was confirmed; no drone alert is warranted."
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "All detections across the full watch window (t=6.467\u201311.467) were checked with box_spectrum and request_window at multiple window lengths (200 ms, 300 ms, 1000 ms). No candidate box ever reached the hum SNR threshold (\u226598) or even the ambiguous threshold (\u22657.9) \u2014 all verdicts were 'none'. The frequency_map found no hum spots and no dominant scene-wide frequency. The moving candidate tracked from t=9.467 to t=9.967 (displacement 142 px, clearly flying) but still produced no hum verdict at any window length. No confirmed propeller hum was detected; no alert is warranted."
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_21",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "21",
+     "t": 9.367
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "21",
+     "t": 9.367
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "21",
+     "t": 9.367
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_21",
+   "step": 7,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "21",
+     "t": 11.367
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "21",
+     "t": 11.367
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "21",
+     "t": 11.367
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 10.267
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 10.267
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 10.267
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 6,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "box_spectrum",
+   "real": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      692,
+      314,
+      732,
+      345
+     ],
+     "seq": "29",
+     "t0": 10.067,
+     "t1": 10.267
+    }
+   },
+   "blind": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      692,
+      314,
+      732,
+      345
+     ],
+     "seq": "29",
+     "t0": 10.067,
+     "t1": 10.267
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      692,
+      314,
+      732,
+      345
+     ],
+     "seq": "29",
+     "t0": 10.067,
+     "t1": 10.267
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "hum",
+   "logged_next": "track",
+   "real": {
+    "tool": "track",
+    "input": {
+     "seq": "29",
+     "box": [
+      692,
+      314,
+      732,
+      345
+     ],
+     "t0": 10.267,
+     "t1": 10.767
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "29",
+     "box": [
+      520,
+      412,
+      571,
+      452
+     ],
+     "length_ms": 500
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "29",
+     "box": [
+      520,
+      412,
+      571,
+      452
+     ],
+     "length_ms": 500
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 9,
+   "tool": "box_spectrum",
+   "real_verdict": "ambiguous",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "29",
+     "box": [
+      747,
+      405,
+      787,
+      436
+     ],
+     "length_ms": 500
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "29",
+     "box": [
+      747,
+      405,
+      787,
+      436
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "29",
+     "box": [
+      747,
+      405,
+      787,
+      436
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 10,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "track",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      747,
+      405,
+      787,
+      436
+     ],
+     "length_ms": 1000,
+     "seq": "29"
+    }
+   },
+   "blind": {
+    "tool": "track",
+    "input": {
+     "box": [
+      747,
+      405,
+      787,
+      436
+     ],
+     "seq": "29",
+     "t0": 10.767,
+     "t1": 11.267
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "track",
+    "input": {
+     "box": [
+      747,
+      405,
+      787,
+      436
+     ],
+     "seq": "29",
+     "t0": 10.767,
+     "t1": 11.267
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": false
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 12,
+   "tool": "request_window",
+   "real_verdict": "ambiguous",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "29",
+     "t0": 10.967,
+     "t1": 11.267
+    }
+   },
+   "blind": {
+    "tool": "box_spectrum",
+    "input": {
+     "box": [
+      746,
+      321,
+      786,
+      352
+     ],
+     "seq": "29",
+     "t0": 11.067,
+     "t1": 11.267
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 11.267
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 13,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 11.767
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 11.767
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "29",
+     "t": 11.767
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_29",
+   "step": 16,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No confirmed drone hum found across the full watch window (7.267\u201312.267 s). The strongest candidate at t=10.267 (box [692,314,732,345]) had SNR 158 and a hum verdict, but the tracked target drifted significantly (103 px in 0.5 s) and subsequent spectrum checks on the moving box returned only ambiguous verdicts (SNR 30\u201345, never reaching the 98 threshold), with mains_like flagged at the 1000 ms window. The frequency_map showed no scene-wide hum spots. All other detections had verdict none or insufficient events. No alert is warranted."
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      438,
+      210,
+      480,
+      240
+     ],
+     "length_ms": 500,
+     "seq": "29"
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No confirmed drone hum found across the full watch window (7.267\u201312.267 s). The strongest candidate at t=10.267 (box [692,314,732,345]) had SNR 158 and a hum verdict, but the tracked target drifted significantly (103 px in 0.5 s) and subsequent spectrum checks on the moving box returned only ambiguous verdicts (SNR 30\u201345, never reaching the 98 threshold), with mains_like flagged at the 1000 ms window. The frequency_map showed no scene-wide hum spots. All other detections had verdict none or insufficient events. No alert is warranted."
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_41",
+   "step": 5,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "41",
+     "t": 17
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "41",
+     "t": 17
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "41",
+     "t": 17
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_41",
+   "step": 8,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No detections across the full t=13\u201318 s window. Detector returned zero candidates at every sampled frame (13, 14, 15, 16, 17, 18 s). Two frequency-map sweeps (t=15.7\u201316 s and t=17.7\u201318 s) found no humming spots, no dominant blade-pass frequency, and negligible active pixels. No drone signature present in this sequence."
+    }
+   },
+   "blind": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No detections across the full watch window (t=13\u201318 s). Seven detect_frame calls returned zero candidates at every sampled time step, and two frequency_map sweeps over the scene found no humming spots, no dominant blade-pass frequency, and negligible active pixels. No spectral or visual evidence of a drone was found."
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "No detections across the full t=13\u201318 s watch window. Detector returned zero candidates at every sampled frame (13, 14, 15, 16, 17, 18 s). Two frequency-map sweeps (t=15.7\u201316 s and t=17.7\u201318 s) found no humming spots and no dominant blade-pass frequency anywhere in the scene. No drone evidence found."
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_8",
+   "step": 4,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 9.1
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 9.1
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 9.1
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_8",
+   "step": 7,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "seq": "8",
+     "box": [
+      151,
+      333,
+      194,
+      362
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind": {
+    "tool": "request_window",
+    "input": {
+     "seq": "8",
+     "box": [
+      151,
+      333,
+      194,
+      362
+     ],
+     "length_ms": 300
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "request_window",
+    "input": {
+     "seq": "8",
+     "box": [
+      151,
+      333,
+      194,
+      362
+     ],
+     "length_ms": 300
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_8",
+   "step": 8,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "request_window",
+   "real": {
+    "tool": "request_window",
+    "input": {
+     "box": [
+      151,
+      333,
+      194,
+      362
+     ],
+     "length_ms": 1000,
+     "seq": "8"
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 11.1
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 11.1
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": true,
+   "changed_shuffle": true,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_8",
+   "step": 9,
+   "tool": "request_window",
+   "real_verdict": "none",
+   "logged_next": "detect_frame",
+   "real": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 11.1
+    }
+   },
+   "blind": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 11.1
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "detect_frame",
+    "input": {
+     "seq": "8",
+     "t": 11.1
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_8",
+   "step": 11,
+   "tool": "box_spectrum",
+   "real_verdict": "none",
+   "logged_next": "frequency_map",
+   "real": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "8",
+     "t0": 10.8,
+     "t1": 11.1
+    }
+   },
+   "blind": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "8",
+     "t0": 10.8,
+     "t1": 11.1
+    }
+   },
+   "blind_verdict": "unavailable",
+   "shuffle": {
+    "tool": "frequency_map",
+    "input": {
+     "seq": "8",
+     "t0": 10.8,
+     "t1": 11.1
+    }
+   },
+   "shuffle_verdict": "none",
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  },
+  {
+   "trace": "bedrock_late_8",
+   "step": 12,
+   "tool": "frequency_map",
+   "real_verdict": null,
+   "logged_next": "finish",
+   "real": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Two DNN detections appeared (t\u224810.1 and t\u224811.1) but neither produced a hum verdict across 200 ms, 300 ms, and 1000 ms spectral windows (peak SNR \u2264 7.51, well below the ambiguous threshold of 7.9 and far below the hum threshold of 98). The frequency map found no humming spots anywhere in the scene. No propeller blade-pass hum was confirmed; the detections are false positives. Watch window ended at t=11.1 with no drone confirmed."
+    }
+   },
+   "blind": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Two DNN detections appeared (t\u224810.1 and t\u224811.1) but neither box produced a hum verdict at any window length (200, 300, 1000 ms). SNR peaked at 7.51, well below the ambiguous threshold of 7.9 and far below the hum threshold of 98. The frequency map found no humming spots. No propeller hum was confirmed; no drone alert is warranted."
+    }
+   },
+   "blind_verdict": null,
+   "shuffle": {
+    "tool": "finish",
+    "input": {
+     "verdict": "no_drone",
+     "reason": "Two DNN detections appeared (t\u224810.1 and t\u224811.1) but neither produced a hum verdict across 200 ms, 300 ms, and 1000 ms spectral windows (peak SNR \u2264 7.51, well below the ambiguous threshold of 7.9 and far below the hum threshold of 98). The frequency map found no humming spots anywhere in the scene. No propeller blade-pass hum was confirmed; the detections are false positives. Watch window ended at t=11.1 with no drone confirmed."
+    }
+   },
+   "shuffle_verdict": null,
+   "changed_blind": false,
+   "changed_shuffle": false,
+   "control_matches_log": true
+  }
+ ]
+}

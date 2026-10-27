@@ -1,0 +1,758 @@
+{
+ "generated_utc": "2026-10-27T04:34:46Z",
+ "data": "D:\\PHD_Take2\\opencv2026\\repo\\data\\fred_slices",
+ "scenarios": "eval/scenarios_v4.json",
+ "vision_source": {
+  "spectrum": "hertz.freq (lane L1)",
+  "detect": "hertz.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125)"
+ },
+ "thresholds": {
+  "hum_snr": 98.0,
+  "ambiguous_snr": 7.9,
+  "min_events": 200,
+  "fs": 10000,
+  "band": [
+   150.0,
+   1000.0
+  ]
+ },
+ "vision_mode": "real",
+ "approver": "timeout",
+ "budget": {
+  "max_steps": 24,
+  "max_rejections": 4,
+  "max_compute_ms": 30000.0,
+  "max_events_per_call": 6000000,
+  "min_window_ms": 20.0,
+  "max_window_ms": 1000.0,
+  "max_map_ms": 300.0,
+  "buffer_s": 1.0,
+  "max_alerts": 3
+ },
+ "summary": {
+  "bedrock": {
+   "episodes": 6,
+   "success": 0,
+   "success_rate": 0.0,
+   "false_alerts": 0,
+   "mean_steps": 10,
+   "mean_wall_s": 17.56,
+   "median_stream_latency_s": null,
+   "ambiguous_rechecks": 9,
+   "rechecks_resolved": 0,
+   "mean_tool_calls": 10,
+   "mean_planner_s": 14.123,
+   "verdicts": {
+    "unconfirmed_waiting_for_operator": 6
+   },
+   "bedrock_tokens": {
+    "input": 226739,
+    "output": 5629,
+    "converse_calls": 57,
+    "mean_converse_ms": 1396.7,
+    "usd_estimate": 0.765,
+    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+   },
+   "fallbacks": 0,
+   "asks": 6,
+   "next_tool_after_verdict": {
+    "ambiguous": {
+     "box_spectrum": 1,
+     "request_window": 13,
+     "detect_frame": 5,
+     "frequency_map": 1
+    },
+    "hum": {
+     "track": 7,
+     "ask_human": 1
+    }
+   }
+  }
+ },
+ "by_split": {
+  "bedrock": {
+   "original_8": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 10,
+    "mean_wall_s": 17.081,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 10,
+    "mean_planner_s": 15.438,
+    "verdicts": {
+     "unconfirmed_waiting_for_operator": 2
+    },
+    "bedrock_tokens": {
+     "input": 62765,
+     "output": 1900,
+     "converse_calls": 17,
+     "mean_converse_ms": 1514.8,
+     "usd_estimate": 0.217,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 2,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "box_spectrum": 1,
+      "request_window": 4,
+      "detect_frame": 1
+     },
+     "hum": {
+      "track": 3
+     }
+    }
+   },
+   "held_out": {
+    "episodes": 4,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 10,
+    "mean_wall_s": 17.799,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 9,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 10,
+    "mean_planner_s": 13.465,
+    "verdicts": {
+     "unconfirmed_waiting_for_operator": 4
+    },
+    "bedrock_tokens": {
+     "input": 163974,
+     "output": 3729,
+     "converse_calls": 40,
+     "mean_converse_ms": 1346.5,
+     "usd_estimate": 0.548,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 4,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 4,
+      "ask_human": 1
+     },
+     "ambiguous": {
+      "request_window": 9,
+      "detect_frame": 4,
+      "frequency_map": 1
+     }
+    }
+   }
+  }
+ },
+ "by_kind": {
+  "bedrock": {
+   "clear": {
+    "episodes": 4,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 10.75,
+    "mean_wall_s": 18.135,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 9,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 10.75,
+    "mean_planner_s": 15.353,
+    "verdicts": {
+     "unconfirmed_waiting_for_operator": 4
+    },
+    "bedrock_tokens": {
+     "input": 169935,
+     "output": 4043,
+     "converse_calls": 40,
+     "mean_converse_ms": 1407.2,
+     "usd_estimate": 0.57,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 4,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "box_spectrum": 1,
+      "request_window": 13,
+      "detect_frame": 5,
+      "frequency_map": 1
+     },
+     "hum": {
+      "track": 4
+     }
+    }
+   },
+   "distant": {
+    "episodes": 1,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 8,
+    "mean_wall_s": 15.301,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 8,
+    "mean_planner_s": 11.368,
+    "verdicts": {
+     "unconfirmed_waiting_for_operator": 1
+    },
+    "bedrock_tokens": {
+     "input": 26276,
+     "output": 748,
+     "converse_calls": 8,
+     "mean_converse_ms": 1421.0,
+     "usd_estimate": 0.09,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 1,
+      "ask_human": 1
+     }
+    }
+   },
+   "late": {
+    "episodes": 1,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 9,
+    "mean_wall_s": 17.52,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 9,
+    "mean_planner_s": 11.955,
+    "verdicts": {
+     "unconfirmed_waiting_for_operator": 1
+    },
+    "bedrock_tokens": {
+     "input": 30528,
+     "output": 838,
+     "converse_calls": 9,
+     "mean_converse_ms": 1328.3,
+     "usd_estimate": 0.104,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 2
+     }
+    }
+   }
+  }
+ },
+ "episodes": {
+  "bedrock": [
+   {
+    "id": "clear_210",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "unconfirmed_waiting_for_operator",
+    "steps": 11,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 16.643,
+    "tool_ms": 2840.7,
+    "planner_ms": 18920.0,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": false,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 32237,
+     "output": 1062,
+     "calls": 8,
+     "latency_ms": 13796.211599954404
+    }
+   },
+   {
+    "id": "late_142",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "unconfirmed_waiting_for_operator",
+    "steps": 9,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 17.52,
+    "tool_ms": 5560.1,
+    "planner_ms": 11955.2,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "track",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": false,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 30528,
+     "output": 838,
+     "calls": 9,
+     "latency_ms": 11954.761400120333
+    }
+   },
+   {
+    "id": "distant_93",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "unconfirmed_waiting_for_operator",
+    "steps": 8,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 15.301,
+    "tool_ms": 3929.6,
+    "planner_ms": 11368.2,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 26276,
+     "output": 748,
+     "calls": 8,
+     "latency_ms": 11367.822299944237
+    }
+   },
+   {
+    "id": "clear_34",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "unconfirmed_waiting_for_operator",
+    "steps": 4,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 7.151,
+    "tool_ms": 945.2,
+    "planner_ms": 6203.8,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 11895,
+     "output": 437,
+     "calls": 4,
+     "latency_ms": 6203.642599983141
+    }
+   },
+   {
+    "id": "clear_64",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "unconfirmed_waiting_for_operator",
+    "steps": 8,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 15.621,
+    "tool_ms": 4781.5,
+    "planner_ms": 10836.2,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       200,
+       27.14,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       35.99,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       35.99,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       31.34,
+       "ambiguous"
+      ],
+      "resolved": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 27730,
+     "output": 775,
+     "calls": 8,
+     "latency_ms": 10835.839800012764
+    }
+   },
+   {
+    "id": "clear_65",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "unconfirmed_waiting_for_operator",
+    "steps": 20,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 33.124,
+    "tool_ms": 7661.4,
+    "planner_ms": 25452.2,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "frequency_map",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       200,
+       51.23,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       89.85,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       89.85,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       37.52,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 6,
+      "to_step": 7,
+      "before": [
+       200,
+       13.89,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.05,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 7,
+      "to_step": 8,
+      "before": [
+       300,
+       12.05,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       11.65,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 10,
+      "to_step": 11,
+      "before": [
+       200,
+       15.07,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       13.71,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 11,
+      "to_step": 12,
+      "before": [
+       300,
+       13.71,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       17.71,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 15,
+      "to_step": 16,
+      "before": [
+       200,
+       14.47,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       22.95,
+       "ambiguous"
+      ],
+      "resolved": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "frequency_map"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 98073,
+     "output": 1769,
+     "calls": 20,
+     "latency_ms": 25451.272399979644
+    }
+   }
+  ]
+ }
+}

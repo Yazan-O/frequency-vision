@@ -1,0 +1,1695 @@
+{
+ "generated_utc": "2026-10-27T04:40:59Z",
+ "data": "D:\\PHD_Take2\\opencv2026\\repo\\data\\fred_slices",
+ "scenarios": "eval/scenarios_v4.json",
+ "vision_source": {
+  "spectrum": "hertz.freq (lane L1)",
+  "detect": "hertz.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125)"
+ },
+ "thresholds": {
+  "hum_snr": 98.0,
+  "ambiguous_snr": 7.9,
+  "min_events": 200,
+  "fs": 10000,
+  "band": [
+   150.0,
+   1000.0
+  ]
+ },
+ "vision_mode": "real",
+ "approver": "reject",
+ "budget": {
+  "max_steps": 24,
+  "max_rejections": 4,
+  "max_compute_ms": 30000.0,
+  "max_events_per_call": 6000000,
+  "min_window_ms": 20.0,
+  "max_window_ms": 1000.0,
+  "max_map_ms": 300.0,
+  "buffer_s": 1.0,
+  "max_alerts": 3
+ },
+ "summary": {
+  "bedrock": {
+   "episodes": 6,
+   "success": 0,
+   "success_rate": 0.0,
+   "false_alerts": 0,
+   "mean_steps": 19.5,
+   "mean_wall_s": 28.821,
+   "median_stream_latency_s": null,
+   "ambiguous_rechecks": 12,
+   "rechecks_resolved": 2,
+   "mean_tool_calls": 19.5,
+   "mean_planner_s": 26.864,
+   "verdicts": {
+    "no_drone": 6
+   },
+   "bedrock_tokens": {
+    "input": 558357,
+    "output": 12467,
+    "converse_calls": 112,
+    "mean_converse_ms": 1374.3,
+    "usd_estimate": 1.862,
+    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+   },
+   "fallbacks": 0,
+   "asks": 15,
+   "next_tool_after_verdict": {
+    "ambiguous": {
+     "box_spectrum": 1,
+     "request_window": 16,
+     "track": 3,
+     "ask_human": 1,
+     "frequency_map": 2,
+     "detect_frame": 4
+    },
+    "hum": {
+     "box_spectrum": 1,
+     "ask_human": 10,
+     "track": 6
+    }
+   }
+  },
+  "rule": {
+   "episodes": 6,
+   "success": 0,
+   "success_rate": 0.0,
+   "false_alerts": 0,
+   "mean_steps": 13.67,
+   "mean_wall_s": 4.718,
+   "median_stream_latency_s": null,
+   "ambiguous_rechecks": 16,
+   "rechecks_resolved": 0,
+   "mean_tool_calls": 13.67,
+   "mean_planner_s": 0.0,
+   "verdicts": {
+    "no_drone": 6
+   },
+   "bedrock_tokens": null,
+   "fallbacks": 0,
+   "asks": 4,
+   "next_tool_after_verdict": {
+    "hum": {
+     "track": 3,
+     "frequency_map": 1
+    },
+    "ambiguous": {
+     "request_window": 16,
+     "detect_frame": 7
+    }
+   }
+  }
+ },
+ "by_split": {
+  "bedrock": {
+   "original_8": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 20,
+    "mean_wall_s": 27.575,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 1,
+    "rechecks_resolved": 1,
+    "mean_tool_calls": 20,
+    "mean_planner_s": 27.82,
+    "verdicts": {
+     "no_drone": 2
+    },
+    "bedrock_tokens": {
+     "input": 178699,
+     "output": 4219,
+     "converse_calls": 35,
+     "mean_converse_ms": 1382.4,
+     "usd_estimate": 0.599,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 6,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "box_spectrum": 1,
+      "request_window": 5,
+      "track": 1,
+      "ask_human": 1
+     },
+     "hum": {
+      "box_spectrum": 1,
+      "ask_human": 4,
+      "track": 2
+     }
+    }
+   },
+   "held_out": {
+    "episodes": 4,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 19.25,
+    "mean_wall_s": 29.444,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 11,
+    "rechecks_resolved": 1,
+    "mean_tool_calls": 19.25,
+    "mean_planner_s": 26.386,
+    "verdicts": {
+     "no_drone": 4
+    },
+    "bedrock_tokens": {
+     "input": 379658,
+     "output": 8248,
+     "converse_calls": 77,
+     "mean_converse_ms": 1370.6,
+     "usd_estimate": 1.263,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 9,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 4,
+      "ask_human": 6
+     },
+     "ambiguous": {
+      "frequency_map": 2,
+      "track": 2,
+      "request_window": 11,
+      "detect_frame": 4
+     }
+    }
+   }
+  },
+  "rule": {
+   "original_8": {
+    "episodes": 2,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 12.5,
+    "mean_wall_s": 6.378,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 12.5,
+    "mean_planner_s": 0.0,
+    "verdicts": {
+     "no_drone": 2
+    },
+    "bedrock_tokens": null,
+    "fallbacks": 0,
+    "asks": 2,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 2
+     }
+    }
+   },
+   "held_out": {
+    "episodes": 4,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 14.25,
+    "mean_wall_s": 3.888,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 16,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 14.25,
+    "mean_planner_s": 0.0,
+    "verdicts": {
+     "no_drone": 4
+    },
+    "bedrock_tokens": null,
+    "fallbacks": 0,
+    "asks": 2,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 1,
+      "frequency_map": 1
+     },
+     "ambiguous": {
+      "request_window": 16,
+      "detect_frame": 7
+     }
+    }
+   }
+  }
+ },
+ "by_kind": {
+  "bedrock": {
+   "clear": {
+    "episodes": 4,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 22.5,
+    "mean_wall_s": 32.369,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 11,
+    "rechecks_resolved": 1,
+    "mean_tool_calls": 22.5,
+    "mean_planner_s": 30.901,
+    "verdicts": {
+     "no_drone": 4
+    },
+    "bedrock_tokens": {
+     "input": 452487,
+     "output": 9695,
+     "converse_calls": 85,
+     "mean_converse_ms": 1368.8,
+     "usd_estimate": 1.503,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 12,
+    "next_tool_after_verdict": {
+     "ambiguous": {
+      "box_spectrum": 1,
+      "request_window": 15,
+      "track": 3,
+      "ask_human": 1,
+      "frequency_map": 2,
+      "detect_frame": 4
+     },
+     "hum": {
+      "box_spectrum": 1,
+      "ask_human": 8,
+      "track": 3
+     }
+    }
+   },
+   "distant": {
+    "episodes": 1,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 11,
+    "mean_wall_s": 18.209,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 11,
+    "mean_planner_s": 15.576,
+    "verdicts": {
+     "no_drone": 1
+    },
+    "bedrock_tokens": {
+     "input": 39849,
+     "output": 1136,
+     "converse_calls": 11,
+     "mean_converse_ms": 1416.0,
+     "usd_estimate": 0.137,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 1,
+      "ask_human": 1
+     }
+    }
+   },
+   "late": {
+    "episodes": 1,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 16,
+    "mean_wall_s": 25.239,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 1,
+    "rechecks_resolved": 1,
+    "mean_tool_calls": 16,
+    "mean_planner_s": 22.004,
+    "verdicts": {
+     "no_drone": 1
+    },
+    "bedrock_tokens": {
+     "input": 66021,
+     "output": 1636,
+     "converse_calls": 16,
+     "mean_converse_ms": 1375.2,
+     "usd_estimate": 0.223,
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    },
+    "fallbacks": 0,
+    "asks": 2,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 2,
+      "ask_human": 1
+     },
+     "ambiguous": {
+      "request_window": 1
+     }
+    }
+   }
+  },
+  "rule": {
+   "clear": {
+    "episodes": 4,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 12,
+    "mean_wall_s": 1.871,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 16,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 12,
+    "mean_planner_s": 0.0,
+    "verdicts": {
+     "no_drone": 4
+    },
+    "bedrock_tokens": null,
+    "fallbacks": 0,
+    "asks": 3,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 2,
+      "frequency_map": 1
+     },
+     "ambiguous": {
+      "request_window": 16,
+      "detect_frame": 7
+     }
+    }
+   },
+   "distant": {
+    "episodes": 1,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 14,
+    "mean_wall_s": 8.465,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 14,
+    "mean_planner_s": 0.0,
+    "verdicts": {
+     "no_drone": 1
+    },
+    "bedrock_tokens": null,
+    "fallbacks": 0,
+    "asks": 0,
+    "next_tool_after_verdict": {}
+   },
+   "late": {
+    "episodes": 1,
+    "success": 0,
+    "success_rate": 0.0,
+    "false_alerts": 0,
+    "mean_steps": 20,
+    "mean_wall_s": 12.359,
+    "median_stream_latency_s": null,
+    "ambiguous_rechecks": 0,
+    "rechecks_resolved": 0,
+    "mean_tool_calls": 20,
+    "mean_planner_s": 0.0,
+    "verdicts": {
+     "no_drone": 1
+    },
+    "bedrock_tokens": null,
+    "fallbacks": 0,
+    "asks": 1,
+    "next_tool_after_verdict": {
+     "hum": {
+      "track": 1
+     }
+    }
+   }
+  }
+ },
+ "episodes": {
+  "bedrock": [
+   {
+    "id": "clear_210",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 24,
+    "rejections": 1,
+    "asks": 4,
+    "wall_s": 29.911,
+    "tool_ms": 3514.6,
+    "planner_ms": 33636.4,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "request_window",
+     "request_window",
+     "track",
+     "track",
+     "box_spectrum",
+     "box_spectrum",
+     "ask_human",
+     "raise_alert",
+     "detect_frame",
+     "box_spectrum",
+     "ask_human",
+     "track",
+     "box_spectrum",
+     "ask_human",
+     "detect_frame",
+     "frequency_map",
+     "detect_frame",
+     "box_spectrum",
+     "ask_human"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "ambiguous",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "track"
+     ],
+     [
+      "hum",
+      "box_spectrum"
+     ],
+     [
+      "ambiguous",
+      "ask_human"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "held_out": false,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 112678,
+     "output": 2583,
+     "calls": 19,
+     "latency_ms": 26380.945300101303
+    }
+   },
+   {
+    "id": "late_142",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 16,
+    "rejections": 1,
+    "asks": 2,
+    "wall_s": 25.239,
+    "tool_ms": 3225.5,
+    "planner_ms": 22004.1,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "raise_alert",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "ask_human",
+     "finish"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 13,
+      "to_step": 14,
+      "before": [
+       200,
+       36.13,
+       "ambiguous"
+      ],
+      "after": [
+       500,
+       147.4,
+       "hum"
+      ],
+      "resolved": true
+     }
+    ],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "held_out": false,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 66021,
+     "output": 1636,
+     "calls": 16,
+     "latency_ms": 22003.337200090755
+    }
+   },
+   {
+    "id": "distant_93",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 11,
+    "rejections": 1,
+    "asks": 1,
+    "wall_s": 18.209,
+    "tool_ms": 2628.1,
+    "planner_ms": 15576.2,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "frequency_map",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "ask_human",
+     "raise_alert",
+     "detect_frame",
+     "finish"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 39849,
+     "output": 1136,
+     "calls": 11,
+     "latency_ms": 15575.804399850313
+    }
+   },
+   {
+    "id": "clear_34",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 21,
+    "rejections": 2,
+    "asks": 4,
+    "wall_s": 31.043,
+    "tool_ms": 1112.3,
+    "planner_ms": 29923.0,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "box_spectrum",
+     "ask_human",
+     "raise_alert",
+     "track",
+     "box_spectrum",
+     "ask_human",
+     "track",
+     "box_spectrum",
+     "frequency_map",
+     "request_window",
+     "track",
+     "box_spectrum",
+     "request_window",
+     "ask_human",
+     "raise_alert",
+     "track",
+     "ask_human",
+     "finish"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 15,
+      "to_step": 16,
+      "before": [
+       200,
+       94.65,
+       "ambiguous"
+      ],
+      "after": [
+       400,
+       226.64,
+       "hum"
+      ],
+      "resolved": true
+     }
+    ],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ],
+     [
+      "ambiguous",
+      "frequency_map"
+     ],
+     [
+      "ambiguous",
+      "track"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 106210,
+     "output": 2526,
+     "calls": 21,
+     "latency_ms": 29921.820999879856
+    }
+   },
+   {
+    "id": "clear_64",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 22,
+    "rejections": 2,
+    "asks": 3,
+    "wall_s": 33.65,
+    "tool_ms": 3391.8,
+    "planner_ms": 30238.3,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "raise_alert",
+     "detect_frame",
+     "track",
+     "box_spectrum",
+     "request_window",
+     "track",
+     "box_spectrum",
+     "ask_human",
+     "raise_alert",
+     "detect_frame",
+     "box_spectrum",
+     "ask_human",
+     "detect_frame",
+     "finish"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       200,
+       27.14,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       35.99,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       35.99,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       31.34,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 12,
+      "to_step": 13,
+      "before": [
+       200,
+       81.2,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       44.55,
+       "ambiguous"
+      ],
+      "resolved": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "track"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "track"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ],
+     [
+      "hum",
+      "ask_human"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 112746,
+     "output": 2394,
+     "calls": 22,
+     "latency_ms": 30237.14729998028
+    }
+   },
+   {
+    "id": "clear_65",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 23,
+    "rejections": 1,
+    "asks": 1,
+    "wall_s": 34.872,
+    "tool_ms": 5048.7,
+    "planner_ms": 29805.7,
+    "stream_latency_s": null,
+    "planner_final": "bedrock",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "frequency_map",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "raise_alert",
+     "detect_frame",
+     "finish"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       200,
+       51.23,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       89.85,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       89.85,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       37.52,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 6,
+      "to_step": 7,
+      "before": [
+       200,
+       13.89,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.05,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 7,
+      "to_step": 8,
+      "before": [
+       300,
+       12.05,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       11.65,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 10,
+      "to_step": 11,
+      "before": [
+       200,
+       15.07,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       13.71,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 11,
+      "to_step": 12,
+      "before": [
+       300,
+       13.71,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       17.71,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 15,
+      "to_step": 16,
+      "before": [
+       200,
+       14.47,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       22.95,
+       "ambiguous"
+      ],
+      "resolved": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "frequency_map"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": {
+     "input": 120853,
+     "output": 2192,
+     "calls": 23,
+     "latency_ms": 29804.2125000502
+    }
+   }
+  ],
+  "rule": [
+   {
+    "id": "clear_210",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 5,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 0.396,
+    "tool_ms": 391.7,
+    "planner_ms": 0.3,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "finish"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": false,
+    "alerts": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "late_142",
+    "kind": "late",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 20,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 12.359,
+    "tool_ms": 12351.5,
+    "planner_ms": 0.1,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "finish"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": false,
+    "alerts": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "distant_93",
+    "kind": "distant",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 14,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 8.465,
+    "tool_ms": 8459.5,
+    "planner_ms": 0,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "detect_frame",
+     "finish"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "clear_34",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 5,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 0.283,
+    "tool_ms": 281.0,
+    "planner_ms": 0.1,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "track",
+     "ask_human",
+     "finish"
+    ],
+    "ambiguous_rechecks": [],
+    "transitions": [
+     [
+      "hum",
+      "track"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "clear_64",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 14,
+    "rejections": 0,
+    "asks": 1,
+    "wall_s": 1.9,
+    "tool_ms": 1893.1,
+    "planner_ms": 0.2,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "frequency_map",
+     "track",
+     "ask_human",
+     "finish"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       100,
+       67.17,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       35.99,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       35.99,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       31.34,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 6,
+      "to_step": 7,
+      "before": [
+       100,
+       33.58,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       59.0,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 7,
+      "to_step": 8,
+      "before": [
+       300,
+       59.0,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       71.34,
+       "ambiguous"
+      ],
+      "resolved": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "hum",
+      "frequency_map"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": null
+   },
+   {
+    "id": "clear_65",
+    "kind": "clear",
+    "drone": true,
+    "success": false,
+    "true_alerts": 0,
+    "false_alerts": 0,
+    "verdict": "no_drone",
+    "steps": 24,
+    "rejections": 0,
+    "asks": 0,
+    "wall_s": 4.905,
+    "tool_ms": 4896.1,
+    "planner_ms": 0.1,
+    "stream_latency_s": null,
+    "planner_final": "rule",
+    "planner_failures": 0,
+    "fallbacks": 0,
+    "tool_calls": [
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window",
+     "detect_frame",
+     "box_spectrum",
+     "request_window",
+     "request_window"
+    ],
+    "ambiguous_rechecks": [
+     {
+      "from_step": 2,
+      "to_step": 3,
+      "before": [
+       100,
+       84.1,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       89.85,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 3,
+      "to_step": 4,
+      "before": [
+       300,
+       89.85,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       37.52,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 6,
+      "to_step": 7,
+      "before": [
+       100,
+       9.86,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       11.76,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 7,
+      "to_step": 8,
+      "before": [
+       300,
+       11.76,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       12.74,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 10,
+      "to_step": 11,
+      "before": [
+       100,
+       12.14,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       12.05,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 11,
+      "to_step": 12,
+      "before": [
+       300,
+       12.05,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       11.65,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 14,
+      "to_step": 15,
+      "before": [
+       100,
+       13.86,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       8.38,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 15,
+      "to_step": 16,
+      "before": [
+       300,
+       8.38,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       9.31,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 18,
+      "to_step": 19,
+      "before": [
+       100,
+       35.51,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       13.71,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 19,
+      "to_step": 20,
+      "before": [
+       300,
+       13.71,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       17.71,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 22,
+      "to_step": 23,
+      "before": [
+       100,
+       34.56,
+       "ambiguous"
+      ],
+      "after": [
+       300,
+       41.75,
+       "ambiguous"
+      ],
+      "resolved": false
+     },
+     {
+      "from_step": 23,
+      "to_step": 24,
+      "before": [
+       300,
+       41.75,
+       "ambiguous"
+      ],
+      "after": [
+       1000,
+       40.45,
+       "ambiguous"
+      ],
+      "resolved": false
+     }
+    ],
+    "transitions": [
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "detect_frame"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ],
+     [
+      "ambiguous",
+      "request_window"
+     ]
+    ],
+    "held_out": true,
+    "alerts": [],
+    "bedrock_usage": null
+   }
+  ]
+ }
+}
