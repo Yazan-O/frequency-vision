@@ -21,7 +21,7 @@ An event camera records every pixel's brightness change with microsecond timing.
 Live, no login, served by COOL on Graviton4: **https://100-27-6-111.sslip.io**
 
 1. Slide 1: a real FRED recording of a DJI Mini 2 at 30 fps. The rotor is a blur. Every slide states its point in one headline.
-2. Pick a clip. The demo clip on the page gives its own median over its 100 ms windows: DJI Mini 2 316 Hz (sequence 202), DJI Tello EDU 555.8 Hz (sequence 195), DJI Mini 3 247.4 Hz (sequence 93) and DarwinFPV cineape20ger 225.2 Hz (sequence 64). A DarwinFPV Cineape20 (sequence 20) shows no clean peak in any of its 50 windows: our hard case. The engine medians over all test boxes, a different population, are 320 Hz (Mini 2, median over all test boxes), 564 Hz (Tello EDU) and 245 Hz (Mini 3).
+2. Pick a clip. The demo clip on the page gives its own median over its 100 ms windows: DJI Mini 2 316 Hz (sequence 202), DJI Tello EDU 584.8 Hz (sequence 230), DJI Mini 3 247.4 Hz (sequence 93) and DarwinFPV cineape20ger 225.2 Hz (sequence 64). The default event window is 100 ms, the best setting on the FRED test split. The engine medians over all test boxes, a different population, are 320 Hz (Mini 2, median over all test boxes), 564 Hz (Tello EDU) and 245 Hz (Mini 3).
 3. Slide 2: the same drone as raw events in x, y and time, beside a patch with no drone.
 4. Slide 3: the server computes the spectrum live with COOL's OpenCV 5. The drone box peaks at its blade-pass frequency. The empty box stays flat.
 5. Slide 5: a recorded replay of the agent's real evaluation traces on FRED sequences. Approve or Reject records your decision on the server and triggers nothing else.
@@ -37,6 +37,55 @@ curl -s -X POST https://100-27-6-111.sslip.io/api/spectrum \
 ```
 
 `/version` shows `"cool": true` and OpenCV 5.1.0-dev with KleidiCV 0.7.0 from `/opt/cool`. On 2026-10-26 the spectrum call returned the DJI Mini 2's peak at 315.9 Hz with a score of 26,655 from 38,845 events, computed in 4.6 ms on a Graviton4 `c8g.medium`.
+
+## How Frequency Vision meets the judging criteria
+
+Frequency Vision enters the overall awards and both featured paths: Best Use of COOL and Agentic Vision. Each rubric line below points to its evidence. The same map is machine-readable at `/api/summary` (https://100-27-6-111.sslip.io/api/summary) under `judging`.
+
+**Overall rubric**
+
+| Criterion (weight) | Evidence | Where |
+|---|---|---|
+| Technical execution (30%) | OpenCV 5 hum engine (`calcHist`, `dft`, `connectedComponentsWithStats`, `dnn` `ENGINE_NEW`, `KalmanFilter`) on all 47 FRED test sequences: false alarms **412.7 → 308.4 per minute (−25%) at the same recall 0.544**; hum-score AUC 0.917 vs a random patch, 0.758 vs the busiest patch. An OpenCV 5.0.0 int64 defect found and written up for upstream. | `results/detector/results_test.json`, `results/engine/summary.json`, `docs/REPORT.md` §8, `docs/UPSTREAM_ISSUE_int64.md` |
+| Innovation (20%) | The RGB detector proposes. The event camera confirms each box by the propeller's blade-pass frequency, which 30 fps cannot see. An agent picks the next measurement. | Live page slides 1 to 3, `docs/REPORT.md` §13 |
+| Real-world impact (20%) | 8,790 of 34,796 false detections removed while 26 of 70,794 true detections are lost. High-precision setting: precision 0.815. | `results/detector/results_test.json`, `docs/REPORT.md` §1 and §2 |
+| User experience (10%) | Six-slide live page: clip picker, detector run live, spectrum computed live, 3D event cloud, and an agent run live that waits for your Approve or Reject. Keyboard navigation, screen-reader text and a phone layout. | Live page (https://100-27-6-111.sslip.io), `app/static/` |
+| Documentation and presentation (10%) | The README, the technical report, architecture and agent diagrams, figures redrawn from result files, and the video. | `docs/REPORT.md`, `docs/architecture.svg`, `docs/agent_workflow.svg` |
+| Cloud delivery, reproducibility, responsible operation (10%) | Always-on COOL endpoint on Graviton4 behind HTTPS, deployed by one script, `/health` and `/version`, rate limits, no SSH, human approval enforced in code. | `deploy/aws.py`, `deploy/README.md`, `docs/REPORT.md` §5 and §11 |
+
+**Best Use of COOL**
+
+| Criterion (weight) | Evidence | Where |
+|---|---|---|
+| Verified COOL integration on Graviton (30%) | The live endpoint loads `cv2` from `/opt/cool`: OpenCV 5.1.0-dev, `aarch64`, KleidiCV HAL. Proof file with instance type, AMI and Marketplace product code. | `/version` (https://100-27-6-111.sslip.io/version), `bench/results/cool-proof-c8g.xlarge.json` |
+| Architecture and technical quality (25%) | COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host. Benchmark hosts are separate. | `docs/architecture.svg`, `docs/REPORT.md` §6 |
+| Measured value (20%) | Same Graviton4 host, COOL vs pip OpenCV 5: GaussianBlur **1.89x**, `dft` **1.54x**, connected components **1.17x** faster. Frequency map 1.13x faster end to end, outputs identical. | `bench/results/cool-graviton4-c8g.xlarge.json`, `pip-graviton4-c8g.xlarge-samehost.json`, `bench/results/E2E.md` |
+| Innovation (15%) | COOL runs signal processing on event-camera time series: a 10 kHz `dft` per box and a per-pixel frequency map with `DFT_ROWS`. | `hertz/freq.py` |
+| Reproducibility and demonstration (10%) | `python deploy/aws.py cool` deploys the endpoint. `python deploy/aws.py cool-bench` reruns the same-host benchmark. | `deploy/README.md`, `bench/` |
+
+**Agentic Vision**
+
+| Criterion (weight) | Evidence | Where |
+|---|---|---|
+| OpenCV 5 and agent integration (30%) | Every agent tool is an OpenCV 5 call. In trace `late_142` the detector finds nothing, the frequency map finds a 545 Hz spot, and the agent confirms the drone. | `hertz/agent/`, `results/agent/eval_v3/traces/bedrock_late_142.jsonl` |
+| Orchestration and autonomy (25%) | After an ambiguous spectrum the Bedrock planner asked for a new window 6 of 9 times. A guard checks every call against its schema, the clock and the budgets. | `results/agent/eval_v3/results.json`, `hertz/agent/guard.py` |
+| Task effectiveness and evaluation (20%) | 8 fixed FRED scenarios: Bedrock **4 of 8 with 0 false alerts**, the same score as the rule planner, with 12.25 vs 17.38 tool calls per episode. | `results/agent/eval_v3/results.json` |
+| Failure handling, observability, security, human control (15%) | Critical alerts need a human's approval, enforced by the guard. Injected planner and tool faults are tested. Every step is logged as a JSON line. | `tests/`, `hertz/agent/guard.py`, `POST /api/agent/live` |
+| User experience, documentation, demonstration (10%) | Slide 5 replays real traces and runs the agent live on the server with your Approve or Reject. | Live page slide 5, `docs/agent_workflow.svg` |
+
+**Submission requirements**
+
+| Requirement | Where it is met |
+|---|---|
+| OpenCV 5 for substantive image or video analysis | `hertz/freq.py`, `hertz/detect.py`, `/version` (https://100-27-6-111.sslip.io/version) |
+| A meaningful component on AWS | COOL on Graviton4 `c8g.medium` serves the live page and the engine; Amazon Bedrock plans the agent |
+| Working web endpoint | 100-27-6-111.sslip.io (https://100-27-6-111.sslip.io) |
+| Video, five minutes or less | Video link at the top of this write-up |
+| Technical report | `docs/REPORT.md` |
+| Repository with pinned dependencies and build, deploy and test steps | `requirements.txt`, `requirements-dev.txt`, `docs/REPORT.md` §12, `deploy/README.md` |
+| Architecture diagram with OpenCV 5, AWS, COOL and agent parts | `docs/architecture.svg`, `docs/agent_workflow.svg` |
+| Evaluation with failure cases | `docs/REPORT.md` §8 and §9 |
+| Rights to data, models and media | FRED under Apache-2.0, detector weights not distributed, `THIRD_PARTY.md` |
 
 ## What it does
 

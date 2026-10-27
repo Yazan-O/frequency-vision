@@ -374,43 +374,28 @@ def fig_roc():
     save(fig, "fig_h_roc.png")
 
 
-def bars(cx, cy, r0, n, lens, flare, ink, dur):
-    out = []
-    for i in range(n):
-        a = -math.pi / 2 + i / n * 2 * math.pi
-        c, s = math.cos(a), math.sin(a)
-        L = lens[i]
-        col, wdt = (HUM, 5.4) if i == flare else (ink, 3.3)
-        x1, y1 = cx + c * r0, cy + s * r0
-        ends = [(cx + c * (r0 + l), cy + s * (r0 + l)) for l in L]
-        vx = ";".join(f"{e[0]:.1f}" for e in ends + ends[:1])
-        vy = ";".join(f"{e[1]:.1f}" for e in ends + ends[:1])
-        out.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{ends[0][0]:.1f}" y2="{ends[0][1]:.1f}" stroke="{col}" stroke-width="{wdt}" stroke-linecap="round">'
-                   f'<animate attributeName="x2" values="{vx}" dur="{dur}s" repeatCount="indefinite"/>'
-                   f'<animate attributeName="y2" values="{vy}" dur="{dur}s" repeatCount="indefinite"/></line>')
-    return "".join(out)
-
-
 def logo(ink, name):
-    hz = clip(DEMO)["hum"]["median_hz"]
-    n = 28
-    flare = round((min(max(hz, 150), 1000) - 150) / 850 * (n - 1))
-    rng = np.random.default_rng(7)
-    lens = [[24, 29, 24] if i == flare else list(5 + 10 * rng.random(3)) for i in range(n)]
-    cx, cy = 72, 60
-    eye = f'M8,{cy} Q{cx},-6 136,{cy} Q{cx},126 8,{cy} Z'
-    wave_len = 44
-    pts = " ".join(f"{x},{60 + 17 * math.sin(2 * math.pi * x / wave_len):.2f}" for x in range(0, 4 * wave_len + 1, 2))
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 120" width="560" height="120" role="img" aria-label="Frequency Vision">
+    wm = json.loads((OUT / "wordmark.json").read_text())
+    k = 40 / wm["cap_height"]
+    dark = ink != INK
+    body, top, shell = ("#D8D8D8", "#9A9A9A", "#C8C8C8") if dark else ("#2A2A2A", "#555555", "#232323")
+    prop = (f'<g id="p"><circle r="27" fill="{HUM}" fill-opacity=".12" stroke="{HUM}" stroke-opacity=".35"/>'
+            f'<path d="M0 -24A24 24 0 0 1 20.8 12M0 24A24 24 0 0 1 -20.8 -12" fill="none" stroke="{HUM}" stroke-width="2.2" stroke-linecap="round" opacity=".65"/>'
+            f'<g fill="{ink}" opacity=".85"><path d="M0 0C6 -3 20 -4.5 26 -1.5C20 1.8 6 2.4 0 0Z"/><path d="M0 0C-6 3 -20 4.5 -26 1.5C-20 -1.8 -6 -2.4 0 0Z"/>'
+            f'<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="0.22s" repeatCount="indefinite"/></g>'
+            f'<circle r="5.5" fill="{body}"/></g>')
+    arms = "M60 60L100 92M180 60L140 92M60 180L100 148M180 180L140 148"
+    drone = (f'<path d="{arms}" stroke="{body}" stroke-width="13" stroke-linecap="round" fill="none"/>'
+             f'<path d="{arms}" stroke="{top}" stroke-width="4" stroke-linecap="round" fill="none"/>'
+             f'<path d="M100 84Q120 74 140 84L148 104Q150 120 148 136L140 156Q120 166 100 156L92 136Q90 120 92 104Z" fill="{shell}"/>'
+             f'<circle cx="120" cy="80" r="3" fill="{HUM}"/>'
+             + "".join(f'<use href="#p" x="{x}" y="{y}"/>' for x, y in ((60, 60), (180, 60), (60, 180), (180, 180))))
+    w = round(130 + wm["advance"] * k + 10)
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} 120" width="{w}" height="120" role="img" aria-label="Frequency Vision">
 <title>Frequency Vision</title>
-<defs><clipPath id="eye"><path d="{eye}"/></clipPath><clipPath id="sw"><rect x="160" y="30" width="88" height="60"/></clipPath></defs>
-<g clip-path="url(#eye)">{bars(cx, cy, 15, n, lens, flare, ink, 1.1)}<circle cx="{cx}" cy="{cy}" r="11" fill="{ink}"/><circle cx="{cx - 3.6}" cy="{cy - 3.6}" r="2.7" fill="#FFFFFF"/></g>
-<path d="{eye}" fill="none" stroke="{ink}" stroke-width="4.5" stroke-linejoin="round"/>
-<g clip-path="url(#sw)"><polyline points="{pts}" fill="none" stroke="{HUM}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(160 0)">
-<animateTransform attributeName="transform" type="translate" from="160 0" to="{160 - wave_len} 0" dur="0.5s" repeatCount="indefinite"/></polyline></g>
-<text x="262" y="76" font-family="Archivo, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="44" font-weight="700" letter-spacing="-1" fill="{ink}">Vision</text>
-<rect x="420" y="42" width="128" height="38" fill="none" stroke="{HUM}" stroke-width="2"/>
-<text x="484" y="69" text-anchor="middle" font-family="'JetBrains Mono', Consolas, 'DejaVu Sans Mono', monospace" font-size="22" font-weight="500" fill="{HUM}">{hz:.0f} Hz</text>
+<defs>{prop}</defs>
+<g transform="translate(6 6) scale({108 / 180:.4f}) translate(-30 -30)">{drone}</g>
+<path transform="translate(130 80) scale({k:.5f})" fill="{ink}" d="{wm['d']}"/>
 </svg>
 '''
     (OUT / name).write_text(svg, encoding="utf-8")
