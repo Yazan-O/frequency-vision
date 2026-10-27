@@ -291,7 +291,7 @@ Two development runs on the same eight scenarios are kept in `results/agent/dev_
 
 By scenario kind, Bedrock and the rule planner both solve background 2/2, clear 1/2, late 1/2 and distant 0/2; the fixed schedule misses both late scenarios. What the agent adds: it matches rules we hand-tuned for these tools with 30% fewer tool calls (12.25 vs 17.38 mean steps), raises no false alert, and puts every critical alert behind a human gate. In `late_142` it is the agent's own choice of the whole-frame frequency map, after three empty detections, that finds a 545 Hz drone the detector missed.
 
-Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-dev.txt`, `pytest -q` gives **39 passed, 0 skipped**, including guard checks, injected planner and tool faults, and a planted defect the tests catch. The six fault tests run on a 0.8 MB cut of FRED test sequence 111 in `tests/fixtures/` (events and labels, Apache-2.0); without the ONNX detector they use the labelled event-blob fallback.
+Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-dev.txt`, `pytest -q` gives **40 passed, 0 skipped**, including guard checks, injected planner and tool faults, and a planted defect the tests catch. The six fault tests run on a 0.8 MB cut of FRED test sequence 111 in `tests/fixtures/` (events and labels, Apache-2.0); without the ONNX detector they use the labelled event-blob fallback.
 
 ## 9. Failure cases
 
@@ -303,8 +303,6 @@ Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-d
 | Distant drones | Agent never confirms | 0/2 distant scenarios for every planner | Too few events in a box ≤ 30 px for a clear peak |
 | Hot pixels | Constant-rate pixels look like a hum | 2 false alerts in an early agent run (`results/agent/dev_runs/eval_v1/results.json`) | Sensor defects; fixed with a hot-pixel mask (0 false alerts since) |
 | Known-frequency clips off the stated rate | Peak at a multiple, or wrong | ON-minus-OFF: 3 of 12 EEPPR clips (chain top wrong; velcro front 4.7 times, dot 4.0 times) | Non-sinusoidal motion with strong harmonics |
-
-
 
 ## 10. Limitations
 
@@ -320,7 +318,7 @@ Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-d
 - **Purpose.** Detection and alerting only. Frequency Vision never intercepts, jams or follows a person. A critical alert needs a human's approval, enforced by the guard, not by the prompt.
 - **Privacy.** The confirm step uses event timing inside a box, not appearance. The planner receives JSON numbers (boxes, Hz, scores), never images. All data shown is the public FRED dataset.
 - **Data rights.** FRED is Apache-2.0 per its Hugging Face card. EEPPR is GPL-3.0 and is downloaded at run time and never committed. See `THIRD_PARTY.md`.
-- **Honest labels.** Measured numbers carry their denominators; simulated approval is labelled SIMULATED in every trace and in this report.
+- **Clear labels.** Measured numbers carry their denominators; simulated approval is labelled SIMULATED in every trace and in this report.
 - **False alarms cost something.** A false drone alarm can halt a runway, so thresholds are set on train data with an explicit false-alarm target, and the failure cases above are published.
 - **Security.** No SSH, HTTPS only, a least-privilege IAM role, guard-capped agent budgets, and an approval endpoint with input validation and a size cap.
 

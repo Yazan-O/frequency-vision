@@ -1,6 +1,6 @@
 # Frequency Vision: Devpost write-up
 
-**Video:** [VIDEO_URL] · **Repo:** [REPO_URL] · **Live:** https://100-27-6-111.sslip.io
+**Video:** [VIDEO_URL] · **Repo:** https://github.com/Yazan-O/frequency-vision · **Live:** https://100-27-6-111.sslip.io
 
 **Tagline:** A bird and a drone look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not.
 
@@ -128,11 +128,11 @@ All numbers are on FRED, a public dataset of real event-camera and RGB drone rec
 - **The agent finds what the detector missed.** In FRED sequence 142 the detector proposed nothing for three frames. The agent mapped frequencies across the whole frame, found one spot humming at 545 Hz, confirmed a hum at 542.6 Hz, tracked it, asked for approval and raised the alert. The ground truth is a DJI Tello EDU, whose median hum over the test split is 564 Hz.
 - **The agent matches hand-tuned rules with fewer calls, behind a human gate.** On 8 FRED scenarios fixed before any run, the Bedrock planner solved 4 of 8 with 0 false alerts, the same score as a hand-written rule planner (4 of 8, 0 false alerts), using 30% fewer tool calls (12.25 vs 17.38 per episode); a fixed schedule solved 3 of 8. Every critical alert waits for a human approval. In this evaluation that approval is a SIMULATED automatic operator, labelled so in every trace. Two earlier development runs on the same scenarios are kept in `results/agent/dev_runs/`.
 
-## One honest failure: flickering lights hum too
+## A known failure: flickering lights hum too
 
 Screens and lamps driven by mains power flicker at multiples of 100 Hz, and the event camera sees that flicker as clearly as a propeller. On the training sequences, 35% of the 2,806 strong false peaks on busy non-drone patches sat on multiples of 100 Hz. The clearest case is a phone screen in FRED sequence 212. Most of the rest sat at 300 to 350 Hz in sequences 211 to 216, right in the DJI Mini 2 band.
 
-What we did: a notch at multiples of 100 Hz cut false alarms on the busiest patch from 4.3% to 2.6% at the strict threshold. The agent also has a whole-frame frequency map: if one frequency fills the whole scene, it is lighting, not a rotor. Flicker still causes false peaks, and the hum alone is a weak detector (event-only AP 0.066). That is why Frequency Vision uses the hum to confirm what the detector proposes, and lets the agent gather more evidence before it alerts.
+Our fix: a notch at multiples of 100 Hz cut false alarms on the busiest patch from 4.3% to 2.6% at the strict threshold. The agent also has a whole-frame frequency map: if one frequency fills the whole scene, it is lighting, not a rotor. Flicker still causes false peaks, and the hum alone is a weak detector (event-only AP 0.066). That is why Frequency Vision uses the hum to confirm what the detector proposes, and lets the agent gather more evidence before it alerts.
 
 ## What's next: a pilot
 
