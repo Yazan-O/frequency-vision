@@ -400,51 +400,199 @@ function animateSpec(svg, d, animate, hzLabel) {
 
 const STAGE = { detect_frame: "look", track: "look", box_spectrum: "listen", request_window: "listen", frequency_map: "listen", event_map: "listen", ask_human: "decide", raise_alert: "decide", finish: "decide" };
 const TOOL_ICON = { detect_frame: "i-camera", track: "i-track", box_spectrum: "i-sine", request_window: "i-clock", frequency_map: "i-events", event_map: "i-events", ask_human: "i-human", raise_alert: "i-alert", finish: "i-flag" };
-const ACT = { detect_frame: "camera", track: "follow", box_spectrum: "listen", request_window: "listen longer", frequency_map: "hum map", event_map: "motion map", ask_human: "ask you", raise_alert: "alert", finish: "finish" };
-const LANES = [["look", "Look", "camera and follow"], ["listen", "Listen", "event camera hum"], ["decide", "Decide", "ask, alert, finish"]];
 const epKind = (ep) => { const c = clips.find((x) => x.id === ep.episode); return /^late/.test(ep.episode) ? "late" : (c ? !c.drone : /^background/.test(ep.episode)) ? "none" : "drone"; };
 const EP_LABEL = { drone: "drone", late: "late drone", none: "no drone" };
 const EP_ICON = { drone: "i-drone", late: "i-late", none: "i-nodrone" };
 const STORY = { late: "The camera detector sees nothing. The hum map finds the drone it missed.", drone: "The camera proposes boxes. Listening tells which one hums.", none: "No boxes and no hum spots, so no alert.", rule: "Fixed rules on the same tools, for comparison." };
-const agent = { ep: null, timer: null, run: false, wait: null, items: [], k: 0, hz: null, live: null };
+const agent = { ep: null, timer: null, run: false, wait: null, items: [], k: 0, hz: null, live: null, seq: null };
 const epHz = (ep) => { const r = ep.rows.slice().reverse().find((x) => x.kind === "step" && x.result && x.result.verdict === "hum"); return r ? r.result.peak_hz : null; };
 const heading = (v) => { const a = Math.abs(v[0]) >= Math.abs(v[1]); return a ? (v[0] >= 0 ? "right" : "left") : (v[1] >= 0 ? "down" : "up"); };
+const argsOf = (r) => r.args_checked || r.args || {};
+const iou = (a, b) => { const ix = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])), iy = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1])); const u = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - ix * iy; return u > 0 ? ix * iy / u : 0; };
+const sv = (tag, attrs) => { const e = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
 
-function cardFor(r, k, steps) {
-  const x = r.result || {}, stage = STAGE[r.tool] || "listen", li = el("li", stage);
-  li.dataset.st = stage; li.style.setProperty("--d", `${k * 45}ms`);
-  if (r.tool === "ask_human" && !agent.live) return askCard(r, k, steps, li);
-  const top = el("div", "top"); top.append(icon(TOOL_ICON[r.tool] || "i-wave"), el("span", "n", ACT[r.tool] || r.tool));
-  let v = r.tool, w = null, cls = "";
-  if (r.guard && r.guard !== "ok") { v = "blocked"; cls = "nohum"; }
-  else if (x.error) { v = "error"; cls = "nohum"; }
-  else switch (r.tool) {
-    case "detect_frame": { const n = (x.detections || []).length; v = n ? `${n} box${n === 1 ? "" : "es"}` : "nothing"; w = n ? "possible drone" : "no drone seen"; cls = n ? "" : "nohum"; break; }
-    case "box_spectrum": case "request_window":
-      v = `${Math.round(x.peak_hz)} Hz`; w = `${x.verdict === "hum" ? "hums" : x.verdict === "ambiguous" ? "unsure" : "no hum"}, ${x.window_ms} ms`;
-      cls = x.verdict === "hum" ? "hum" : x.verdict === "ambiguous" ? "maybe" : "nohum"; break;
-    case "frequency_map": case "event_map": { const s = (x.hum_spots || []).length; v = x.dominant_hz ? `${Math.round(x.dominant_hz)} Hz` : "no hum"; w = s ? "humming spot found" : "no humming spot"; cls = s ? "maybe" : "nohum"; break; }
-    case "track": v = x.lost ? "lost it" : "still there"; w = x.lost ? null : `moving ${heading(x.velocity_px_s || [0, 0])}`; cls = x.lost ? "nohum" : ""; break;
-    case "raise_alert": v = "alert sent"; w = x.severity || null; cls = "alert"; break;
-    case "ask_human": if (x.timeout) { v = "no answer"; w = "alert withheld"; cls = "maybe"; break; } v = x.approved ? "approved" : "not approved"; w = /^live page visitor/.test(x.responder || "") ? "by you" : x.responder || null; cls = x.approved ? "" : "nohum"; break;
-    case "finish": v = x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict); w = "final answer"; cls = "fin"; break;
+function actOf(n) {
+  const a = argsOf(n);
+  switch (n.tool) {
+    case "detect_frame": return `look at the ${fmt(a.t, 1)} s frame`;
+    case "box_spectrum": return `listen ${Math.round((a.t1 - a.t0) * 1000)} ms`;
+    case "request_window": return `request ${Math.round(a.length_ms)} ms window`;
+    case "frequency_map": return "scan the hum map";
+    case "track": return "track it";
+    case "ask_human": return "ask you";
+    case "raise_alert": return "raise the alert";
+    case "finish": return "finish";
   }
-  if (cls) li.classList.add(cls);
-  li.append(top, el("span", "v", v));
-  if (w) li.append(el("span", "w", w));
-  const verdict = x.verdict ? `, verdict ${x.verdict}${x.snr != null ? `, score ${fmt(x.snr, 1)}` : ""}${x.n_events != null ? `, ${x.n_events} events` : ""}` : "";
-  li.setAttribute("aria-label", `Step ${r.step}, ${stage}: ${ACT[r.tool] || r.tool}, ${v}${w ? ", " + w : ""}${verdict}`);
-  li.title = `step ${r.step} · ${r.tool} · ${v}${verdict}`;
+  return n.tool;
+}
+function causeOf(r) {
+  const x = r.result || {};
+  if (r.guard && r.guard !== "ok") return "blocked by the guard";
+  if (x.error) return "tool error";
+  switch (r.tool) {
+    case "detect_frame": { const n = (x.detections || []).length; return n ? `${n} box${n === 1 ? "" : "es"}` : "no box"; }
+    case "box_spectrum": case "request_window": return x.verdict || "none";
+    case "frequency_map": case "event_map": return (x.hum_spots || []).length ? "hum spot" : "no hum spot";
+    case "track": return x.lost ? "lost" : "still there";
+    case "ask_human": return x.timeout ? "no answer" : x.approved ? "approved" : "rejected";
+    case "raise_alert": return "alert sent";
+  }
+  return r.tool;
+}
+function boxesOf(r) {
+  const x = r.result || {};
+  if (r.tool === "detect_frame") return (x.detections || []).map((d) => d.box);
+  if (r.tool === "frequency_map" || r.tool === "event_map") return (x.hum_spots || []).map((s) => s.box);
+  if (r.tool === "track") return [x.box].filter(Boolean);
+  return [x.box || argsOf(r).box].filter(Boolean);
+}
+function reasonFor(steps, k) {
+  const n = steps[k + 1];
+  if (!n) return null;
+  const nb = argsOf(n).box;
+  let j = k;
+  if (nb) for (let i = k; i >= 0; i--) if (boxesOf(steps[i]).some((b) => iou(b, nb) > 0.5)) { j = i; break; }
+  return { cause: causeOf(steps[j]), act: actOf(n), from: steps[j].step, to: n.step, tool: n.tool, why: n.why };
+}
+
+function visReq(r) {
+  const a = argsOf(r), x = r.result || {};
+  switch (r.tool) {
+    case "detect_frame": { const d = (x.detections || [])[0]; return { t: a.t, box: d ? d.box : null }; }
+    case "box_spectrum": case "request_window": return x.t1 != null ? { t: x.t1, box: x.box || a.box, t0: x.t0, t1: x.t1 } : a.box ? { t: r.now_before, box: a.box } : null;
+    case "frequency_map": case "event_map": { const s = (x.hum_spots || [])[0]; return { t: a.t1, box: s ? s.box : null }; }
+    case "track": return { t: r.now_after, box: x.box || a.box };
+    case "ask_human": case "raise_alert": return a.box ? { t: r.now_before, box: a.box } : null;
+  }
+  return null;
+}
+const visCache = new Map();
+function fetchVis(seq, q) {
+  const body = JSON.stringify({ seq: String(seq), t: q.t, box: q.box ? q.box.map(Math.round) : null, t0: q.t0 ?? null, t1: q.t1 ?? null });
+  if (!visCache.has(body)) visCache.set(body, fetch("/api/agent/step_vision", { method: "POST", headers: { "Content-Type": "application/json" }, body }).then((r) => (r.ok ? r.json() : null)).catch(() => { visCache.delete(body); return null; }));
+  return visCache.get(body);
+}
+function whereMap(host, box) {
+  const s = sv("svg", { viewBox: "0 0 1280 720", class: "where", "aria-hidden": "true" });
+  s.append(sv("rect", { x: 0, y: 0, width: 1280, height: 720, class: "fr" }));
+  if (box) s.append(sv("rect", { x: box[0], y: box[1], width: Math.max(box[2] - box[0], 40), height: Math.max(box[3] - box[1], 40), class: "bx" }));
+  host.dataset.ar = 16 / 9;
+  host.replaceChildren(s);
+  host.title = "No camera frame kept on this server for this moment; the box is drawn at its place in the 1280 x 720 frame.";
+}
+function showCrop(host, c, box) {
+  const [x0, y0, x1, y1] = c.rect, w = x1 - x0, h = y1 - y0;
+  const img = new Image(); img.alt = ""; img.decoding = "async"; img.src = "data:image/jpeg;base64," + c.jpeg;
+  host.dataset.ar = w / h;
+  host.replaceChildren(img);
+  fitCrop(host);
+  if (box) { const b = el("i", "bx"); Object.assign(b.style, { left: `${(box[0] - x0) / w * 100}%`, top: `${(box[1] - y0) / h * 100}%`, width: `${(box[2] - box[0]) / w * 100}%`, height: `${(box[3] - box[1]) / h * 100}%` }); host.append(b); }
+  host.title = `Camera frame at ${fmt(c.frame_t, 3)} s (${c.source})${box ? ", box in orange" : ""}.`;
+}
+function fitCrop(c) {
+  const vis = c.parentElement;
+  if (!vis || !vis.clientHeight) return;
+  const ar = +c.dataset.ar || 16 / 9, W = vis.clientWidth * (vis.querySelector(".spark") ? 0.5 : 1), w = Math.min(vis.clientHeight * ar, W);
+  c.style.width = `${Math.floor(w)}px`; c.style.height = `${Math.floor(w / ar)}px`;
+}
+const SPX = (f) => (f - 100) / 950 * 120;
+function sparkStem(s, pk) {
+  const Y = (v) => 38 - Math.log10(Math.max(1, Math.min(v, 1000))) / 3 * 35;
+  s.replaceChildren(sv("rect", { x: SPX(150), y: 0, width: SPX(1000) - SPX(150), height: 40, class: "band" }),
+    sv("line", { x1: 0, x2: 120, y1: Y(7.9), y2: Y(7.9), class: "th amb" }), sv("line", { x1: 0, x2: 120, y1: Y(98), y2: Y(98), class: "th hum" }),
+    sv("line", { x1: 0, x2: 120, y1: 38, y2: 38, class: "floor" }),
+    sv("line", { x1: SPX(pk.hz), x2: SPX(pk.hz), y1: 38, y2: Y(pk.snr), class: "pk" }), sv("line", { x1: SPX(pk.hz), x2: SPX(pk.hz), y1: Y(pk.snr), y2: Y(pk.snr), class: "pkd" }));
+  s.dataset.kind = "stem";
+}
+function sparkCurve(s, d, pk) {
+  const p = d.power, n = p.length, top = Math.log10(Math.max(...p) * 1.15), bot = -0.5;
+  const Y = (v) => 38 - (Math.log10(Math.max(v, 0.3)) - bot) / (top - bot) * 35;
+  const pts = p.map((v, i) => `${((i + 0.5) / n * 120).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+  const i = Math.min(n - 1, Math.max(0, Math.floor((d.peak_hz - d.f_lo) / (d.f_hi - d.f_lo) * n)));
+  s.replaceChildren(sv("rect", { x: SPX(150), y: 0, width: SPX(1000) - SPX(150), height: 40, class: "band" }),
+    sv("polyline", { points: pts, class: "cv" }), sv("line", { x1: SPX(pk.hz), x2: SPX(pk.hz), y1: Y(p[i]), y2: Y(p[i]), class: "pkd" }));
+  s.dataset.kind = "curve";
+}
+function visBox(r, seq) {
+  const q = visReq(r), x = r.result || {};
+  if (!q || q.t == null || (r.guard && r.guard !== "ok") || x.error) return null;
+  const wrap = el("div", "vis"), crop = el("div", "crop");
+  wrap.append(crop);
+  const spot = (x.hum_spots || [])[0];
+  const pk = (r.tool === "box_spectrum" || r.tool === "request_window") && x.peak_hz != null ? { hz: x.peak_hz, snr: x.snr }
+    : spot ? { hz: spot.median_hz, snr: spot.max_snr } : null;
+  let s = null;
+  if (pk) {
+    s = sv("svg", { viewBox: "0 0 120 40", preserveAspectRatio: "none", class: "spark", "aria-hidden": "true" });
+    sparkStem(s, pk);
+    const t = sv("title", {}); t.textContent = `Peak ${Math.round(pk.hz)} Hz with score ${fmt(pk.snr, 1)} from the recorded result: floor at 1, dashed line at the ambiguous score 7.9, solid line at the hum score 98, shaded band 150 to 1000 Hz.`;
+    s.append(t); wrap.append(s);
+  }
+  whereMap(crop, q.box);
+  if (seq) fetchVis(seq, q).then((d) => {
+    if (!d) return;
+    if (d.crop) showCrop(crop, d.crop, q.box);
+    const sp = d.spectrum;
+    if (s && sp && Math.abs(sp.peak_hz - pk.hz) <= 1 && Math.abs(sp.snr - pk.snr) <= 0.01 * pk.snr + 0.05) {
+      sparkCurve(s, sp, pk);
+      const t = sv("title", {}); t.textContent = `Spectrum of this box recomputed now from the same events (OpenCV calcHist and dft). Its peak, ${Math.round(sp.peak_hz)} Hz at score ${fmt(sp.snr, 1)}, matches the recorded result. Shaded band 150 to 1000 Hz, log power.`;
+      s.append(t);
+    }
+  });
+  return wrap;
+}
+
+function readout(r) {
+  const x = r.result || {};
+  if (r.guard && r.guard !== "ok") return { v: "blocked", d: "guard", cls: "nohum" };
+  if (x.error) return { v: "error", d: "tool", cls: "nohum" };
+  switch (r.tool) {
+    case "detect_frame": { const ds = x.detections || [], n = ds.length; return { v: n ? `${n} box${n === 1 ? "" : "es"}` : "no box", d: n ? `conf ${fmt(ds[0].score, 2)}` : "detector", cls: n ? "" : "nohum" }; }
+    case "box_spectrum": case "request_window": return { v: `${Math.round(x.peak_hz)} Hz`, d: x.verdict, s: `score ${fmt(x.snr, x.snr < 10 ? 1 : 0)}`, cls: x.verdict === "hum" ? "hum" : x.verdict === "ambiguous" ? "maybe" : "nohum" };
+    case "frequency_map": case "event_map": { const s = (x.hum_spots || [])[0]; return s ? { v: `${Math.round(s.median_hz)} Hz`, d: "hum spot", s: `score ${fmt(s.max_snr, 0)}`, cls: "maybe" } : { v: "no spot", d: "none", cls: "nohum" }; }
+    case "track": return x.lost ? { v: "lost", d: "track", cls: "nohum" } : { v: `${Math.round(x.displacement_px || 0)} px`, d: `moving ${heading(x.velocity_px_s || [0, 0])}`, cls: "" };
+    case "raise_alert": return { v: "alert sent", d: x.severity || "", cls: "alert" };
+    case "ask_human": return x.timeout ? { v: "no answer", d: "alert withheld", cls: "maybe" } : { v: x.approved ? "approved" : "rejected", d: /^live page visitor/.test(x.responder || "") ? "by you" : "operator", cls: x.approved ? "" : "nohum" };
+    case "finish": return { v: x.verdict === "drone_alerted" ? "drone" : x.verdict === "no_drone" ? "no drone" : String(x.verdict), d: "final answer", cls: "fin" };
+  }
+  return { v: r.tool, d: "", cls: "" };
+}
+function nextRow(rs) {
+  const n = el("div", "next");
+  n.append(icon("i-right"), el("span", "c", rs.cause), el("span", "a", `→ ${rs.act}`));
+  n.title = `Step ${rs.from} returned "${rs.cause}", so the agent's next call (step ${rs.to}) was ${rs.tool}.${rs.why ? ` Planner note: ${rs.why}.` : ""}`;
+  return n;
+}
+const stepLabel = (r) => { const a = argsOf(r), x = r.result || {}; return r.tool === "box_spectrum" || r.tool === "request_window" ? `listen ${x.window_ms || Math.round(((a.t1 ?? 0) - (a.t0 ?? 0)) * 1000)} ms` : r.tool === "detect_frame" ? `camera ${fmt(a.t, 1)} s` : r.tool === "frequency_map" ? "hum map" : r.tool === "track" ? "track" : r.tool === "raise_alert" ? "alert" : r.tool === "ask_human" ? "ask you" : r.tool === "finish" ? "finish" : r.tool; };
+
+function cardFor(r, k, steps, seq) {
+  const stage = STAGE[r.tool] || "listen", li = el("li", stage);
+  li.dataset.st = stage; li.style.setProperty("--d", `${k * 45}ms`);
+  if (r.tool === "ask_human" && !agent.live) return askCard(r, k, steps, li, seq);
+  const o = readout(r), rs = reasonFor(steps, k);
+  const top = el("div", "top"); top.append(icon(TOOL_ICON[r.tool] || "i-wave"), el("span", "n", stepLabel(r)), el("span", "k", `#${r.step}`));
+  if (o.cls) li.classList.add(o.cls);
+  li.append(top);
+  const vis = visBox(r, seq);
+  if (vis) li.append(vis);
+  const vr = el("div", "vrow"); vr.append(el("span", "v", o.v));
+  if (o.d) vr.append(el("span", "vd", o.d));
+  if (o.s) vr.append(el("span", "sc", o.s));
+  li.append(vr);
+  if (rs) li.append(nextRow(rs));
+  li.dataset.detail = `Step ${r.step}, ${stepLabel(r)}: ${stage === "decide" ? "result" : "vision returned"} ${o.v}${o.d ? ", " + o.d : ""}${o.s ? ", " + o.s : ""}${rs ? `. ${rs.cause} → ${rs.act}.` : "."}`;
+  li.setAttribute("aria-label", li.dataset.detail);
   li.tabIndex = 0;
-  li.addEventListener("click", () => focusCard(k));
+  li.addEventListener("click", () => focusCard(agent.items.indexOf(li)));
+  li.addEventListener("focus", () => focusCard(agent.items.indexOf(li)));
   return li;
 }
 
-function askCard(r, k, steps, li) {
+function askCard(r, k, steps, li, seq) {
   const prior = steps.slice(0, k).reverse().find((s) => s.result && s.result.verdict === "hum");
   const hz = prior ? Math.round(prior.result.peak_hz) : null;
   li.classList.add("ask");
-  const top = el("div", "top"); top.append(icon("i-human"), el("span", "n", ACT.ask_human));
+  const top = el("div", "top"); top.append(icon("i-human"), el("span", "n", "ask you"), el("span", "k", `#${r.step}`));
   const q = el("div", "q", hz ? `Drone humming at ${hz} Hz. Raise the alert?` : "Raise the alert?");
   const acts = el("div", "acts"), rec = el("span", "rec");
   const send = async (decision) => {
@@ -461,16 +609,46 @@ function askCard(r, k, steps, li) {
   const a = el("button", "btn yes"); a.append(icon("i-check"), document.createTextNode("Approve")); a.addEventListener("click", () => send("approve"));
   const j = el("button", "btn no"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
   acts.append(a, j, rec);
-  li.append(top, q, acts);
-  li.setAttribute("aria-label", `Step ${r.step}, decide: the agent asks a human (severity ${r.args && r.args.severity}). In the recorded run: ${r.result ? r.result.responder : "no answer"}. Your Approve or Reject is recorded on the server only.`);
+  const body = el("div", "askb"), vis = visBox(r, seq), side = el("div", "askq");
+  side.append(q, acts);
+  if (vis) body.append(vis);
+  body.append(side);
+  li.append(top, body);
+  const rs = reasonFor(steps, k);
+  if (rs) li.append(nextRow(rs));
+  li.dataset.detail = `Step ${r.step}: the agent asks a human before a ${(r.args && r.args.severity) || ""} alert. Recorded run: ${r.result ? r.result.responder : "no answer"}.${rs ? ` ${rs.cause} → ${rs.act}.` : ""}`;
+  li.setAttribute("aria-label", `${li.dataset.detail} Your Approve or Reject is recorded on the server only.`);
   li.title = r.args && r.args.question ? r.args.question : "";
   return li;
 }
 
+function layoutCards() {
+  const host = $("cards"), items = [...host.children].filter((c) => c.tagName === "LI");
+  if (!items.length) return;
+  const phone = matchMedia("(max-width:860px)").matches;
+  const span = (c) => (c.classList.contains("ask") ? (phone ? 3 : 2) : 1);
+  const units = items.reduce((s, c) => s + span(c), 0);
+  const per = phone ? 3 : 7, rows0 = Math.ceil(units / per);
+  const cols = Math.max(phone ? 3 : 4, Math.ceil(units / rows0));
+  let col = 0, rows = 1;
+  const row = items.map((c) => { const s = span(c); if (col + s > cols) { col = 0; rows += 1; } col += s; return rows; });
+  items.forEach((c, i) => { c.classList.toggle("eol", i === items.length - 1 || row[i + 1] !== row[i]); c.style.gridColumn = span(c) > 1 ? `span ${span(c)}` : ""; });
+  host.style.setProperty("--cols", cols);
+  host.style.minHeight = "";
+  const gap = parseFloat(getComputedStyle(host).rowGap) || 10, H = host.clientHeight;
+  const fit = Math.floor(Math.min(phone ? 104 : 200, (H - gap * (rows - 1)) / rows)), rowh = phone ? Math.max(fit, 58) : fit, colW = (host.clientWidth - (parseFloat(getComputedStyle(host).columnGap) || 0) * (cols - 1)) / cols;
+  if (H) host.style.setProperty("--rowh", `${rowh}px`);
+  if (H && rowh > fit) host.style.minHeight = `${rowh * rows + gap * (rows - 1)}px`;
+  host.classList.toggle("compact", !phone && rowh < 150);
+  host.classList.toggle("narrow", !phone && colW < 190);
+  host.querySelectorAll(".crop").forEach(fitCrop);
+}
+new ResizeObserver(() => layoutCards()).observe($("cards"));
+
 function focusCard(k) {
   agent.items.forEach((c, j) => c.classList.toggle("now", j === k));
-  const st = agent.items[k] ? agent.items[k].dataset.st : null;
-  document.querySelectorAll("#cards .lane").forEach((s) => s.classList.toggle("on", s.dataset.st === st));
+  const c = agent.items[k];
+  $("stepnow").textContent = c ? c.dataset.detail : agent.items.length ? "Tap a step to see what vision returned and why the agent moved on." : "";
 }
 
 function playBtn(state) {
@@ -494,13 +672,13 @@ function step() {
   if (!reduce) c.animate([{ opacity: 0, transform: "translateY(10px) scale(.96)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
   if (c.classList.contains("ask")) { agent.wait = c; playBtn("wait"); return; }
   agent.k += 1;
-  if (agent.k < agent.items.length) agent.timer = setTimeout(step, reduce ? 300 : 600); else stopPlay();
+  if (agent.k < agent.items.length) agent.timer = setTimeout(step, reduce ? 300 : 900); else stopPlay();
 }
 
 function resume(li, decision) {
   if (!agent.run || agent.wait !== li) return;
   agent.wait = null;
-  if (decision === "approve") { playBtn("run"); agent.k += 1; if (agent.k < agent.items.length) agent.timer = setTimeout(step, reduce ? 300 : 600); else stopPlay(); return; }
+  if (decision === "approve") { playBtn("run"); agent.k += 1; if (agent.k < agent.items.length) agent.timer = setTimeout(step, reduce ? 300 : 900); else stopPlay(); return; }
   stopPlay();
   $("agentnote").textContent = "You rejected, so the replay stops here with no alert. In the recorded run the operator stand-in approved.";
 }
@@ -535,12 +713,7 @@ function slide4() {
   pickEp(eps[first], bar.children[first]);
 }
 
-function makeLanes() {
-  return LANES.map(([st, name, sub]) => { const li = el("li", "lane"); li.dataset.st = st; const h = el("div", "lh"); h.append(el("b", "", name), el("span", "", sub)); const ol = el("ol", "row"); li.append(h, ol); return li; });
-}
-function addCard(lanes, c) { lanes[LANES.findIndex((l) => l[0] === c.dataset.st)].querySelector(".row").append(c); }
-
-function liveAsk(id, ask) {
+function liveAsk(id, ask, seq) {
   const li = el("li", "decide ask pending"); li.dataset.st = "decide";
   const m = /([\d.]+) Hz/.exec(ask.question || ""), top = el("div", "top");
   top.append(icon("i-human"), el("span", "n", "asks you, live"));
@@ -554,7 +727,13 @@ function liveAsk(id, ask) {
   const a = el("button", "btn yes"); a.append(icon("i-check"), document.createTextNode("Approve")); a.addEventListener("click", () => send("approve"));
   const j = el("button", "btn no"); j.append(icon("i-x"), document.createTextNode("Reject")); j.addEventListener("click", () => send("reject"));
   acts.append(a, j);
-  li.append(top, q, acts);
+  const body = el("div", "askb"), side = el("div", "askq");
+  const vis = ask.box && agent.live && agent.live.now != null ? visBox({ tool: "ask_human", args: { box: ask.box }, now_before: agent.live.now }, seq) : null;
+  side.append(q, acts);
+  if (vis) body.append(vis);
+  body.append(side);
+  li.append(top, body);
+  li.dataset.detail = `The live agent asks you: ${q.textContent}`;
   li.setAttribute("aria-label", `The live agent asks you: ${q.textContent} Approve or Reject; it waits up to ${agent.live ? agent.live.wait : 60} seconds.`);
   return li;
 }
@@ -595,17 +774,18 @@ async function runLive() {
     const d = await r.json();
     if (r.status === 429 && d.detail && d.detail.retry_s) { busyNote(d.detail); return; }
     if (!r.ok) throw new Error(typeof d.detail === "string" ? d.detail : r.status);
-    id = d.id; agent.wait_s = d.wait_s;
+    id = d.id; agent.wait_s = d.wait_s; agent.seq = d.scenario && d.scenario.seq;
   } catch (e) { $("agentnote").textContent = `Live run not started: ${e.message}`; btn.disabled = false; return; }
   [...$("epbtns").children].forEach((o) => o.setAttribute("aria-pressed", "false"));
-  agent.live = { id, n: 0, t: null, wait: agent.wait_s || 60 };
-  const lanes = makeLanes();
-  $("cards").classList.remove("anim");
-  $("cards").replaceChildren(...lanes); agent.items = [];
+  agent.live = { id, n: 0, t: null, wait: agent.wait_s || 60, now: null };
+  const host = $("cards"), seq = agent.seq || clip.seq;
+  host.classList.remove("anim");
+  host.replaceChildren(); agent.items = [];
   $("story").textContent = "Live: the agent is calling the real OpenCV 5 tools on the server now. It waits for you before a critical alert.";
   $("replaytag").textContent = `Live run on the server · ${modelOf(clip)} · FRED sequence ${clip.seq}`;
   $("replaytag").title = "";
   $("agentnote").textContent = "Running on the server…";
+  focusCard(-1);
   const poll = async () => {
     if (!agent.live || agent.live.id !== id) return;
     let d;
@@ -615,15 +795,21 @@ async function runLive() {
     const pn = LIVE_PLANNER(d.planner);
     if (pn) $("replaytag").textContent = `Live run on the server · ${modelOf(clip)} · FRED sequence ${clip.seq} · planned by ${pn}`;
     const steps = d.rows.filter((r) => r.kind === "step");
-    for (let k = agent.live.n; k < steps.length; k++) {
-      const c = cardFor(steps[k], k, steps); agent.items.push(c); addCard(lanes, c); focusCard(agent.items.length - 1);
-      const x = steps[k].result || {};
-      if (x.verdict === "hum") { agent.hz = x.peak_hz; if (current === 4) setLogoHz(agent.hz); }
+    const pend = host.querySelector(".pending");
+    if (pend && (d.status !== "waiting" || steps.length > agent.live.n)) pend.remove();
+    if (steps.length > agent.live.n) {
+      for (let k = Math.max(0, agent.live.n - 1); k < steps.length; k++) {
+        const c = cardFor(steps[k], k, steps, seq);
+        if (k < agent.live.n) { agent.items[k].replaceWith(c); agent.items[k] = c; } else { agent.items.push(c); host.append(c); }
+        const x = steps[k].result || {};
+        if (k >= agent.live.n && x.verdict === "hum") { agent.hz = x.peak_hz; if (current === 4) setLogoHz(agent.hz); }
+      }
+      agent.live.n = steps.length;
+      agent.live.now = steps[steps.length - 1].now_after;
+      focusCard(agent.items.length - 1);
     }
-    agent.live.n = steps.length;
-    const pend = $("cards").querySelector(".pending");
-    if (d.status === "waiting" && d.ask && !pend) { const c = liveAsk(id, d.ask); addCard(lanes, c); c.querySelector(".yes").focus({ preventScroll: true }); }
-    if (d.status !== "waiting" && pend) pend.remove();
+    if (d.status === "waiting" && d.ask && !host.querySelector(".pending")) { const c = liveAsk(id, d.ask, seq); host.append(c); c.querySelector(".yes").focus({ preventScroll: true }); }
+    layoutCards();
     if (d.status === "done") { $("agentnote").textContent = liveDone(d); stopLive(); return; }
     $("agentnote").textContent = d.status === "waiting" ? `Waiting for you: Approve or Reject (${d.wait_s} s).` : `Running on the server${pn ? `, planned by ${pn}` : ""}…`;
     agent.live.t = setTimeout(poll, 400);
@@ -638,12 +824,10 @@ function pickEp(ep, btn) {
   agent.ep = ep;
   const steps = ep.rows.filter((r) => r.kind === "step");
   const host = $("cards");
-  host.classList.remove("anim"); void host.offsetWidth; host.classList.add("anim");
-  const lanes = LANES.map(([st, name, sub]) => { const li = el("li", "lane"); li.dataset.st = st; const h = el("div", "lh"); h.append(el("b", "", name), el("span", "", sub)); const ol = el("ol", "row"); li.append(h, ol); return li; });
-  agent.items = steps.map((r, k) => cardFor(r, k, steps));
-  agent.items.forEach((c) => lanes[LANES.findIndex((l) => l[0] === c.dataset.st)].querySelector(".row").append(c));
-  host.replaceChildren(...lanes);
   const sc = ep.rows.find((r) => r.kind === "start"), seq = sc && sc.scenario ? sc.scenario.seq : "";
+  host.classList.remove("anim"); void host.offsetWidth; host.classList.add("anim");
+  agent.items = steps.map((r, k) => cardFor(r, k, steps, seq));
+  host.replaceChildren(...agent.items);
   $("story").textContent = STORY[ep.planner === "rule" ? "rule" : epKind(ep)];
   $("replaytag").textContent = `Replay of a recorded run · FRED sequence ${seq} · ${ep.planner === "rule" ? "fixed rules" : "planned by Claude Sonnet 4.6"}`;
   $("replaytag").title = `Planner: ${plannerName(ep)}. Episode ${ep.episode}.`;
@@ -651,6 +835,7 @@ function pickEp(ep, btn) {
   agent.hz = epHz(ep);
   if (current === 4) setLogoHz(agent.hz);
   focusCard(-1);
+  layoutCards();
 }
 
 function paintThumb(cv, c) {

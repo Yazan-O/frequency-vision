@@ -372,6 +372,98 @@ def agent_live_decide(rid: str, d: LiveDecision):
     return {"ok": True, "decision": d.decision}
 
 
+LIMITS["vision"] = (300, 60.0)
+
+
+class StepVisionReq(BaseModel):
+    seq: str = Field(max_length=12, pattern=r"^\d+$")
+    t: float = Field(ge=0, le=100000)
+    box: list[int] | None = Field(default=None, min_length=4, max_length=4)
+    t0: float | None = Field(default=None, ge=0, le=100000)
+    t1: float | None = Field(default=None, ge=0, le=100000)
+
+
+def _step_frame(seq, t, tol=0.05):
+    import cv2 as cv
+    try:
+        sl = agent_store().get(seq)
+        img, ft = sl.frame(t)
+        if img is not None and t - ft <= tol:
+            if img.shape[1] != sl.width or img.shape[0] != sl.height:
+                img = cv.resize(img, (sl.width, sl.height), interpolation=cv.INTER_LINEAR)
+            return img, ft, "agent data slice"
+    except KeyError:
+        pass
+    for c in clips().values():
+        if str(c.get("seq")) != seq or not c.get("frames"):
+            continue
+        f = min(c["frames"], key=lambda f: abs(f["t"] - t))
+        if abs(f["t"] - t) <= tol:
+            img = cv.imread(str(STATIC.parent / f["src"]))
+            if img is not None:
+                return cv.resize(img, (c["width"], c["height"]), interpolation=cv.INTER_LINEAR), f["t"], "page clip frames"
+    return None, None, None
+
+
+@lru_cache(maxsize=512)
+def _step_crop(seq, t, box):
+    import base64
+    import cv2 as cv
+    img, ft, src = _step_frame(seq, t)
+    if img is None:
+        return None
+    H, W = img.shape[:2]
+    x0, y0, x1, y1 = box if box else (0, 0, W, H)
+    if box:
+        s = max(x1 - x0, y1 - y0, 24) * 0.9
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+        x0, y0, x1, y1 = int(max(0, cx - s * 4 / 3)), int(max(0, cy - s)), int(min(W, cx + s * 4 / 3)), int(min(H, cy + s))
+    crop = img[y0:y1, x0:x1]
+    if crop.size == 0:
+        return None
+    z = 192 / max(crop.shape[1], 1)
+    crop = cv.resize(crop, (192, max(1, int(round(crop.shape[0] * z)))), interpolation=cv.INTER_AREA if z < 1 else cv.INTER_CUBIC)
+    ok, buf = cv.imencode(".jpg", crop, [cv.IMWRITE_JPEG_QUALITY, 80])
+    if not ok:
+        return None
+    return {"jpeg": base64.b64encode(buf.tobytes()).decode(), "rect": [x0, y0, x1, y1], "frame_t": round(float(ft), 4), "source": src}
+
+
+@lru_cache(maxsize=512)
+def _step_spectrum(seq, box, t0, t1):
+    from hertz.agent import vision
+    if vision.L1 is None:
+        return None
+    try:
+        sl = agent_store().get(seq)
+    except KeyError:
+        return None
+    if t0 < sl.t_lo - 1e-6 or t1 > sl.t_hi + 1e-6 or not 0 < t1 - t0 <= 1.0:
+        return None
+    r = vision.L1.box_spectrum(vision._ev(sl, t0, t1), list(box), sl.us(t0), sl.us(t1))
+    f, p = r["freqs"], r["power"]
+    lo, hi = vision.BAND[0] - 50, vision.BAND[1] + 50
+    med = float(np.median(p[(f >= vision.BAND[0]) & (f <= vision.BAND[1])])) or 1.0
+    k = (f >= lo) & (f <= hi)
+    n = 96
+    idx = np.clip(((f[k] - lo) / (hi - lo) * n).astype(int), 0, n - 1)
+    pooled = np.zeros(n)
+    np.maximum.at(pooled, idx, p[k] / med)
+    return {"f_lo": lo, "f_hi": hi, "power": np.round(pooled, 3).tolist(), "peak_hz": round(float(r["peak_hz"]), 1), "snr": round(float(r["snr"]), 2),
+            "n_events": int(r["n_events"]), "band": list(vision.BAND), "hum_snr": vision.CLEAR_SNR, "ambiguous_snr": vision.AMB_SNR,
+            "how": "recomputed from the same events with the agent's box_spectrum (OpenCV calcHist + dft); power over the band median, max-pooled to 96 bins"}
+
+
+@router.post("/agent/step_vision")
+def agent_step_vision(r: StepVisionReq, req: Request):
+    limit(req, "vision")
+    box = tuple(int(v) for v in r.box) if r.box else None
+    if box and not (0 <= box[0] < box[2] <= 1280 and 0 <= box[1] < box[3] <= 720):
+        raise HTTPException(422, "box outside the frame")
+    spec = _step_spectrum(r.seq, box, round(r.t0, 4), round(r.t1, 4)) if box and r.t0 is not None and r.t1 is not None else None
+    return {"seq": r.seq, "t": r.t, "box": box, "crop": _step_crop(r.seq, round(r.t, 4), box), "spectrum": spec}
+
+
 def e2e():
     out = []
     for f in sorted((ROOT / "bench" / "results").glob("e2e-*.json")):
@@ -594,10 +686,10 @@ def summary():
             {"title": "events in 3D", "shows": "orbitable x-y-time point cloud of 40 ms of events on the drone; black = pixel got brighter (ON), grey = darker (OFF); orange lines one blade pass apart; 'vs empty' stacks a same-size patch from the no-drone clip"},
             {"title": "spectrum", "shows": "live spectrum of a drone box next to a no-drone box for a chosen event window; shaded band 150-1000 Hz is the propeller band; power relative to the band median, log scale"},
             {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
-            {"title": "agent", "shows": "recorded agent steps as cards in three rows, look, listen and decide; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.6 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the agent (Claude Sonnet 4.6 on Amazon Bedrock, fixed rules after 100 Bedrock runs a UTC day or on a Bedrock error) on the picked clip against the live tools, waits up to 60 s for the visitor's approval before a critical alert, ends unconfirmed with no alert when nobody answers, and reports the clip's expected Hz and the IoU with the FRED box"},
+            {"title": "agent", "shows": "recorded agent steps as cards in call order; each card shows what OpenCV returned for that step (the camera crop around its box, a mini spectrum with the peak Hz and score, recomputed on the server by POST /api/agent/step_vision when the events are kept there, and the verdict hum, ambiguous or none) and an arrow naming the result that led to the next call, e.g. ambiguous -> request 300 ms window; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.9 s and stops at the approval card until Approve or Reject; default episode: the late drone (FRED 142) that the camera detector misses and the frequency map finds; 'Run agent live' runs the agent (Claude Sonnet 4.6 on Amazon Bedrock, fixed rules after 100 Bedrock runs a UTC day or on a Bedrock error) on the picked clip against the live tools, waits up to 60 s for the visitor's approval before a critical alert, ends unconfirmed with no alert when nobody answers, and reports the clip's expected Hz and the IoU with the FRED box"},
             {"title": "results", "shows": "one card per drone clip, its thumbnail framed on the drone, the measured median blade-pass frequency and the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
         "judging": JUDGING,
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
                    "approve": "POST /api/approve {episode, step, decision}",
-                   "agent_live": "POST /api/agent/live {clip} starts the agent (Bedrock planner, rule fallback) on the server against the live tools, one run per IP and at most 3 at once; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "results": "/api/results", "cool": "GET /api/cool: cv2 path, build HAL lines, CPU features, EC2 instance metadata and a live timing of GaussianBlur, dft and frequency_map on a real event window", "health": "/health", "version": "/version"},
+                   "agent_live": "POST /api/agent/live {clip} starts the agent (Bedrock planner, rule fallback) on the server against the live tools, one run per IP and at most 3 at once; GET /api/agent/live/{id} returns its steps; POST /api/agent/live/{id}/decide {decision} answers its approval question", "detect": "POST /api/detect {clip, frame}", "step_vision": "POST /api/agent/step_vision {seq, t, box, t0, t1}: camera crop around an agent step's box and its box spectrum recomputed with the agent's box_spectrum, for slide 5", "results": "/api/results", "cool": "GET /api/cool: cv2 path, build HAL lines, CPU features, EC2 instance metadata and a live timing of GaussianBlur, dft and frequency_map on a real event window", "health": "/health", "version": "/version"},
     }
