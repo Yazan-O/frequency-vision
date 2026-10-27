@@ -6,7 +6,12 @@
 
 **Name:** Frequency Vision: it sees the frequencies a camera cannot.
 
-**One line:** Frequency Vision confirms drones by their propeller hum. An OpenCV 5 detector proposes a box, the event camera inside that box shows the blade-pass frequency, and an agent running on COOL on AWS Graviton4 decides what to look at next. On 84 minutes of real drone video the hum check removes 25% of the detector's false alarms at the same recall, losing 26 of 70,794 true detections. A stricter hum threshold (score ≥ 98) reaches precision 0.815.
+**One line:** Frequency Vision confirms drones by their propeller hum. An OpenCV 5 detector proposes a box, the event camera inside that box shows the blade-pass frequency, and an agent decides what to look at next.
+
+- **The drone hums, a bird does not.** A propeller passes hundreds of times a second; a 30 fps camera cannot see it, an event camera can.
+- **−25% false alarms at the same recall** on 84 minutes of real drone video (FRED test split), losing 26 of 70,794 true detections. A stricter threshold reaches precision 0.815.
+- **An agent on Amazon Bedrock whose decisions come from OpenCV 5 vision.** Blind its spectrum and it falls from 12 to 6 of 24 scenarios and finds 0 of 18 drones.
+- **Live on COOL on AWS Graviton4, verifiable in one click:** https://100-27-6-111.sslip.io/api/cool, or the **Verify COOL live** button on slide 6.
 
 ## The stakes
 
@@ -69,9 +74,9 @@ Frequency Vision enters the overall awards and both featured paths: Best Use of 
 | Criterion (weight) | Evidence | Where |
 |---|---|---|
 | OpenCV 5 and agent integration (30%) | Every agent tool is an OpenCV 5 call. In trace `late_142` the detector finds nothing, the frequency map finds a 545 Hz spot, and the agent confirms the drone. | `hertz/agent/`, `results/agent/eval_v3/traces/bedrock_late_142.jsonl` |
-| Orchestration and autonomy (25%) | After an ambiguous spectrum the Bedrock planner asked for a new window 6 of 9 times. A guard checks every call against its schema, the clock and the budgets. | `results/agent/eval_v3/results.json`, `hertz/agent/guard.py` |
-| Task effectiveness and evaluation (20%) | 8 fixed FRED scenarios: Bedrock **4 of 8 with 0 false alerts**, the same score as the rule planner, with 12.25 vs 17.38 tool calls per episode. | `results/agent/eval_v3/results.json` |
-| Failure handling, observability, security, human control (15%) | Critical alerts need a human's approval, enforced by the guard. Injected planner and tool faults are tested. Every step is logged as a JSON line. | `tests/`, `hertz/agent/guard.py`, `POST /api/agent/live` |
+| Orchestration and autonomy (25%) | Vision drives the decisions. Blind the OpenCV spectrum and Bedrock falls from 12 to 6 of 24, finding 0 of 18 drones. With the same history, a blinded result changes its next action at 39 of 130 vision steps (30%), a shuffled result at 53 of 130 (41%), and after a hum at 10 of 10. A guard checks every call against its schema, the clock and the budgets. | `results/agent/eval_v4/vision_ablation.json`, `results/agent/eval_v4/SUMMARY.json`, `hertz/agent/guard.py` |
+| Task effectiveness and evaluation (20%) | 24 FRED scenarios, 16 of them held out and never used for any fix: Bedrock **12 of 24 with 0 false alerts**, against 10 (1 false alert) for the rule planner and 9 for a fixed schedule. On the held-out 16: 8 vs 6 vs 6. | `results/agent/eval_v4/results.json`, `eval/scenarios.json` |
+| Failure handling, observability, security, human control (15%) | Critical alerts need a human's approval, enforced by the guard: operator approve, reject and timeout each held in 6 of 6 Bedrock episodes (operator scripted in the evaluation). This test found one guard gap, now fixed: after a Reject, every alert is blocked until a later approval. 21 injected faults (planner, tools, data, budgets, operator, MCP): **21 of 21 handled, 0 unsafe alerts**. Every step is logged as a JSON line. | `results/agent/faults/TABLE.md`, `tests/`, `hertz/agent/guard.py` |
 | User experience, documentation, demonstration (10%) | Slide 5 replays real traces and runs the agent live on the server with your Approve or Reject. | Live page slide 5, `docs/agent_workflow.svg` |
 
 **Submission requirements**
@@ -126,7 +131,9 @@ All numbers are on FRED, a public dataset of real event-camera and RGB drone rec
 - **The frequencies are physically right.** Frequency Vision's median blade-pass frequency per drone model matches the independent PropPulse estimates on the same data: DJI Mini 2 320 Hz (median over all Mini 2 test sequences, 1,951 boxes; the demo clip gives 316 Hz) vs PropPulse 316 Hz, DJI Tello 564 Hz vs 539 Hz (11,068 boxes), DJI Mini 3 245 Hz vs 223 Hz (2,405 boxes). For the DJI Mini 2, 99.2% of test boxes hum above the train-chosen threshold.
 - **The hum separates drones from background.** AUC 0.917 for drone boxes against random same-size patches (26,911 vs 26,909 boxes).
 - **The agent finds what the detector missed.** In FRED sequence 142 the detector proposed nothing for three frames. The agent mapped frequencies across the whole frame, found one spot humming at 545 Hz, confirmed a hum at 542.6 Hz, tracked it, asked for approval and raised the alert. The ground truth is a DJI Tello EDU, whose median hum over the test split is 564 Hz.
-- **The agent matches hand-tuned rules with fewer calls, behind a human gate.** On 8 FRED scenarios fixed before any run, the Bedrock planner solved 4 of 8 with 0 false alerts, the same score as a hand-written rule planner (4 of 8, 0 false alerts), using 30% fewer tool calls (12.25 vs 17.38 per episode); a fixed schedule solved 3 of 8. Every critical alert waits for a human approval. In this evaluation that approval is a SIMULATED automatic operator, labelled so in every trace. Two earlier development runs on the same scenarios are kept in `results/agent/dev_runs/`.
+- **The agent beats hand-tuned rules, behind a human gate.** On 24 FRED scenarios, 16 of them held out, the Bedrock planner solved 12 with 0 false alerts; the hand-written rule planner solved 10 with 1 false alert and a fixed schedule 9. On the held-out 16: 8 vs 6 vs 6.
+- **Its decisions come from the vision.** Blind the OpenCV spectrum and Bedrock falls to 6 of 24 and finds 0 of 18 drones. Replayed with the same history, a blinded result changes its next action at 39 of 130 vision steps, a shuffled one at 53 of 130, and after a hum at 10 of 10.
+- **Human control holds.** Operator approve, reject and timeout each held in 6 of 6 Bedrock episodes; the operator is scripted in the evaluation and labelled SIMULATED in every trace. This test found one guard gap, now fixed: after a Reject, every alert is blocked until a later approval. 21 of 21 injected faults were handled with 0 unsafe alerts.
 
 ## A known failure: flickering lights hum too
 

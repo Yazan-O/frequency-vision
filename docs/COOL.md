@@ -95,18 +95,6 @@ Output agreement, COOL vs pip ([`diff-cool-vs-pip-c8g.xlarge.json`](../bench/res
 
 COOL computes the full-sensor frequency map 1.13x faster (1.85 vs 2.08 ms, run 1). The detector's DNN forward pass sets the window total. Both builds return the same 169 boxes, equal detector scores, hum peaks within 0.0001 Hz and zero verdict changes ([`e2e-diff-cool-vs-pip-c8g.xlarge.json`](../bench/results/e2e-diff-cool-vs-pip-c8g.xlarge.json)). COOL ships OpenCV 5.1.0-dev, and the baseline is the newest OpenCV 5 wheel on PyPI, 5.0.0.93.
 
-### New measurements
-
-Lane L17 is running a detector tuning pass and new end-to-end runs on Graviton4 (script `bench/l17_remote.sh`, host label `<host>`). Each file below lands in `bench/results/`; its numbers enter this page only from the file.
-
-| File | Measures | Result |
-|---|---|---|
-| `det-cool-<host>.json`, `det-pip-<host>.json` | detector p50 per DNN engine, target and thread count | [X] |
-| `e2e-cool-best-<host>-r3.json`, `e2e-cool-best-<host>-r4.json` | end to end, COOL, best detector setting | [X] |
-| `e2e-pip-best-<host>-r3.json`, `e2e-pip-best-<host>-r4.json` | end to end, pip, best detector setting | [X] |
-| `ev-cool-<host>.json`, `ev-pip-<host>.json` | hum engine alone, per box and per map window | [X] |
-| `tput-cool-<host>.json`, `tput-pip-<host>.json` | throughput and cost per window | [X] |
-
 ## 5. Reproduce
 
 Needs Python 3.10+, `pip install boto3==1.43.118`, an AWS CLI profile (default `opencv26`, override with `AWS_PROFILE`), and a subscription to the [COOL Graviton4 listing](https://aws.amazon.com/marketplace/pp/prodview-fdvbfiewzuehs). Commands from [`deploy/README.md`](../deploy/README.md) and [`deploy/aws.py`](../deploy/aws.py).

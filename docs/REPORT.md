@@ -18,7 +18,9 @@ Headline results, all on the real FRED dataset (event + RGB drone recordings, Ap
 | Hum score, drone box vs busiest non-drone patch (AUC) | **0.758** | 26,911 vs 26,909 | same |
 | COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster; DNN forward 0.92x | c8g.xlarge, 6 ops | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
 | End-to-end confirm step, COOL vs pip, same host | p50 **106.2 vs 98.9 ms** per window: COOL 7% slower because the detector is; frequency map 1.13x faster; outputs identical | 210 FRED windows, 630 timed, 169 boxes | `bench/results/E2E.md`, `bench/results/e2e-*.json` |
-| Agent (Bedrock planner), clean run | **4 of 8** scenarios, **0** false alerts: the same score as the hand-tuned rule planner with **30% fewer tool calls** (12.3 vs 17.4 per episode), and a human approval gate on every critical alert (simulated in this evaluation) | 8 FRED test scenarios fixed before any run | `results/agent/eval_v3/results.json` |
+| Agent (Bedrock planner) | **12 of 24** scenarios, **0** false alerts, vs rule planner 10 (1 false alert) and fixed schedule 9; held-out 16: **8** vs 6 vs 6 | 24 FRED scenarios, 16 held out | `results/agent/eval_v4/results.json` |
+| Agent decisions come from vision | spectrum blinded: Bedrock **6 of 24**, 0 of 18 drones found; next action changed at **39 of 130** vision steps (blinded), 53 of 130 (shuffled), 10 of 10 after a hum | 130 vision steps, 24 episodes | `results/agent/eval_v4/vision_ablation.json` |
+| Human control and faults | approve, reject, timeout each held in **6 of 6** Bedrock episodes (scripted operator); **21 of 21** injected faults handled, 0 unsafe alerts | 6 asking episodes; 21 fault cases | `results/agent/eval_v4/SUMMARY.json`, `results/agent/faults/TABLE.md` |
 | Agent finds what the detector missed | the whole-frame frequency map found a **545 Hz** DJI Tello the DNN did not propose | FRED test sequence 142 | `results/agent/eval_v3/traces/bedrock_late_142.jsonl` |
 
 ## 1. Problem
@@ -185,7 +187,7 @@ The Tello's median blade-pass frequency over the whole test split is 564 Hz (§8
 
 **Vision changes the decision.** Trace `clear_210` (DJI Mini 2): two DNN boxes are ambiguous (259.8 Hz, score 92.5; 876.9 Hz, score 15.5). The planner re-checks both with 300 ms and 1,000 ms windows; both stay ambiguous, so it raises no alert. At 21.0 s a new DNN box gives a **hum at 312.7 Hz** (score 509); the planner tracks it, re-confirms the hum at the new position (646.0 Hz, score 122, about twice the Mini 2's 320 Hz median), asks the operator (SIMULATED approval) and raises a critical alert: 14 steps, 19.8 s. <!-- src: results/agent/eval_v3/traces/bedrock_clear_210.jsonl -->
 
-Across the 8 clean-run episodes, the planner's next tool followed the verdict: after **ambiguous** it asked for a new window 6 of 9 times; after **none** it moved on to a new frame (6) or searched the whole frame with `frequency_map` (3); after **hum** it tracked (3) or asked a human (1). <!-- src: results/agent/eval_v3/results.json summary.bedrock.next_tool_after_verdict -->
+Across the 24 episodes, the planner's next tool followed the verdict: after **ambiguous** it asked for a new window 28 of 51 times; after **hum** it tracked (8) or asked a human (2). <!-- src: results/agent/eval_v4/results.json summary.bedrock.next_tool_after_verdict -->
 
 **Guard (deterministic, `hertz/agent/guard.py`).** Every call is checked before it runs: tool name and argument schema; boxes clipped to the frame and capped at a quarter of it; a causal clock (no window may end in the future or start before the 1 s event buffer); window lengths 20 to 1,000 ms (frequency map at most 300 ms); a per-call event cap; budgets of 24 steps, 4 rejections, 30 s compute and 3 alerts; no repeated identical call. A rejected call returns its reason to the planner.
 
@@ -277,21 +279,29 @@ The train-chosen hum rule removes **8,790 of 34,796 false detections (25%)** and
 
 ### 8.4 Agent
 
-Eight FRED test scenarios were fixed before any agent run (`eval/scenarios.json`, frozen 2026-10-26 09:30 CDT): 2 clear (large drone), 2 distant (box ≤ 30 px), 2 background (no drone within 1 s), 2 late (drone enters mid-watch). Success means the correct verdict, with alerts only on a real drone. Three planners share the same tools and guard: Bedrock (Claude Sonnet 4.6), a hand-written rule planner and a fixed schedule. Clean run eval_v3 uses the final detector (DNN, score ≥ 0.125, event blobs as a labelled fallback) and the final engine thresholds (hum ≥ 98, ambiguous ≥ 7.9). Source: `results/agent/eval_v3/results.json`.
+24 FRED test scenarios (`eval/scenarios.json`) cover four kinds: clear (large drone), distant (box ≤ 30 px), background (no drone within 1 s) and late (drone enters mid-watch). 16 of them are held out and were never used for any fix; 18 contain a drone. Success means the correct verdict, with alerts only on a real drone. Three planners share the same tools and guard: Bedrock (Claude Sonnet 4.6), a hand-written rule planner and a fixed schedule. Run eval_v4 uses the final detector (DNN, score ≥ 0.125, event blobs as a labelled fallback) and the final engine thresholds (hum ≥ 98, ambiguous ≥ 7.9). Source: `results/agent/eval_v4/results.json`, `results/agent/eval_v4/SUMMARY.json`.
 
-**Approval in this evaluation is SIMULATED**: an automatic stand-in approves every `ask_human`, and each trace labels it so. The live page's agent slide replays real eval_v3 traces; in the replay its Approve and Reject buttons record the viewer's decision on the server and trigger nothing else. Its Run agent live button runs the same agent on the server on the picked clip with Claude Sonnet 4.6 on Amazon Bedrock (the fixed-rule planner after 15 Bedrock runs a UTC day or on a Bedrock error, named on the page). There a real visitor answers the approval question; with no answer within 60 s the run ends unconfirmed, waiting for an operator, and no alert is raised.
+**The operator in this evaluation is scripted**: in the main run an automatic stand-in approves every `ask_human`, and each trace labels it SIMULATED. The live page's agent slide replays real eval_v3 traces; in the replay its Approve and Reject buttons record the viewer's decision on the server and trigger nothing else. Its Run agent live button runs the same agent on the server on the picked clip with Claude Sonnet 4.6 on Amazon Bedrock (the fixed-rule planner after 15 Bedrock runs a UTC day or on a Bedrock error, named on the page). There a real visitor answers the approval question; with no answer within 60 s the run ends unconfirmed, waiting for an operator, and no alert is raised.
 
-Two development runs on the same eight scenarios are kept in `results/agent/dev_runs/` (`eval_v1`, `eval_v2`). They used the earlier event-blob detector and thresholds (hum ≥ 15, ambiguous ≥ 7.5), and `eval_v1` is the run where hot pixels caused false alerts. Every agent number in this report comes from the clean run `eval_v3`.
+Development history: `results/agent/dev_runs/` (`eval_v1`, `eval_v2`) used the earlier event-blob detector and thresholds (hum ≥ 15, ambiguous ≥ 7.5); `eval_v1` is the run where hot pixels caused false alerts. `results/agent/eval_v3/` is the first clean run on the first 8 scenarios, and its traces are the ones quoted above and replayed on the live page. Every agent number in this section comes from `eval_v4`.
 
-| Planner | Success | False alerts | Mean steps | Mean wall time |
-|---|---|---|---|---|
-| **Bedrock planner** | **4 / 8** | **0** | **12.3** | 17.7 s |
-| Rule planner | 4 / 8 | 0 | 17.4 | 2.2 s |
-| Fixed schedule | 3 / 8 | 0 | 10.0 | 1.5 s |
+| Planner | Success (24) | Held out (16) | Drones found (18) | False alerts | Mean steps | Mean wall time |
+|---|---|---|---|---|---|---|
+| **Bedrock planner** | **12** | **8** | **6** | **0** | 13.1 | 21.5 s |
+| Rule planner | 10 | 6 | 4 | 1 | 15.7 | 10.1 s |
+| Fixed schedule | 9 | 6 | 3 | 0 | 10.3 | 2.5 s |
 
-By scenario kind, Bedrock and the rule planner both solve background 2/2, clear 1/2, late 1/2 and distant 0/2; the fixed schedule misses both late scenarios. What the agent adds: it matches rules we hand-tuned for these tools with 30% fewer tool calls (12.25 vs 17.38 mean steps), raises no false alert, and puts every critical alert behind a human gate. In `late_142` it is the agent's own choice of the whole-frame frequency map, after three empty detections, that finds a 545 Hz drone the detector missed.
+**The decisions come from the vision** (`results/agent/eval_v4/vision_ablation.json`). With the OpenCV spectrum blinded, Bedrock solves 6 of 24 and finds 0 of the 18 drones; with results shuffled between steps, also 6 of 24 and 0 drones. Replaying each of 130 vision steps with the same history, a blinded result changes Bedrock's next action at 39 (30%), a shuffled result at 53 (41%), and every one of the 10 steps that followed a hum. A control replay with the real result matched the logged action at 125 of 130 steps.
 
-Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-dev.txt`, `pytest -q` gives **40 passed, 0 skipped**, including guard checks, injected planner and tool faults, and a planted defect the tests catch. The six fault tests run on a 0.8 MB cut of FRED test sequence 111 in `tests/fixtures/` (events and labels, Apache-2.0); without the ONNX detector they use the labelled event-blob fallback.
+**Human control** (`results/agent/eval_v4/SUMMARY.json`, `human_control`). The 6 Bedrock episodes that ask the operator were rerun with a scripted approve, reject and no answer. Approve raised the critical alert, reject raised none, and no answer held the verdict unconfirmed: 6 of 6 each. This test found one guard gap: before the fix, one rejected episode still raised an alert (5 of 6). The guard now blocks every alert after a Reject until a later approval.
+
+**Injected faults** (`results/agent/faults/TABLE.md`): 21 faults across the planner, tools, data, budgets, operator and MCP server, on real FRED data with the real guard. All 21 are handled and none raises an unsafe alert.
+
+In `late_142` it is the agent's own choice of the whole-frame frequency map, after three empty detections, that finds a 545 Hz drone the detector missed.
+
+By scenario kind (24 episodes, 6 per kind), Bedrock solves background 6, clear 4, distant 1 and late 1; the rule planner 6, 3, 0, 1; the fixed schedule 6, 3, 0, 0.
+
+Tests: `pip install -r requirements-dev.txt` then `pytest -q` gives **68 passed, 2 xpassed**, including guard checks, injected planner, tool and operator faults, and a planted defect the tests catch. The six fault tests run on a 0.8 MB cut of FRED test sequence 111 in `tests/fixtures/` (events and labels, Apache-2.0); without the ONNX detector they use the labelled event-blob fallback.
 
 ## 9. Failure cases
 
@@ -300,7 +310,7 @@ Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-d
 | Light flicker | Screens and lamps give strong false peaks at multiples of 100 Hz | 35% of 2,806 strong false peaks on busy non-drone patches (train) | Mains-driven light flickers at twice the line frequency; a phone screen in sequence 212 is the clearest example. The mains notch and `frequency_map` (one frequency across the whole scene means flicker) reduce it |
 | 300 to 350 Hz non-drone sources | Strong peaks in sequences 211 to 216 that are not drones | most of the remaining strong false peaks | Periodic sources in those scenes overlap the DJI Mini 2 band |
 | Fast FPV drones | Weak, scattered peaks | Cineape20: 43.4% of boxes ≥ 7.86, median 664 Hz vs 547 Hz published; 0 of 50 clear windows on the demo clip (`app/static/data/clips.json`) | Small fast props, frequent throttle changes |
-| Distant drones | Agent never confirms | 0/2 distant scenarios for every planner | Too few events in a box ≤ 30 px for a clear peak |
+| Distant drones | Agent rarely confirms | Bedrock 1 of 6 distant scenarios, rule planner and fixed schedule 0 of 6 (`results/agent/eval_v4/results.json`, `by_kind`) | Too few events in a box ≤ 30 px for a clear peak |
 | Hot pixels | Constant-rate pixels look like a hum | 2 false alerts in an early agent run (`results/agent/dev_runs/eval_v1/results.json`) | Sensor defects; fixed with a hot-pixel mask (0 false alerts since) |
 | Known-frequency clips off the stated rate | Peak at a multiple, or wrong | ON-minus-OFF: 3 of 12 EEPPR clips (chain top wrong; velcro front 4.7 times, dot 4.0 times) | Non-sinusoidal motion with strong harmonics |
 
@@ -310,7 +320,7 @@ Tests: in a fresh `git clone` with a new venv and `pip install -r requirements-d
 - Edge-on rotors and far drones give few events, so no peak.
 - FRED is one sensor (Prophesee EVK4) in daytime outdoor scenes; other sensors, night and rain are untested.
 - FRED RGB labels lag the events by about 3 frames; we score windows ending at the label time.
-- The agent evaluation covers 8 scenarios; approvals in it are simulated.
+- The agent evaluation covers 24 scenarios with a scripted operator.
 - COOL is slower than pip OpenCV on resize and the DNN forward pass on this host, so the end-to-end confirm step is 7% slower under COOL with identical outputs; its connected-component labels differ slightly in the single-op test (§6).
 
 ## 11. Responsible use

@@ -36,6 +36,11 @@
 </p>
 
 <p align="center">
+  <b>An agent on Amazon Bedrock whose decisions come from OpenCV 5 vision.</b> Blind its spectrum and it falls from 12 to 6 of 24 scenarios and finds 0 of 18 drones.<br>
+  <b>Live on COOL on AWS Graviton4, verifiable in one click:</b> <a href="https://100-27-6-111.sslip.io/api/cool"><code>/api/cool</code></a>, or the <b>Verify COOL live</b> button on slide 6.
+</p>
+
+<p align="center">
   <a href="https://100-27-6-111.sslip.io"><img src="docs/figures/live_demo.gif" alt="Recording of the live page: clip picker, the hum, events in 3D, the spectrum, the maths and the agent" width="880"></a><br>
   <sub>The six slides of the live page, captured 2026-10-26: four real FRED drone clips, the hum at 30 fps vs events, the x-y-t event cloud, the spectrum computed on the server, the maths, the agent loop and the results.</sub>
 </p>
@@ -66,7 +71,7 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Video of five minutes or less: team, app working, architecture, results | [https://youtu.be/KSkdlCEsu84](https://youtu.be/KSkdlCEsu84) |
 | Evaluation evidence with failure cases and limitations | [Results](#results), [REPORT §8 to §10](docs/REPORT.md) |
 | Best Use of COOL evidence: COOL version, instance config, reproducible method, proof COOL runs the workload | [COOL page for judges](docs/COOL.md), [COOL on Graviton4](#cool-on-graviton4), [live host proof `c8g.medium`](bench/results/cool-proof-live-c8g.medium.json), [benchmark host proof `c8g.xlarge`](bench/results/cool-proof-c8g.xlarge.json) |
-| Agentic Vision evidence: workflow diagram, a trace where OpenCV 5 output changes the next action, evaluation of success, failures and human control | [The agent](#the-agent), [trace `bedrock_late_142`](results/agent/eval_v3/traces/bedrock_late_142.jsonl), [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json) |
+| Agentic Vision evidence: workflow diagram, a trace where OpenCV 5 output changes the next action, evaluation of success, failures and human control | [The agent](#the-agent), [trace `bedrock_late_142`](results/agent/eval_v3/traces/bedrock_late_142.jsonl), [`results/agent/eval_v4/results.json`](results/agent/eval_v4/results.json), [`vision_ablation.json`](results/agent/eval_v4/vision_ablation.json), [fault table](results/agent/faults/TABLE.md) |
 | Rights to data, models and media | FRED under Apache-2.0, detector weights not distributed, [`THIRD_PARTY.md`](THIRD_PARTY.md) |
 
 ### Overall rubric
@@ -95,9 +100,9 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Criterion (weight) | Evidence | Where |
 |---|---|---|
 | OpenCV 5 and agent integration (30%) | Every vision tool is an OpenCV 5 call. In trace `late_142` the detector finds nothing, the frequency map finds a 545 Hz spot, and the agent confirms the drone. | [`hertz/agent/`](hertz/agent/tools.py), [trace](#one-real-trace-bedrock_late_142) |
-| Orchestration and autonomy (25%) | Vision drives the decisions. Blind the OpenCV spectrum and Bedrock falls from 12 to 6 of 24, finding 0 of 18 drones. With the same history, a blinded result changes its next action at 30% of vision steps, and at 10 of 10 steps after a hum. A guard checks every call against its schema, the clock and the budgets. The same guarded tools are an MCP server. | [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), [`hertz/agent/guard.py`](hertz/agent/guard.py), [`hertz/agent/mcp_server.py`](hertz/agent/mcp_server.py) |
-| Task effectiveness and evaluation (20%) | 24 FRED scenarios, 16 of them held out and never used for any fix: Bedrock **12 of 24 with 0 false alerts**, against 10 (1 false alert) for the rule planner and 9 for a fixed schedule. On the held-out 16: 8 vs 6 vs 6. | [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), [`eval/scenarios.json`](eval/scenarios.json) |
-| Failure handling, observability, security, human control (15%) | Critical alerts need a human's approval, enforced by the guard: operator reject, timeout and approve each held in 6 of 6 Bedrock episodes that asked. 21 injected faults (planner, tools, data, budgets, operator, MCP): **21 of 21 handled, 0 unsafe alerts**. Every step is logged as a JSON line. | [`results/agent/faults/TABLE.md`](results/agent/faults/TABLE.md), [`tests/test_agent_faults.py`](tests/test_agent_faults.py), [`hertz/agent/guard.py`](hertz/agent/guard.py) |
+| Orchestration and autonomy (25%) | Vision drives the decisions. Blind the OpenCV spectrum and Bedrock falls from 12 to 6 of 24, finding 0 of 18 drones. With the same history, a blinded result changes its next action at 39 of 130 vision steps (30%), a shuffled result at 53 of 130 (41%), and after a hum at 10 of 10. A guard checks every call against its schema, the clock and the budgets. The same guarded tools are an MCP server. | [`vision_ablation.json`](results/agent/eval_v4/vision_ablation.json), [`SUMMARY.json`](results/agent/eval_v4/SUMMARY.json), [`hertz/agent/guard.py`](hertz/agent/guard.py), [`hertz/agent/mcp_server.py`](hertz/agent/mcp_server.py) |
+| Task effectiveness and evaluation (20%) | 24 FRED scenarios, 16 of them held out and never used for any fix: Bedrock **12 of 24 with 0 false alerts**, against 10 (1 false alert) for the rule planner and 9 for a fixed schedule. On the held-out 16: 8 vs 6 vs 6. | [`results/agent/eval_v4/results.json`](results/agent/eval_v4/results.json), [`eval/scenarios.json`](eval/scenarios.json) |
+| Failure handling, observability, security, human control (15%) | Critical alerts need a human's approval, enforced by the guard: operator reject, timeout and approve each held in 6 of 6 Bedrock episodes that asked (operator scripted in the evaluation). The human-control test found one guard gap, now fixed: after a Reject, every alert is blocked until a later approval. 21 injected faults (planner, tools, data, budgets, operator, MCP): **21 of 21 handled, 0 unsafe alerts**. Every step is logged as a JSON line. | [`results/agent/faults/TABLE.md`](results/agent/faults/TABLE.md), [`tests/test_agent_faults.py`](tests/test_agent_faults.py), [`hertz/agent/guard.py`](hertz/agent/guard.py) |
 | User experience, documentation, demonstration (10%) | Slide 5 replays real traces and runs the agent live on the server with your Approve or Reject. | [Live page](https://100-27-6-111.sslip.io) slide 5, [agent loop](docs/agent_workflow.svg) |
 
 ## Architecture
@@ -289,7 +294,7 @@ flowchart TD
     R --> E["finish"]
 ```
 
-The next call follows the visual verdict. After **ambiguous**, the Bedrock planner asked for a new window 6 of 9 times. After **none**, it moved to a new frame (6) or searched the whole frame with `frequency_map` (3). After **hum**, it tracked (3) or asked a human (1). Source: [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), `summary.bedrock.next_tool_after_verdict`. The drawn version is [`docs/agent_workflow.svg`](docs/agent_workflow.svg). On 24 scenarios, blinding the spectrum changed Bedrock's next action at 39 of 130 vision steps; a repeat with the real result matched the logged action 125 of 130 times ([`vision_ablation.json`](results/agent/eval_v4/vision_ablation.json)).
+The next call follows the visual verdict. Over 24 scenarios, after **ambiguous** the Bedrock planner asked for a new window 28 of 51 times; after **hum** it tracked (8) or asked a human (2). Source: [`results/agent/eval_v4/results.json`](results/agent/eval_v4/results.json), `summary.bedrock.next_tool_after_verdict`. The drawn version is [`docs/agent_workflow.svg`](docs/agent_workflow.svg). Replaying each step with the same history, a blinded spectrum changed Bedrock's next action at 39 of 130 vision steps and a shuffled one at 53 of 130; a repeat with the real result matched the logged action 125 of 130 times ([`vision_ablation.json`](results/agent/eval_v4/vision_ablation.json)).
 
 ### One real trace: `bedrock_late_142`
 
@@ -487,7 +492,7 @@ Python 3.12 or 3.13, pinned dependencies, pip OpenCV 5.0.0 locally. The demo cli
 
 ```bash
 pip install -r requirements-dev.txt
-pytest -q                      # 40 passed
+pytest -q                      # 68 passed, 2 xpassed
 python tools/int64_repro.py
 uvicorn app.main:app --port 8080
 python docs/figures/make_figures.py
@@ -540,8 +545,8 @@ AWS: `python deploy/aws.py cool` launches or updates the COOL endpoint, and `pyt
 | `eval/` | Detector training and export, full-pipeline eval, event-only baseline, agent eval, frozen scenarios |
 | `bench/` | Benchmark runner, comparisons, price lookup; results in `bench/results/` |
 | `deploy/` | AWS launch and update (`aws.py`), instance provisioning |
-| `results/` | Every reported number: `detector/`, `engine/`, `agent/eval_v3/` with traces; `agent/dev_runs/` holds two earlier development runs on the same scenarios |
-| `tests/` | 40 tests: engine, endpoint, guard, injected planner and tool faults |
+| `results/` | Every reported number: `detector/`, `engine/`, `agent/eval_v4/` (24 scenarios, vision ablation, human control) with traces; `agent/faults/` (21 injected faults); `agent/eval_v3/` and `agent/dev_runs/` hold earlier development runs |
+| `tests/` | 70 tests: engine, endpoint, guard, injected planner, tool and operator faults |
 | `tools/` | `int64_repro.py`, web and agent-slice export |
 | `docs/` | Report, Devpost text, diagrams, figures and their script |
 
