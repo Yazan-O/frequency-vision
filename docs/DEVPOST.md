@@ -1,6 +1,6 @@
 # Frequency Vision: Devpost write-up
 
-**Video:** [VIDEO_URL] · **Repo:** https://github.com/Yazan-O/frequency-vision · **Live:** https://100-27-6-111.sslip.io
+**Video:** https://youtu.be/KSkdlCEsu84 · **Repo:** https://github.com/Yazan-O/frequency-vision · **Live:** https://100-27-6-111.sslip.io
 
 **Tagline:** A bird and a drone look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not.
 

@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <b>▶&nbsp;Video:</b> [VIDEO_URL]&nbsp;&nbsp;·&nbsp;&nbsp;<b>Repo:</b> <a href="https://github.com/Yazan-O/frequency-vision">github.com/Yazan-O/frequency-vision</a>&nbsp;&nbsp;·&nbsp;&nbsp;<b>Live:</b> <a href="https://100-27-6-111.sslip.io">100-27-6-111.sslip.io</a> (no login, served by COOL on Graviton4)<br>
+  <b>▶&nbsp;Video:</b> <a href="https://youtu.be/KSkdlCEsu84">youtu.be/KSkdlCEsu84</a>&nbsp;&nbsp;·&nbsp;&nbsp;<b>Repo:</b> <a href="https://github.com/Yazan-O/frequency-vision">github.com/Yazan-O/frequency-vision</a>&nbsp;&nbsp;·&nbsp;&nbsp;<b>Live:</b> <a href="https://100-27-6-111.sslip.io">100-27-6-111.sslip.io</a> (no login, served by COOL on Graviton4)<br>
   <b>Team:</b> Mohamad Yazan Sadoun, PhD candidate, Electrical and Computer Engineering, University of Oklahoma
 </p>
 
@@ -63,7 +63,7 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Pinned dependencies, build, deployment and test instructions | [`requirements.txt`](requirements.txt), [`requirements-dev.txt`](requirements-dev.txt), [Reproduce](#reproduce), [deploy README](deploy/README.md), [CI](.github/workflows/ci.yml) |
 | Architecture diagram with OpenCV 5, AWS, COOL and agent parts | [Architecture](#architecture), [`docs/architecture.svg`](docs/architecture.svg), [`docs/agent_workflow.svg`](docs/agent_workflow.svg) |
 | Working web endpoint | [100-27-6-111.sslip.io](https://100-27-6-111.sslip.io), always on |
-| Video of five minutes or less: team, app working, architecture, results | [VIDEO_URL] |
+| Video of five minutes or less: team, app working, architecture, results | [https://youtu.be/KSkdlCEsu84](https://youtu.be/KSkdlCEsu84) |
 | Evaluation evidence with failure cases and limitations | [Results](#results), [REPORT §8 to §10](docs/REPORT.md) |
 | Best Use of COOL evidence: COOL version, instance config, reproducible method, proof COOL runs the workload | [COOL page for judges](docs/COOL.md), [COOL on Graviton4](#cool-on-graviton4), [live host proof `c8g.medium`](bench/results/cool-proof-live-c8g.medium.json), [benchmark host proof `c8g.xlarge`](bench/results/cool-proof-c8g.xlarge.json) |
 | Agentic Vision evidence: workflow diagram, a trace where OpenCV 5 output changes the next action, evaluation of success, failures and human control | [The agent](#the-agent), [trace `bedrock_late_142`](results/agent/eval_v3/traces/bedrock_late_142.jsonl), [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json) |
@@ -95,8 +95,8 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Criterion (weight) | Evidence | Where |
 |---|---|---|
 | OpenCV 5 and agent integration (30%) | Every vision tool is an OpenCV 5 call. In trace `late_142` the detector finds nothing, the frequency map finds a 545 Hz spot, and the agent confirms the drone. | [`hertz/agent/`](hertz/agent/tools.py), [trace](#one-real-trace-bedrock_late_142) |
-| Orchestration and autonomy (25%) | After an ambiguous spectrum the Bedrock planner asked for a new window 6 of 9 times. A guard checks every call against its schema, the clock and the budgets. The same guarded tools are an MCP server. | [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), [`hertz/agent/guard.py`](hertz/agent/guard.py), [`hertz/agent/mcp_server.py`](hertz/agent/mcp_server.py) |
-| Task effectiveness and evaluation (20%) | 8 FRED scenarios fixed before any run: Bedrock **4 of 8 with 0 false alerts**, the same score as the rule planner, with 12.25 vs 17.38 tool calls per episode. | [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), [`eval/scenarios.json`](eval/scenarios.json) |
+| Orchestration and autonomy (25%) | Vision drives the decisions. Blind the OpenCV spectrum and Bedrock falls from 12 to 6 of 24, finding 0 of 18 drones. With the same history, a blinded result changes its next action at 30% of vision steps, and at 10 of 10 steps after a hum. A guard checks every call against its schema, the clock and the budgets. The same guarded tools are an MCP server. | [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), [`hertz/agent/guard.py`](hertz/agent/guard.py), [`hertz/agent/mcp_server.py`](hertz/agent/mcp_server.py) |
+| Task effectiveness and evaluation (20%) | 24 FRED scenarios, 16 of them held out and never used for any fix: Bedrock **12 of 24 with 0 false alerts**, against 10 (1 false alert) for the rule planner and 9 for a fixed schedule. On the held-out 16: 8 vs 6 vs 6. | [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), [`eval/scenarios.json`](eval/scenarios.json) |
 | Failure handling, observability, security, human control (15%) | Critical alerts need a human's approval, enforced by the guard. Injected planner and tool faults are tested. Every step is logged as a JSON line. | [`tests/`](tests/test_agent_failures.py), [`hertz/agent/guard.py`](hertz/agent/guard.py), `POST /api/agent/live` |
 | User experience, documentation, demonstration (10%) | Slide 5 replays real traces and runs the agent live on the server with your Approve or Reject. | [Live page](https://100-27-6-111.sslip.io) slide 5, [agent loop](docs/agent_workflow.svg) |
 
@@ -420,7 +420,7 @@ On 12 EEPPR clips with stated frequencies (1 s window), the pipeline signal (ON 
 <details>
 <summary><b>Scope, failure cases and responsible use</b></summary>
 
-**What it is built for.** Frequency Vision confirms detector proposals. The hum is a confirmation signal, not a finder: event-only detection on FRED reaches AP 0.066, so the RGB detector proposes and the agent gathers more windows on ambiguous boxes. The tested setting is FRED: one Prophesee EVK4 sensor in daytime outdoor scenes. Distant drones (box ≤ 30 px) give too few events for a peak, so the agent holds them as unconfirmed (0 of 2 distant scenarios for every planner). Fast FPV drones such as the Cineape20 give weak, scattered peaks. Mains-driven lights flicker at multiples of 100 Hz; the notch and the whole-frame frequency map handle them, since one frequency filling the whole scene means flicker. The agent evaluation covers 8 fixed scenarios with SIMULATED approval; on the live page a person presses Approve or Reject.
+**What it is built for.** Frequency Vision confirms detector proposals. The hum is a confirmation signal, not a finder: event-only detection on FRED reaches AP 0.066, so the RGB detector proposes and the agent gathers more windows on ambiguous boxes. The tested setting is FRED: one Prophesee EVK4 sensor in daytime outdoor scenes. Distant drones (box ≤ 30 px) give too few events for a peak, so the agent holds them as unconfirmed (Bedrock confirms 1 of 6 distant scenarios, the rule planner and the fixed schedule 0). Fast FPV drones such as the Cineape20 give weak, scattered peaks. Mains-driven lights flicker at multiples of 100 Hz; the notch and the whole-frame frequency map handle them, since one frequency filling the whole scene means flicker. The agent evaluation covers 24 fixed scenarios with a scripted operator (approve, reject, no answer); on the live page a person presses Approve or Reject.
 
 **Responsible use.**
 - Detection and alerting only. It never intercepts, jams or follows a person.
