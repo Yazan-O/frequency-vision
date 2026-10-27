@@ -23,7 +23,7 @@
 <text x="80" y="240" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dnn.NMSBoxes</text>
 <line x1="60" y1="330" x2="284" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
 <text x="172.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">end to end, detector p50</text>
-<text x="172.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 103.3 ms · pip 95.8 ms</text>
+<text x="172.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 55.5 ms · pip 51.8 ms</text>
 <rect x="312" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
 <rect x="312" y="112" width="248" height="252" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
 <rect x="320" y="120" width="54" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
@@ -47,7 +47,7 @@
 <text x="546" y="300" fill="#2e5aa8" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end" font-weight="600">1.17x</text>
 <line x1="324" y1="330" x2="548" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
 <text x="436.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">end to end, hum checks p50</text>
-<text x="436.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 0.83 ms · pip 0.80 ms</text>
+<text x="436.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 0.77 ms · pip 0.74 ms</text>
 <rect x="576" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
 <rect x="576" y="112" width="248" height="252" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
 <rect x="584" y="120" width="30" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
@@ -64,8 +64,8 @@
 <circle cx="596" cy="257" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
 <text x="608" y="260" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">magnitude</text>
 <line x1="588" y1="330" x2="812" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
-<text x="700.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">end to end, frequency map p50</text>
-<text x="700.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 1.85 ms · pip 2.08 ms · 1.13x</text>
+<text x="700.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">frequency map, real FRED events, mean</text>
+<text x="700.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 7.15 · pip 9.05 ms · 1.26x (100 ms)</text>
 <rect x="840" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
 <rect x="840" y="112" width="248" height="252" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
 <rect x="848" y="120" width="42" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
@@ -100,7 +100,7 @@
 <rect x="802.4" y="223" width="59.2" height="12" rx="2" fill="#f5f5f5"/>
 <text x="832.0" y="232" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HZ · SNR</text>
 <text x="48" y="392" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="start">x = COOL speed vs pip OpenCV 5.0.0, op benchmark on a 1280x720 image (dft 512x512), p50, same c8g.xlarge, 4 threads (bench/results/cool-graviton4-c8g.xlarge.json, pip-graviton4-c8g.xlarge-samehost.json)</text>
-<text x="48" y="406" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="start">end to end = 210 FRED windows on the same host (bench/results/E2E.md); outputs identical: 169 boxes, 0 verdict flips</text>
+<text x="48" y="406" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="start">end to end = 180 FRED windows on the same host (bench/results/E2E.md); outputs identical: 147 boxes, 0 verdict flips</text>
 <rect x="1120" y="112" width="140" height="104" rx="6" fill="#f5f5f5"/>
 <rect x="1120" y="112" width="140" height="104" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
 <rect x="1128" y="120" width="54" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
