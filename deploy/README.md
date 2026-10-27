@@ -34,9 +34,9 @@ COOL ships as an AWS Marketplace AMI: "Cloud Optimized OpenCV For AWS Graviton4"
 
 ```
 python deploy/aws.py cool-ami
-python deploy/aws.py cool --type c8g.xlarge
+python deploy/aws.py cool --name strobe-cool-bench --type c8g.xlarge
 curl https://<cool-host>/version
-python deploy/aws.py cool-bench
+python deploy/aws.py cool-bench --name strobe-cool-bench
 ```
 
 `cool` launches the newest AMI with that product code on a Graviton4 instance, installs the app's non-OpenCV dependencies into `/opt/cool/venvs/python_3.12`, and serves the app from that interpreter. `/version` then shows `"cool": true`, a `cv2_file` under `/opt/cool`, and the KleidiCV Custom HAL line. `cool-bench` runs the benchmark with COOL and with pip OpenCV 5 on the same instance, writes the output diff, and terminates the instance.

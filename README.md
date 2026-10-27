@@ -65,7 +65,7 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Working web endpoint | [100-27-6-111.sslip.io](https://100-27-6-111.sslip.io), always on |
 | Video of five minutes or less: team, app working, architecture, results | [VIDEO_URL] |
 | Evaluation evidence with failure cases and limitations | [Results](#results), [REPORT §8 to §10](docs/REPORT.md) |
-| Best Use of COOL evidence: COOL version, instance config, reproducible method, proof COOL runs the workload | [COOL on Graviton4](#cool-on-graviton4), [live host proof `c8g.medium`](bench/results/cool-proof-live-c8g.medium.json), [benchmark host proof `c8g.xlarge`](bench/results/cool-proof-c8g.xlarge.json) |
+| Best Use of COOL evidence: COOL version, instance config, reproducible method, proof COOL runs the workload | [COOL page for judges](docs/COOL.md), [COOL on Graviton4](#cool-on-graviton4), [live host proof `c8g.medium`](bench/results/cool-proof-live-c8g.medium.json), [benchmark host proof `c8g.xlarge`](bench/results/cool-proof-c8g.xlarge.json) |
 | Agentic Vision evidence: workflow diagram, a trace where OpenCV 5 output changes the next action, evaluation of success, failures and human control | [The agent](#the-agent), [trace `bedrock_late_142`](results/agent/eval_v3/traces/bedrock_late_142.jsonl), [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json) |
 | Rights to data, models and media | FRED under Apache-2.0, detector weights not distributed, [`THIRD_PARTY.md`](THIRD_PARTY.md) |
 
@@ -85,10 +85,10 @@ Frequency Vision meets every final submission requirement and enters the overall
 | Criterion (weight) | Evidence | Where |
 |---|---|---|
 | Verified COOL integration on Graviton (30%) | The live endpoint loads `cv2` from `/opt/cool`: OpenCV 5.1.0-dev, `aarch64`, KleidiCV 0.7.0 HAL. A proof file records the instance type, AMI and Marketplace product code. | live [`/version`](https://100-27-6-111.sslip.io/version), [COOL proof](#cool-on-graviton4) |
-| Architecture and technical quality (25%) | COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host. Benchmark hosts are separate and terminated after each run. | [Architecture](#architecture), [REPORT §6](docs/REPORT.md) |
+| Architecture and technical quality (25%) | COOL serves the page, the hum engine, the detector and the agent tools on one Graviton4 host. Benchmark hosts are separate and terminated after each run. | [Architecture](#architecture), [COOL call map](docs/COOL.md#1-why-event-camera-signal-processing-suits-cool), [`docs/cool_architecture.svg`](docs/cool_architecture.svg), [REPORT §6](docs/REPORT.md) |
 | Measured value (20%) | Same Graviton4 host, COOL vs pip OpenCV 5: GaussianBlur **1.89x**, `dft` **1.54x**, connected components **1.17x** faster. Frequency map 1.13x faster end to end, with identical outputs. | [`cool-graviton4-c8g.xlarge.json`](bench/results/cool-graviton4-c8g.xlarge.json), [`pip-graviton4-c8g.xlarge-samehost.json`](bench/results/pip-graviton4-c8g.xlarge-samehost.json), [`E2E.md`](bench/results/E2E.md) |
 | Innovation (15%) | COOL runs signal processing on event-camera time series: a 10 kHz `dft` per box and a per-pixel frequency map with `DFT_ROWS`. | [`hertz/freq.py`](hertz/freq.py) |
-| Reproducibility and demonstration (10%) | `python deploy/aws.py cool` deploys the endpoint. `python deploy/aws.py cool-bench` reruns the same-host benchmark. | [deploy README](deploy/README.md), [`bench/`](bench/bench.py) |
+| Reproducibility and demonstration (10%) | `python deploy/aws.py cool` deploys the endpoint. `python deploy/aws.py cool-bench --name strobe-cool-bench` reruns the same-host benchmark on its own instance. | [deploy README](deploy/README.md), [`bench/`](bench/bench.py) |
 
 ### Agentic Vision rubric
 
@@ -436,6 +436,8 @@ Failure cases with numbers: [`docs/REPORT.md`](docs/REPORT.md) §9.
 
 ## COOL on Graviton4
 
+Full COOL write-up for judges, with the per-stage call map and reproduce steps: [`docs/COOL.md`](docs/COOL.md).
+
 COOL (Cloud Optimized OpenCV for AWS Graviton4, AWS Marketplace product code `aajkmdd4qo3r7yhqg61a7aah9`, AMI `ami-033e481a24f94c8cb`) runs the whole live workload. The live host `c8g.medium` (`i-0d59ee3505c397229`) serves `cv2` from `/opt/cool`, read from `/version` and the EC2 API ([`cool-proof-live-c8g.medium.json`](bench/results/cool-proof-live-c8g.medium.json)). Proof captured through SSM on the benchmark instance ([`cool-proof-c8g.xlarge.json`](bench/results/cool-proof-c8g.xlarge.json)):
 
 ```
@@ -520,7 +522,7 @@ python eval/export_fred_slices.py ...
 python eval/agent_eval.py --planners rule,fixed --out runs/agent
 ```
 
-AWS: `python deploy/aws.py cool` launches or updates the COOL endpoint, and `python deploy/aws.py cool-bench` runs the same-host benchmark. See [`deploy/README.md`](deploy/README.md) and [`docs/REPORT.md`](docs/REPORT.md) §12. Every figure is drawn by [`docs/figures/make_figures.py`](docs/figures/make_figures.py) from committed result files and the committed FRED event slices in `app/data/`.
+AWS: `python deploy/aws.py cool` launches or updates the COOL endpoint, and `python deploy/aws.py cool-bench --name strobe-cool-bench` runs the same-host benchmark on its own instance. See [`deploy/README.md`](deploy/README.md) and [`docs/REPORT.md`](docs/REPORT.md) §12. Every figure is drawn by [`docs/figures/make_figures.py`](docs/figures/make_figures.py) from committed result files and the committed FRED event slices in `app/data/`.
 
 </details>
 
