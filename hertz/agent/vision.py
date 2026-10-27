@@ -135,7 +135,8 @@ def detect(sl, t, win=0.033, k=5):
     img, ft = sl.frame(t) if net is not None else (None, None)
     if net is not None and img is not None:
         b, s, _ = net.detect(img)
-        dets = [{"box": [int(v) for v in bb], "score": round(float(sc), 3), "label": "drone (dnn)"} for bb, sc in zip(b, s)]
+        z = sl.width / img.shape[1]
+        dets = [{"box": [int(v * z) for v in bb], "score": round(float(sc), 3), "label": "drone (dnn)"} for bb, sc in zip(b, s)]
         dets.sort(key=lambda d: -d["score"])
         return {"t": round(t, 4), "frame_t": round(ft, 4), "detections": dets[:k], "n_candidates": len(dets), "source": SOURCE["detect"]}
     why = "no RGB frame at t" if net is not None else SOURCE["detect"]
