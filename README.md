@@ -27,9 +27,6 @@
 
 <p align="center">
   <a href="https://github.com/<owner>/<repo>/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/opencv/opencv/tree/5.x"><img alt="OpenCV 5" src="https://img.shields.io/badge/OpenCV-5.x-5C3EE8?logo=opencv&logoColor=white"></a>
-  <a href="#cool-proof"><img alt="AWS Graviton4 + COOL" src="https://img.shields.io/badge/AWS-Graviton4%20%2B%20COOL-FF9900?logo=amazonwebservices&logoColor=white"></a>
-  <a href="LICENSE"><img alt="Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-1E1E1E"></a>
 </p>
 
 ## How Frequency Vision meets the judging criteria
@@ -110,7 +107,7 @@ All on FRED, a public dataset of real event + RGB drone recordings (Apache-2.0).
 | False detections removed / true detections lost | **8,790 of 34,796** / 26 of 70,794 | same |
 | High-precision setting, RGB + hum score ≥ 98 | precision **0.815** at recall 0.146, 51.2 false alarms per minute | same |
 | Hum score AUC, drone box vs random patch / vs busiest non-drone patch (100 ms) | **0.917** / 0.758 (26,911 drone boxes) | `results/engine/summary.json` |
-| Blade-pass medians over all test boxes vs PropPulse published medians | DJI Mini 2 **320 Hz (median over all 1,951 test boxes) vs 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
+| Blade-pass medians over all test boxes vs PropPulse published medians | DJI Mini 2 **320 Hz (median over all Mini 2 test sequences, 1,951 boxes) vs PropPulse 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | `results/engine/per_model_youden.json` |
 | COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster under COOL; DNN forward 0.92x | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
 | End-to-end confirm step, COOL vs pip, same Graviton4 host, 210 FRED windows | p50 **106.2 vs 98.9 ms** per window (COOL 7% slower, the detector dominates); frequency map **1.13x** faster under COOL; outputs identical | `bench/results/E2E.md`, `e2e-*.json` |
 | Graviton4 vs x86 (pip OpenCV 5, 4 vCPUs, 4 threads) | faster on 5 of 6 ops, up to **2.07x** (cvtColor) | `bench/results/pip-graviton4-c8g.xlarge.json`, `pip-x86-c7i.xlarge.json` |
@@ -278,7 +275,7 @@ sequenceDiagram
     Note over B,CV: 11 steps, 18.0 s wall time, 0 guard rejections
 ```
 
-**What the agent adds.** On the 8 scenarios, the Bedrock planner ties rules we hand-tuned for these tools (4 / 8, 0 false alerts each) while using 30% fewer tool calls, and it puts every critical alert behind a human approval gate. In the evaluation that approval is a SIMULATED automatic stand-in, labelled in every trace. The agent slide on the live page is a recorded replay of these real traces; its Approve and Reject buttons record the viewer's decision on the server and trigger nothing else. Two earlier development runs on the same scenarios are in `results/agent/dev_runs/`.
+**What the agent adds.** On the 8 scenarios, the Bedrock planner ties rules we hand-tuned for these tools (4 / 8, 0 false alerts each) while using 30% fewer tool calls, and it puts every critical alert behind a human approval gate. In the evaluation that approval is a SIMULATED automatic stand-in, labelled in every trace. The agent slide on the live page replays these real traces, and its **Run agent live** button runs the same agent code on the server now: Claude Sonnet 4.6 on Amazon Bedrock (`us.anthropic.claude-sonnet-4-6`, Converse, as in eval_v3) plans on the clip picked at the top (DJI Mini 2 is FRED sequence 202) against the live OpenCV 5 tools. It stops before a critical alert and waits up to 60 s for the visitor's Approve or Reject; with no answer the run ends unconfirmed, waiting for an operator, and no alert is raised. The page names the planner that ran: after 100 Bedrock runs in a UTC day, or on a Bedrock error, the fixed-rule planner takes over. At the end it shows the clip's expected frequency and the IoU of the agent's box with the FRED ground-truth box. One live run per visitor and at most three at once. In the replay, Approve and Reject record the viewer's decision on the server and trigger nothing else. Two earlier development runs on the same scenarios are in `results/agent/dev_runs/`.
 
 ## Try it from a terminal
 

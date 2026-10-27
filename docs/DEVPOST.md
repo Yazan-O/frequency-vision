@@ -10,7 +10,7 @@
 
 ## The stakes
 
-In December 2018, reported drone sightings at Gatwick closed the runway for about 33 hours. About 1,000 flights were cancelled and about 140,000 passengers were affected. In the US, the FAA receives more than 100 reports of drones near airports every month.
+In December 2018, reported drone sightings at Gatwick closed the runway for about 33 hours. About 1,000 flights were cancelled and about 140,000 passengers were affected. In the US, the FAA receives more than 100 reports of drones near airports each month (FAA UAS sightings report page, faa.gov/uas/resources/public_records/uas_sightings_report).
 
 The hard part is not seeing the dot. It is knowing what the dot is. At 30 frames per second a far drone is a few pixels, and its propellers are invisible: they pass the camera's view hundreds of times a second, far faster than the 15 Hz a 30 fps camera can represent. A bird has no rotor. A drone always does.
 
@@ -21,11 +21,12 @@ An event camera records every pixel's brightness change with microsecond timing.
 Live, no login, served by COOL on Graviton4: **https://100-27-6-111.sslip.io**
 
 1. Slide 1: a real FRED recording of a DJI Mini 2 at 30 fps. The rotor is a blur. Every slide states its point in one headline.
-2. Pick a clip. The demo clip on the page gives its own median over its 100 ms windows: DJI Mini 2 316 Hz (sequence 202), DJI Tello EDU 584.8 Hz (sequence 230), DJI Mini 3 247.4 Hz (sequence 93) and DarwinFPV cineape20ger 225.2 Hz (sequence 64). The default event window is 100 ms, the best setting on the FRED test split. The engine medians over all test boxes, a different population, are 320 Hz (Mini 2, median over all test boxes), 564 Hz (Tello EDU) and 245 Hz (Mini 3).
+2. Pick a clip. The demo clip on the page gives its own median over its 100 ms windows: DJI Mini 2 316 Hz (sequence 202), DJI Tello EDU 584.8 Hz (sequence 230), DJI Mini 3 247.4 Hz (sequence 93) and DarwinFPV Cineape20 (GER) 225.2 Hz (sequence 64). The default event window is 100 ms, the best setting on the FRED test split. The engine medians over all FRED test sequences of each model, a different population, are 320 Hz for the Mini 2 (median over all Mini 2 test sequences; 316 Hz is the demo clip), 564 Hz (Tello EDU) and 245 Hz (Mini 3).
 3. Slide 2: the same drone as raw events in x, y and time, beside a patch with no drone.
 4. Slide 3: the server computes the spectrum live with COOL's OpenCV 5. The drone box peaks at its blade-pass frequency. The empty box stays flat.
-5. Slide 5: a recorded replay of the agent's real evaluation traces on FRED sequences. Approve or Reject records your decision on the server and triggers nothing else.
-6. Slide 6: the measured results.
+5. Slide 4: why 30 fps misses the hum (a 316 Hz propeller folds down to 14 Hz) and how the spike is scored: the windowed signal, `cv.dft`, the score against the local floor, and the window length, all computed live.
+6. Slide 5: the agent. Play replays a real evaluation trace. **Run agent live** runs Claude Sonnet 4.6 on Amazon Bedrock on the server now, on the clip you picked, against the live OpenCV 5 tools. It asks you before a critical alert and waits 60 s; with no answer the run ends unconfirmed, waiting for an operator, and no alert is raised. The page names the planner that ran (the fixed-rule planner takes over after 100 Bedrock runs a UTC day or on a Bedrock error) and shows the clip's expected frequency and the IoU of the agent's box with the FRED ground-truth box.
+7. Slide 6: the measured results: false alarms with and without the hum check, COOL vs pip on one Graviton4 host, Graviton4 vs x86, and each drone's pitch.
 
 Or from a terminal:
 
@@ -122,7 +123,7 @@ What it does **not** do: it never jams, intercepts or chases anything. It confir
 All numbers are on FRED, a public dataset of real event-camera and RGB drone recordings (Apache-2.0). Every rule and threshold was chosen on training sequences and reported on the 47 test sequences.
 
 - **25% fewer false alarms, same recall.** On every frame of the 47 test sequences (151,768 frames, 84.3 minutes), the detector alone raises 412.7 false alarms per minute. Keeping only boxes whose events hum cuts that to 308.4. It removes 8,790 of 34,796 false detections and only 26 of 70,794 true ones: recall stays at 0.544, precision rises from 0.670 to 0.731 and mAP@0.5 from 0.505 to 0.516. A stricter hum threshold (score ≥ 98) gives precision 0.815 at recall 0.146, with 51.2 false alarms per minute.
-- **The frequencies are physically right.** Frequency Vision's median blade-pass frequency per drone model matches the independent PropPulse estimates on the same data: DJI Mini 2 320 Hz (median over all 1,951 test boxes) vs 316 Hz, DJI Tello 564 Hz vs 539 Hz (11,068 boxes), DJI Mini 3 245 Hz vs 223 Hz (2,405 boxes). For the DJI Mini 2, 99.2% of test boxes hum above the train-chosen threshold.
+- **The frequencies are physically right.** Frequency Vision's median blade-pass frequency per drone model matches the independent PropPulse estimates on the same data: DJI Mini 2 320 Hz (median over all Mini 2 test sequences, 1,951 boxes; the demo clip gives 316 Hz) vs PropPulse 316 Hz, DJI Tello 564 Hz vs 539 Hz (11,068 boxes), DJI Mini 3 245 Hz vs 223 Hz (2,405 boxes). For the DJI Mini 2, 99.2% of test boxes hum above the train-chosen threshold.
 - **The hum separates drones from background.** AUC 0.917 for drone boxes against random same-size patches (26,911 vs 26,909 boxes).
 - **The agent finds what the detector missed.** In FRED sequence 142 the detector proposed nothing for three frames. The agent mapped frequencies across the whole frame, found one spot humming at 545 Hz, confirmed a hum at 542.6 Hz, tracked it, asked for approval and raised the alert. The ground truth is a DJI Tello EDU, whose median hum over the test split is 564 Hz.
 - **The agent matches hand-tuned rules with fewer calls, behind a human gate.** On 8 FRED scenarios fixed before any run, the Bedrock planner solved 4 of 8 with 0 false alerts, the same score as a hand-written rule planner (4 of 8, 0 false alerts), using 30% fewer tool calls (12.25 vs 17.38 per episode); a fixed schedule solved 3 of 8. Every critical alert waits for a human approval. In this evaluation that approval is a SIMULATED automatic operator, labelled so in every trace. Two earlier development runs on the same scenarios are kept in `results/agent/dev_runs/`.

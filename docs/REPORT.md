@@ -2,7 +2,7 @@
 
 **Frequency Vision confirms drones by their propeller hum.** An OpenCV 5 DNN detector proposes boxes in normal 30 fps video. Inside each box, the event-camera stream is checked for a blade-pass frequency peak, at hundreds of Hz, that a 30 fps camera cannot see. An agent decides what to look at next: a longer or tighter event window, a whole-frame frequency map, a track, an alert, or a question to a human. Everything runs on AWS Graviton4 with COOL, the cloud-optimized OpenCV 5 build.
 
-A bird and a drone can look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not. The DJI Mini 2 in our demo clip hums at a median 316 Hz; its median over all 1,951 FRED test boxes is 320 Hz. Some drones hum weakly: the DarwinFPV Cineape20 in our hard-case clip gives no clean peak (§9).
+A bird and a drone can look the same at 30 fps. A drone hums at its blade-pass frequency; a bird does not. The DJI Mini 2 in our demo clip hums at a median 316 Hz; its median over all Mini 2 FRED test sequences (1,951 boxes) is 320 Hz. Some drones hum weakly: the DarwinFPV Cineape20 in our hard-case clip gives no clean peak (§9).
 
 - Live endpoint: https://100-27-6-111.sslip.io (no login), served by COOL on Graviton4
 - Architecture: `docs/architecture.svg` · Agent loop: `docs/agent_workflow.svg`
@@ -13,7 +13,7 @@ Headline results, all on the real FRED dataset (event + RGB drone recordings, Ap
 |---|---|---|---|
 | **The hum check removes a quarter of the detector's false alarms at the same recall** | false alarms per minute **412.7 → 308.4** (−25%); recall 0.544 → 0.544; precision 0.670 → 0.731 | full FRED test split: 47 sequences, 151,768 frames, 84.3 min; 8,790 of 34,796 false detections removed, 26 of 70,794 true ones lost | `results/detector/results_test.json` |
 | High-precision setting: RGB + hum score ≥ 98 | precision **0.815** at recall 0.146; 51.2 false alarms per minute | same test split | same |
-| **Hum frequencies match an outside source** | DJI Mini 2 **320 Hz** (median over all test boxes) vs 316 Hz; DJI Tello **564 Hz** vs 539 Hz; DJI Mini 3 **245 Hz** vs 223 Hz (PropPulse/DENSE-CUAS, same dataset) | 1,951 / 11,068 / 2,405 test boxes | `results/engine/per_model_youden.json` |
+| **Hum frequencies match an outside source** | DJI Mini 2 **320 Hz** (median over all Mini 2 test sequences; the demo clip gives 316 Hz) vs PropPulse 316 Hz; DJI Tello **564 Hz** vs 539 Hz; DJI Mini 3 **245 Hz** vs 223 Hz (PropPulse/DENSE-CUAS, same dataset) | 1,951 / 11,068 / 2,405 test boxes | `results/engine/per_model_youden.json` |
 | Hum score, drone box vs random background (AUC) | **0.917** | 26,911 drone boxes vs 26,909 background patches, 47 test sequences, 100 ms windows | `results/engine/summary.json` |
 | Hum score, drone box vs busiest non-drone patch (AUC) | **0.758** | 26,911 vs 26,909 | same |
 | COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster; DNN forward 0.92x | c8g.xlarge, 6 ops | `bench/results/cool-graviton4-c8g.xlarge.json` vs `pip-graviton4-c8g.xlarge-samehost.json` |
@@ -279,7 +279,7 @@ The train-chosen hum rule removes **8,790 of 34,796 false detections (25%)** and
 
 Eight FRED test scenarios were fixed before any agent run (`eval/scenarios.json`, frozen 2026-10-26 09:30 CDT): 2 clear (large drone), 2 distant (box ≤ 30 px), 2 background (no drone within 1 s), 2 late (drone enters mid-watch). Success means the correct verdict, with alerts only on a real drone. Three planners share the same tools and guard: Bedrock (Claude Sonnet 4.6), a hand-written rule planner and a fixed schedule. Clean run eval_v3 uses the final detector (DNN, score ≥ 0.125, event blobs as a labelled fallback) and the final engine thresholds (hum ≥ 98, ambiguous ≥ 7.9). Source: `results/agent/eval_v3/results.json`.
 
-**Approval in this evaluation is SIMULATED**: an automatic stand-in approves every `ask_human`, and each trace labels it so. The live page's agent slide is a recorded replay of real eval_v3 traces; its Approve and Reject buttons record the viewer's decision on the server and trigger nothing else.
+**Approval in this evaluation is SIMULATED**: an automatic stand-in approves every `ask_human`, and each trace labels it so. The live page's agent slide replays real eval_v3 traces; in the replay its Approve and Reject buttons record the viewer's decision on the server and trigger nothing else. Its Run agent live button runs the same agent on the server on the picked clip with Claude Sonnet 4.6 on Amazon Bedrock (the fixed-rule planner after 100 Bedrock runs a UTC day or on a Bedrock error, named on the page). There a real visitor answers the approval question; with no answer within 60 s the run ends unconfirmed, waiting for an operator, and no alert is raised.
 
 Two development runs on the same eight scenarios are kept in `results/agent/dev_runs/` (`eval_v1`, `eval_v2`). They used the earlier event-blob detector and thresholds (hum ≥ 15, ambiguous ≥ 7.5), and `eval_v1` is the run where hot pixels caused false alerts. Every agent number in this report comes from the clean run `eval_v3`.
 
