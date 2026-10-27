@@ -7,3 +7,5 @@ data/
 *.onnx
 .env
 docs/STORYBOARD.md
+
+docs/video/
