@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1288 540" xmlns="http://www.w3.org/2000/svg"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style><marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker><marker id="arrow-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#4f5d75"/></marker><marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker><marker id="arrow-link-start" markerWidth="8" markerHeight="6" refX="1" refY="3" orient="auto"><polygon points="8 0, 0 3, 8 6" fill="#2e5aa8"/></marker></defs><rect width="100%" height="100%" fill="#f5f5f5"/>
+<rect x="16" y="40" width="1256" height="392" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.16)" stroke-width="0.8"/>
+<rect x="28" y="34" width="94" height="12" rx="2" fill="#f5f5f5"/>
+<text x="75" y="43" fill="rgba(45,49,66,0.55)" font-size="7.5" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">AWS US-EAST-1</text>
+<text x="1256" y="24" fill="#2d3142" font-size="13" font-family="'Geist', sans-serif" text-anchor="end" font-weight="600">COOL-accelerated OpenCV calls per stage</text>
+<rect x="32" y="76" width="1072" height="340" rx="8" fill="rgba(235,108,54,0.04)" stroke="#eb6c36" stroke-width="1.2"/>
+<rect x="44" y="70" width="580.2" height="12" rx="2" fill="#f5f5f5"/>
+<text x="334.1" y="79" fill="#eb6c36" font-size="7.5" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">COOL ON GRAVITON4 · C8G.MEDIUM · CV2 FROM /OPT/COOL · OPENCV 5.1.0-DEV · KLEIDICV 0.7.0 HAL</text>
+<rect x="48" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
+<rect x="48" y="112" width="248" height="252" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="56" y="120" width="54" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="83.0" y="129" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">PROPOSE</text>
+<text x="172.0" y="154" fill="#2d3142" font-size="12" font-family="'Geist', sans-serif" text-anchor="middle" font-weight="600">RGB detector</text>
+<text x="172.0" y="169" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">hertz/detect.py · YOLOv8n · letterbox</text>
+<line x1="60" y1="180" x2="284" y2="180" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<circle cx="68" cy="197" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="80" y="200" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dnn.blobFromImageWithParams</text>
+<circle cx="68" cy="217" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="80" y="220" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dnn.Net.forward  ENGINE_NEW</text>
+<text x="282" y="220" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end" font-weight="600">0.92x</text>
+<circle cx="68" cy="237" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="80" y="240" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dnn.NMSBoxes</text>
+<line x1="60" y1="330" x2="284" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="172.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">end to end, detector p50</text>
+<text x="172.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 103.3 ms · pip 95.8 ms</text>
+<rect x="312" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
+<rect x="312" y="112" width="248" height="252" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="320" y="120" width="54" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="347.0" y="129" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CONFIRM</text>
+<text x="436.0" y="154" fill="#2d3142" font-size="12" font-family="'Geist', sans-serif" text-anchor="middle" font-weight="600">Hum check, per box</text>
+<text x="436.0" y="169" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">hertz/freq.py · box_spectrum</text>
+<line x1="324" y1="180" x2="548" y2="180" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<circle cx="332" cy="197" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="344" y="200" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">calcHist  10 kHz bins</text>
+<circle cx="332" cy="217" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="344" y="220" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">subtract · multiply Hanning</text>
+<circle cx="332" cy="237" r="3.6" fill="#2e5aa8"/>
+<text x="344" y="240" fill="#2d3142" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dft  DFT_COMPLEX_OUTPUT</text>
+<text x="546" y="240" fill="#2e5aa8" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end" font-weight="600">1.54x</text>
+<circle cx="332" cy="257" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="344" y="260" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">magnitude · minMaxLoc</text>
+<circle cx="332" cy="277" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="344" y="280" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">GaussianBlur 32F · threshold</text>
+<circle cx="332" cy="297" r="3.6" fill="#2e5aa8"/>
+<text x="344" y="300" fill="#2d3142" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">connectedComponentsWithStats</text>
+<text x="546" y="300" fill="#2e5aa8" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end" font-weight="600">1.17x</text>
+<line x1="324" y1="330" x2="548" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="436.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">end to end, hum checks p50</text>
+<text x="436.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 0.83 ms · pip 0.80 ms</text>
+<rect x="576" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
+<rect x="576" y="112" width="248" height="252" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<rect x="584" y="120" width="30" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+<text x="599.0" y="129" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MAP</text>
+<text x="700.0" y="154" fill="#2d3142" font-size="12" font-family="'Geist', sans-serif" text-anchor="middle" font-weight="600">Frequency map, per pixel</text>
+<text x="700.0" y="169" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">hertz/freq.py · frequency_map</text>
+<line x1="588" y1="180" x2="812" y2="180" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<circle cx="596" cy="197" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="608" y="200" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">calcHist · reduce · repeat</text>
+<circle cx="596" cy="217" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="608" y="220" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">subtract · multiply Hanning</text>
+<circle cx="596" cy="237" r="3.6" fill="#2e5aa8"/>
+<text x="608" y="240" fill="#2d3142" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dft  DFT_ROWS</text>
+<circle cx="596" cy="257" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="608" y="260" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">magnitude</text>
+<line x1="588" y1="330" x2="812" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="700.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">end to end, frequency map p50</text>
+<text x="700.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">COOL 1.85 ms · pip 2.08 ms · 1.13x</text>
+<rect x="840" y="112" width="248" height="252" rx="6" fill="#f5f5f5"/>
+<rect x="840" y="112" width="248" height="252" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+<rect x="848" y="120" width="42" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+<text x="869.0" y="129" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">AGENT</text>
+<text x="964.0" y="154" fill="#2d3142" font-size="12" font-family="'Geist', sans-serif" text-anchor="middle" font-weight="600">Agent vision tools</text>
+<text x="964.0" y="169" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">hertz/agent/vision.py</text>
+<line x1="852" y1="180" x2="1076" y2="180" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<circle cx="860" cy="197" r="3.6" fill="#eb6c36"/>
+<text x="872" y="200" fill="#2d3142" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">GaussianBlur 8U 5x5</text>
+<text x="1074" y="200" fill="#eb6c36" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end" font-weight="600">1.89x</text>
+<circle cx="860" cy="217" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="872" y="220" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">threshold · morphologyEx</text>
+<circle cx="860" cy="237" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="872" y="240" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dilate  ellipse 15x15</text>
+<circle cx="860" cy="257" r="3.6" fill="#2e5aa8"/>
+<text x="872" y="260" fill="#2d3142" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">connectedComponentsWithStats</text>
+<text x="1074" y="260" fill="#2e5aa8" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end" font-weight="600">1.17x</text>
+<circle cx="860" cy="277" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="872" y="280" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">KalmanFilter · moments</text>
+<circle cx="860" cy="297" r="3.6" fill="#2e5aa8"/>
+<text x="872" y="300" fill="#2d3142" font-size="9" font-family="'Geist Mono', monospace" text-anchor="start">dft via hertz.freq tools</text>
+<line x1="852" y1="330" x2="1076" y2="330" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="964.0" y="345" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">same hum engine, called as tools</text>
+<text x="964.0" y="357" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">8 tools, 5 on OpenCV 5</text>
+<path d="M296,242 H312" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="284.0" y="223" width="40.0" height="12" rx="2" fill="#f5f5f5"/>
+<text x="304.0" y="232" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">BOXES</text>
+<path d="M560,242 H576" fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<rect x="544.8" y="223" width="46.400000000000006" height="12" rx="2" fill="#f5f5f5"/>
+<text x="568.0" y="232" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EVENTS</text>
+<path d="M824,242 H840" fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<rect x="802.4" y="223" width="59.2" height="12" rx="2" fill="#f5f5f5"/>
+<text x="832.0" y="232" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HZ · SNR</text>
+<text x="48" y="392" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="start">x = COOL speed vs pip OpenCV 5.0.0, op benchmark on a 1280x720 image (dft 512x512), p50, same c8g.xlarge, 4 threads (bench/results/cool-graviton4-c8g.xlarge.json, pip-graviton4-c8g.xlarge-samehost.json)</text>
+<text x="48" y="406" fill="#4f5d75" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="start">end to end = 210 FRED windows on the same host (bench/results/E2E.md); outputs identical: 169 boxes, 0 verdict flips</text>
+<rect x="1120" y="112" width="140" height="104" rx="6" fill="#f5f5f5"/>
+<rect x="1120" y="112" width="140" height="104" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<rect x="1128" y="120" width="54" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+<text x="1155.0" y="129" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">BEDROCK</text>
+<text x="1190.0" y="154" fill="#2d3142" font-size="12" font-family="'Geist', sans-serif" text-anchor="middle" font-weight="600">Agent planner</text>
+<text x="1190.0" y="170" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Converse · tool use</text>
+<text x="1190.0" y="184" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">off-host, no OpenCV</text>
+<path d="M1088,162 H1120" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-start="url(#arrow-link-start)" marker-end="url(#arrow-link)"/>
+<rect x="1120" y="232" width="140" height="132" rx="6" fill="#f5f5f5"/>
+<rect x="1120" y="232" width="140" height="132" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="1128" y="240" width="42" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+<text x="1149.0" y="249" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">BENCH</text>
+<text x="1190.0" y="274" fill="#2d3142" font-size="12" font-family="'Geist', sans-serif" text-anchor="middle" font-weight="600">Benchmark host</text>
+<text x="1190.0" y="290" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">c8g.xlarge, on demand</text>
+<text x="1190.0" y="304" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">same AMI</text>
+<text x="1190.0" y="318" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">COOL vs pip OpenCV 5</text>
+<text x="1190.0" y="332" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">same host, same inputs</text>
+<text x="1190.0" y="346" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">terminated after run</text>
+<path d="M1088,302 H1120" fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<rect x="1059.2" y="283" width="65.6" height="12" rx="2" fill="#f5f5f5"/>
+<text x="1092" y="292" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SAME CODE</text>
+<line x1="32" y1="452" x2="1256" y2="452" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="32" y="470" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
+<circle cx="38" cy="487" r="3.6" fill="#eb6c36"/>
+<text x="48" y="490" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif" text-anchor="start">KleidiCV 0.7.0 HAL path (Arm doc/opencv.md, 8-bit 5x5 Gaussian)</text>
+<circle cx="408" cy="487" r="3.6" fill="#2e5aa8"/>
+<text x="418" y="490" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif" text-anchor="start">faster under COOL, outside the KleidiCV op list (SVE baseline, multi-core dft)</text>
+<circle cx="818" cy="487" r="3.2" fill="none" stroke="#7a8399" stroke-width="1"/>
+<text x="828" y="490" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif" text-anchor="start">OpenCV 5 core kernel, no COOL-specific path claimed</text>
+<text x="32" y="516" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="start">COOL product code aajkmdd4qo3r7yhqg61a7aah9 · AMI ami-033e481a24f94c8cb · live i-0d59ee3505c397229 (bench/results/cool-proof-live-c8g.medium.json)</text>
+</svg>
