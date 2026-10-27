@@ -89,6 +89,9 @@ class Toolbox:
         elif name == "ask_human":
             r = dict(self.approver(a["seq"], a["box"], a["severity"], a["question"], st.now))
             st.approvals.append({"box": a["box"], "approved": bool(r["approved"]), "now": st.now, "severity": a["severity"]})
+            if r.get("timeout"):
+                st.unconfirmed = st.finished = True
+                r["status"] = "unconfirmed, waiting for operator: no answer in time, so no alert is raised"
         elif name == "raise_alert":
             if not self.evidence(a["box"], st.now):
                 raise Reject("no hum verdict on this box (or on a track that started from a hum box) in the last 1.5 s; an alert needs that evidence")

@@ -63,3 +63,12 @@ def test_alert_without_hum_evidence_is_refused(store, tmp_path):
     s, rows = run_episode(SCN, store, "bedrock", tmp_path / "t.jsonl", Budget(), client=ScriptedClient(calls))
     st = [r for r in rows if r["kind"] == "step" and r["tool"] == "raise_alert"][0]
     assert st["guard"].startswith("rejected: no hum verdict") and not s["alerts"]
+
+
+def test_unanswered_approval_ends_unconfirmed_without_alert(store, tmp_path):
+    calls = [("ask_human", {"seq": "111", "box": [100, 100, 150, 150], "severity": "critical", "question": "alert?"}),
+             ("raise_alert", {"seq": "111", "box": [100, 100, 150, 150], "severity": "warning", "reason": "no answer"})]
+    timeout = lambda *a: {"approved": False, "timeout": True, "responder": "no answer within 60 s"}
+    s, rows = run_episode(SCN, store, "bedrock", tmp_path / "t.jsonl", Budget(), client=ScriptedClient(calls), approver=timeout)
+    tools = [r["tool"] for r in rows if r["kind"] == "step"]
+    assert s["verdict"] == "unconfirmed_waiting_for_operator" and not s["alerts"] and tools == ["ask_human"]

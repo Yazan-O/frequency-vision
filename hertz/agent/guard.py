@@ -44,6 +44,7 @@ class State:
     alerts: list = field(default_factory=list)
     calls: set = field(default_factory=set)
     finished: bool = False
+    unconfirmed: bool = False
 
     def __post_init__(self):
         if not self.now:

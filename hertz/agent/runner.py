@@ -118,7 +118,9 @@ def run_episode(scn, store, planner_name, trace_path, budget=None, timeout_s=8.0
                     tr.log("step", **row, guard=f"rejected: {e}", result=None, now_after=round(st.now, 4))
                     results.append((c, {"error": f"guard rejected: {e}"}))
     verdict = next((r["result"]["verdict"] for r in reversed(tr.rows) if r["kind"] == "step" and r["tool"] == "finish" and r["guard"] == "ok"), None)
-    if verdict is None:
+    if st.unconfirmed:
+        verdict = "unconfirmed_waiting_for_operator"
+    elif verdict is None:
         verdict = "drone_alerted" if st.alerts else "no_drone"
     summary = {"verdict": verdict, "alerts": st.alerts, "steps": st.steps, "rejections": st.rejections,
                "planner_final": active, "planner_failures": planner_failures, "wall_s": round(time.perf_counter() - t_ep, 3),
