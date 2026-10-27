@@ -32,7 +32,7 @@ AGENT_DATA = DATA / "agent"
 LIVE_WAIT_S = 60
 LIVE_MAX = 3
 LIVE_MAX_S = LIVE_WAIT_S + 30
-BEDROCK_DAY_CAP = 15
+BEDROCK_DAY_CAP = 3
 LIVE_PLANNER = os.environ.get("HERTZ_LIVE_PLANNER", "bedrock")
 _live = {"lock": threading.Lock(), "runs": {}, "client": None}
 DET_PATH = os.environ.get("HERTZ_DETECTOR_ONNX", str(ROOT.parent / "build" / "models" / "strobe_drone_960x544.onnx"))
@@ -698,7 +698,7 @@ def summary():
             {"title": "the math", "shows": "aliasing of the blade-pass rate at 30 fps (f_alias = |f - k*30|, Nyquist 15 Hz vs 5 kHz for 0.1 ms event bins); x(t) * Hanning window -> cv.dft; score = peak / median within +-100 Hz; resolution 1/T vs window length"},
             {"title": "agent", "shows": "recorded agent steps as cards in call order; each card shows what OpenCV returned for that step (the camera crop around its box, a mini spectrum with the peak Hz and score, recomputed on the server by POST /api/agent/step_vision when the events are kept there, and the verdict hum, ambiguous or none) and an arrow naming the result that led to the next call, e.g. ambiguous -> request 300 ms window; listen cards are orange when the hum test passes, dashed when ambiguous; Play shows a step about every 0.9 s and stops at the approval card until Approve or Reject.",
              "default_episode": "the late drone (FRED 142) that the camera detector misses and the frequency map finds.",
-             "live_run": "'Run agent live' runs the agent on the picked clip against the live tools: Claude Sonnet 4.6 on Amazon Bedrock, or the rule planner after 15 Bedrock runs a UTC day or on a Bedrock error. It waits up to 60 s for the visitor's approval before a critical alert. With no answer it ends unconfirmed and raises no alert. It reports the clip's expected Hz and the IoU with the FRED box."},
+             "live_run": "'Run agent live' runs the agent on the picked clip against the live tools: Claude Sonnet 4.6 on Amazon Bedrock, or the rule planner after 3 Bedrock runs a UTC day or on a Bedrock error. It waits up to 60 s for the visitor's approval before a critical alert. With no answer it ends unconfirmed and raises no alert. It reports the clip's expected Hz and the IoU with the FRED box."},
             {"title": "results", "shows": "one card per drone clip, its thumbnail framed on the drone, the measured median blade-pass frequency and the share of 100 ms windows passing; false alarms of the RGB detector alone vs with the hum check over the FRED test split; OpenCV 5 p50 benchmark Graviton4 vs x86"}],
         "judging": JUDGING,
         "routes": {"page": "/", "summary": "/api/summary", "spectrum": "POST /api/spectrum {clip, box[x0,y0,x1,y1], t, window_ms}",
