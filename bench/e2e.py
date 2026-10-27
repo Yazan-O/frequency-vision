@@ -52,9 +52,22 @@ def record(w, r):
                      "hum_median_hz": round(float(np.median(fmap[strong])), 4) if strong.any() else None, "fmap_sum": round(float(fmap.sum()), 3)}}
 
 
+TARGETS = {"cpu": "DNN_TARGET_CPU", "cpu_fp16": "DNN_TARGET_CPU_FP16"}
+
+
+def make_detector(onnx, engine="new", target="default"):
+    det = Detector(onnx, conf=CONF)
+    if engine == "classic":
+        det.net = cv.dnn.readNetFromONNX(str(onnx), cv.dnn.ENGINE_CLASSIC)
+    if target != "default":
+        det.net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
+        det.net.setPreferableTarget(getattr(cv.dnn, TARGETS[target]))
+    return det
+
+
 def run(a):
     cv.setNumThreads(a.threads) if a.threads else None
-    det = Detector(a.onnx, conf=CONF)
+    det = make_detector(a.onnx, a.engine, a.target)
     ws = windows()
     for w in ws[: a.warmup]:
         confirm(det, w)
@@ -91,7 +104,7 @@ def run(a):
     meta = {"label": a.label, "host": socket.gethostname(), "machine": platform.machine(), "cpu_count": ncpu, "cv_threads": cv.getNumThreads(),
             "python": platform.python_version(), "opencv": cv.__version__, "cv2_file": cv.__file__, "numpy": np.__version__,
             "build": [line.strip() for line in info.splitlines() if any(k in line for k in ("HAL", "KleidiCV", "Baseline", "Dispatched", "Parallel framework"))],
-            "onnx": os.path.basename(a.onnx), "detector_conf": CONF, "window_us": WIN_US, "price_usd_hour": a.price_usd_hour,
+            "onnx": os.path.basename(a.onnx), "detector_engine": a.engine, "detector_target": a.target, "detector_conf": CONF, "window_us": WIN_US, "price_usd_hour": a.price_usd_hour,
             "frames": "app/static/data/<clip>/fNNN.jpg (640x360 JPEG from FRED RGB); boxes scaled to the 1280x720 event sensor",
             "workload": "per window: hertz.detect.Detector.detect on the RGB frame, hertz.freq.box_spectrum on every proposed box, hertz.freq.frequency_map over the full 1280x720 sensor; 100 ms event window ending at the frame time; JPEG decode excluded",
             "time_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
@@ -139,6 +152,8 @@ def main():
     r.add_argument("--reps", type=int, default=3)
     r.add_argument("--warmup", type=int, default=10)
     r.add_argument("--threads", type=int, default=0)
+    r.add_argument("--engine", choices=["new", "classic"], default="new")
+    r.add_argument("--target", choices=["default", *TARGETS], default="default")
     r.add_argument("--price-usd-hour", type=float)
     r.add_argument("--out", required=True)
     c = sp.add_parser("compare")

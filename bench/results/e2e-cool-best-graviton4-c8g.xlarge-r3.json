@@ -1,0 +1,4686 @@
+{
+ "meta": {
+  "label": "e2e-cool-best-graviton4-c8g.xlarge-r3",
+  "host": "ip-172-31-46-110",
+  "machine": "aarch64",
+  "cpu_count": 4,
+  "cv_threads": 4,
+  "python": "3.12.3",
+  "opencv": "5.1.0-dev",
+  "cv2_file": "/opt/cool/python_3.12/site-packages/cv2/__init__.py",
+  "numpy": "2.5.1",
+  "build": [
+   "Baseline:                    SVE NEON FP16 NEON_DOTPROD NEON_FP16 NEON_BF16",
+   "Dispatched code generation:",
+   "Parallel framework:            pthreads",
+   "Custom HAL:                  YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))"
+  ],
+  "onnx": "strobe_drone_960x544.onnx",
+  "detector_engine": "classic",
+  "detector_target": "default",
+  "detector_conf": 0.125,
+  "window_us": 100000,
+  "price_usd_hour": 0.15952,
+  "frames": "app/static/data/<clip>/fNNN.jpg (640x360 JPEG from FRED RGB); boxes scaled to the 1280x720 event sensor",
+  "workload": "per window: hertz.detect.Detector.detect on the RGB frame, hertz.freq.box_spectrum on every proposed box, hertz.freq.frequency_map over the full 1280x720 sensor; 100 ms event window ending at the frame time; JPEG decode excluded",
+  "time_utc": "2026-10-27T04:17:33Z"
+ },
+ "summary": {
+  "windows": 180,
+  "reps": 3,
+  "timed_windows": 540,
+  "wall_s": 36.143,
+  "p50_ms": 60.43588299999669,
+  "p95_ms": 83.36919005001846,
+  "mean_ms": 66.33390625555576,
+  "windows_per_s": 14.940851872147379,
+  "cpu_pct_of_all_vcpus": 88.07493837409841,
+  "stage_p50_ms": {
+   "detect": 55.47717800001806,
+   "spectra": 0.7722664999789686,
+   "fmap": 4.058338000021422
+  },
+  "boxes_total": 147,
+  "usd_per_1000_windows": 0.0029657687185638687
+ },
+ "windows": [
+  {
+   "clip": "clear_210",
+   "frame": 0,
+   "boxes": [
+    [
+     520.10498046875,
+     397.50299072265625,
+     571.7260131835938,
+     428.0050048828125
+    ]
+   ],
+   "scores": [
+    0.385277
+   ],
+   "peaks": [
+    {
+     "peak_hz": 262.5,
+     "snr": 11.7407,
+     "n_events": 14629,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 1153,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 703210.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 1,
+   "boxes": [
+    [
+     221.98300170898438,
+     343.0329895019531,
+     284.82000732421875,
+     374.6549987792969
+    ]
+   ],
+   "scores": [
+    0.395224
+   ],
+   "peaks": [
+    {
+     "peak_hz": 252.4562,
+     "snr": 259.9586,
+     "n_events": 4928,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 996,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 619450.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 2,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 700,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 451440.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 3,
+   "boxes": [
+    [
+     221.656005859375,
+     343.62799072265625,
+     277.1889953613281,
+     373.2909851074219
+    ]
+   ],
+   "scores": [
+    0.373161
+   ],
+   "peaks": [
+    {
+     "peak_hz": 292.5,
+     "snr": 956.8635,
+     "n_events": 4108,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 352,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 217825.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 4,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 210,
+    "hum_pixels": 2,
+    "hum_median_hz": 612.5,
+    "fmap_sum": 120615.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 5,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 157,
+    "hum_pixels": 6,
+    "hum_median_hz": 557.5,
+    "fmap_sum": 86785.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 6,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 155,
+    "hum_pixels": 7,
+    "hum_median_hz": 625.0,
+    "fmap_sum": 88870.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 7,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 159,
+    "hum_pixels": 11,
+    "hum_median_hz": 630.0,
+    "fmap_sum": 96555.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 8,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 157,
+    "hum_pixels": 13,
+    "hum_median_hz": 635.0,
+    "fmap_sum": 97925.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 9,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 161,
+    "hum_pixels": 19,
+    "hum_median_hz": 620.0,
+    "fmap_sum": 96640.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 10,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 157,
+    "hum_pixels": 13,
+    "hum_median_hz": 645.0,
+    "fmap_sum": 93475.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 11,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 144,
+    "hum_pixels": 9,
+    "hum_median_hz": 640.0,
+    "fmap_sum": 79510.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 12,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 125,
+    "hum_pixels": 10,
+    "hum_median_hz": 315.0,
+    "fmap_sum": 65450.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 13,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 103,
+    "hum_pixels": 6,
+    "hum_median_hz": 472.5,
+    "fmap_sum": 58295.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 14,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 107,
+    "hum_pixels": 8,
+    "hum_median_hz": 632.5,
+    "fmap_sum": 62850.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 15,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 118,
+    "hum_pixels": 11,
+    "hum_median_hz": 635.0,
+    "fmap_sum": 69945.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 16,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 115,
+    "hum_pixels": 7,
+    "hum_median_hz": 655.0,
+    "fmap_sum": 71815.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 17,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 112,
+    "hum_pixels": 7,
+    "hum_median_hz": 640.0,
+    "fmap_sum": 68130.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 18,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 107,
+    "hum_pixels": 5,
+    "hum_median_hz": 635.0,
+    "fmap_sum": 60035.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 19,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 119,
+    "hum_pixels": 2,
+    "hum_median_hz": 490.0,
+    "fmap_sum": 66430.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 20,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 130,
+    "hum_pixels": 4,
+    "hum_median_hz": 480.0,
+    "fmap_sum": 72665.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 21,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 142,
+    "hum_pixels": 3,
+    "hum_median_hz": 645.0,
+    "fmap_sum": 83705.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 22,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 130,
+    "hum_pixels": 6,
+    "hum_median_hz": 637.5,
+    "fmap_sum": 78555.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 23,
+   "boxes": [
+    [
+     265.0090026855469,
+     331.8479919433594,
+     335.6080017089844,
+     366.2909851074219
+    ]
+   ],
+   "scores": [
+    0.305578
+   ],
+   "peaks": [
+    {
+     "peak_hz": 328.6608,
+     "snr": 463.7342,
+     "n_events": 3250,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 119,
+    "hum_pixels": 3,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 68835.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 24,
+   "boxes": [
+    [
+     274.7640075683594,
+     332.6199951171875,
+     331.1579895019531,
+     363.7090148925781
+    ]
+   ],
+   "scores": [
+    0.352639
+   ],
+   "peaks": [
+    {
+     "peak_hz": 327.3491,
+     "snr": 332.8011,
+     "n_events": 2901,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 110,
+    "hum_pixels": 4,
+    "hum_median_hz": 640.0,
+    "fmap_sum": 72285.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 25,
+   "boxes": [
+    [
+     276.1919860839844,
+     332.781005859375,
+     340.2130126953125,
+     365.4549865722656
+    ]
+   ],
+   "scores": [
+    0.40183
+   ],
+   "peaks": [
+    {
+     "peak_hz": 326.5897,
+     "snr": 265.3313,
+     "n_events": 2582,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 103,
+    "hum_pixels": 1,
+    "hum_median_hz": 950.0,
+    "fmap_sum": 60005.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 26,
+   "boxes": [
+    [
+     284.2720031738281,
+     336.0799865722656,
+     339.68499755859375,
+     365.5979919433594
+    ]
+   ],
+   "scores": [
+    0.161852
+   ],
+   "peaks": [
+    {
+     "peak_hz": 327.7498,
+     "snr": 333.2859,
+     "n_events": 2255,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 109,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 59890.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 27,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 121,
+    "hum_pixels": 3,
+    "hum_median_hz": 310.0,
+    "fmap_sum": 66225.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 28,
+   "boxes": [
+    [
+     278.3590087890625,
+     329.3389892578125,
+     344.6130065917969,
+     363.7489929199219
+    ]
+   ],
+   "scores": [
+    0.279778
+   ],
+   "peaks": [
+    {
+     "peak_hz": 314.889,
+     "snr": 749.2886,
+     "n_events": 3147,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 129,
+    "hum_pixels": 9,
+    "hum_median_hz": 315.0,
+    "fmap_sum": 72775.0
+   }
+  },
+  {
+   "clip": "clear_210",
+   "frame": 29,
+   "boxes": [
+    [
+     284.5050048828125,
+     330.6440124511719,
+     352.24700927734375,
+     364.0039978027344
+    ]
+   ],
+   "scores": [
+    0.433618
+   ],
+   "peaks": [
+    {
+     "peak_hz": 309.4375,
+     "snr": 482.0749,
+     "n_events": 2890,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 136,
+    "hum_pixels": 3,
+    "hum_median_hz": 315.0,
+    "fmap_sum": 79835.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 0,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 1,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 2,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 175.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 3,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 535.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 4,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 535.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 5,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 2,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 625.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 6,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 2,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 1010.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 7,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 2,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 1575.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 8,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 690.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 9,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 10,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 715.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 11,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 365.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 12,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 370.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 13,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 14,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 15,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 16,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 150.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 17,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 2,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 1000.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 18,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 2,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 1240.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 19,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 20,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 21,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 600.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 22,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 450.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 23,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 210.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 24,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 200.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 25,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 350.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 26,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 635.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 27,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 0,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 0.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 28,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 270.0
+   }
+  },
+  {
+   "clip": "background_138",
+   "frame": 29,
+   "boxes": [],
+   "scores": [],
+   "peaks": [],
+   "fmap": {
+    "active": 1,
+    "hum_pixels": 0,
+    "hum_median_hz": null,
+    "fmap_sum": 225.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 0,
+   "boxes": [
+    [
+     419.1619873046875,
+     262.1369934082031,
+     474.8349914550781,
+     298.2720031738281
+    ]
+   ],
+   "scores": [
+    0.53059
+   ],
+   "peaks": [
+    {
+     "peak_hz": 249.8821,
+     "snr": 1006.4951,
+     "n_events": 515,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 12,
+    "hum_pixels": 6,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 4280.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 1,
+   "boxes": [
+    [
+     418.697998046875,
+     262.2229919433594,
+     476.14300537109375,
+     298.47601318359375
+    ]
+   ],
+   "scores": [
+    0.524165
+   ],
+   "peaks": [
+    {
+     "peak_hz": 248.9039,
+     "snr": 1676.2837,
+     "n_events": 459,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 6,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 3870.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 2,
+   "boxes": [
+    [
+     418.2969970703125,
+     261.99798583984375,
+     474.94000244140625,
+     298.8500061035156
+    ]
+   ],
+   "scores": [
+    0.490252
+   ],
+   "peaks": [
+    {
+     "peak_hz": 248.0174,
+     "snr": 1865.2742,
+     "n_events": 427,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 6,
+    "hum_median_hz": 247.5,
+    "fmap_sum": 3195.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 3,
+   "boxes": [
+    [
+     418.8819885253906,
+     262.5429992675781,
+     475.875,
+     298.3789978027344
+    ]
+   ],
+   "scores": [
+    0.534794
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.472,
+     "snr": 1267.5028,
+     "n_events": 405,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 7,
+    "hum_pixels": 5,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 2475.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 4,
+   "boxes": [
+    [
+     418.0190124511719,
+     262.12799072265625,
+     476.7590026855469,
+     299.04400634765625
+    ]
+   ],
+   "scores": [
+    0.514425
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.3053,
+     "snr": 979.8821,
+     "n_events": 384,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 7,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 1715.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 5,
+   "boxes": [
+    [
+     419.4649963378906,
+     262.6510009765625,
+     474.8760070800781,
+     298.4100036621094
+    ]
+   ],
+   "scores": [
+    0.501829
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.7459,
+     "snr": 1364.4276,
+     "n_events": 380,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 8,
+    "hum_pixels": 5,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 1980.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 6,
+   "boxes": [
+    [
+     417.3550109863281,
+     262.4159851074219,
+     476.7699890136719,
+     298.87298583984375
+    ]
+   ],
+   "scores": [
+    0.502855
+   ],
+   "peaks": [
+    {
+     "peak_hz": 248.8689,
+     "snr": 1570.5554,
+     "n_events": 385,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 7,
+    "hum_pixels": 6,
+    "hum_median_hz": 247.5,
+    "fmap_sum": 1735.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 7,
+   "boxes": [
+    [
+     418.6910095214844,
+     261.8559875488281,
+     475.76800537109375,
+     299.07598876953125
+    ]
+   ],
+   "scores": [
+    0.488548
+   ],
+   "peaks": [
+    {
+     "peak_hz": 249.8801,
+     "snr": 2177.5862,
+     "n_events": 388,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 7,
+    "hum_pixels": 7,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 1750.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 8,
+   "boxes": [
+    [
+     418.5459899902344,
+     262.68701171875,
+     475.3420104980469,
+     298.5150146484375
+    ]
+   ],
+   "scores": [
+    0.510518
+   ],
+   "peaks": [
+    {
+     "peak_hz": 249.7955,
+     "snr": 1184.6793,
+     "n_events": 391,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 7,
+    "hum_pixels": 6,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 1750.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 9,
+   "boxes": [
+    [
+     418.5570068359375,
+     261.74798583984375,
+     475.70599365234375,
+     298.6570129394531
+    ]
+   ],
+   "scores": [
+    0.545349
+   ],
+   "peaks": [
+    {
+     "peak_hz": 249.0836,
+     "snr": 772.7814,
+     "n_events": 404,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 8,
+    "hum_pixels": 6,
+    "hum_median_hz": 247.5,
+    "fmap_sum": 1930.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 10,
+   "boxes": [
+    [
+     417.9110107421875,
+     262.25,
+     474.8760070800781,
+     298.8580017089844
+    ]
+   ],
+   "scores": [
+    0.454497
+   ],
+   "peaks": [
+    {
+     "peak_hz": 248.5605,
+     "snr": 2427.0598,
+     "n_events": 416,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 6,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 3410.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 11,
+   "boxes": [
+    [
+     419.4129943847656,
+     262.260009765625,
+     475.6440124511719,
+     298.2799987792969
+    ]
+   ],
+   "scores": [
+    0.513686
+   ],
+   "peaks": [
+    {
+     "peak_hz": 249.0059,
+     "snr": 2987.8782,
+     "n_events": 425,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 9,
+    "hum_pixels": 6,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 4195.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 12,
+   "boxes": [
+    [
+     418.04901123046875,
+     261.927001953125,
+     476.4209899902344,
+     299.1669921875
+    ]
+   ],
+   "scores": [
+    0.445391
+   ],
+   "peaks": [
+    {
+     "peak_hz": 248.516,
+     "snr": 954.6851,
+     "n_events": 419,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 9,
+    "hum_pixels": 5,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 4930.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 13,
+   "boxes": [
+    [
+     419.0199890136719,
+     262.53399658203125,
+     475.39801025390625,
+     297.7200012207031
+    ]
+   ],
+   "scores": [
+    0.546456
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.5894,
+     "snr": 886.8469,
+     "n_events": 415,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 8,
+    "hum_pixels": 5,
+    "hum_median_hz": 250.0,
+    "fmap_sum": 3920.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 14,
+   "boxes": [
+    [
+     419.5880126953125,
+     262.1440124511719,
+     475.927001953125,
+     297.5840148925781
+    ]
+   ],
+   "scores": [
+    0.542915
+   ],
+   "peaks": [
+    {
+     "peak_hz": 246.7308,
+     "snr": 1294.4363,
+     "n_events": 408,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 8,
+    "hum_pixels": 5,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3915.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 15,
+   "boxes": [
+    [
+     420.3479919433594,
+     262.0039978027344,
+     476.73699951171875,
+     298.1289978027344
+    ]
+   ],
+   "scores": [
+    0.515684
+   ],
+   "peaks": [
+    {
+     "peak_hz": 245.4989,
+     "snr": 714.0459,
+     "n_events": 415,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 7,
+    "hum_pixels": 5,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 2935.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 16,
+   "boxes": [
+    [
+     420.7569885253906,
+     262.5360107421875,
+     475.20599365234375,
+     297.9100036621094
+    ]
+   ],
+   "scores": [
+    0.465135
+   ],
+   "peaks": [
+    {
+     "peak_hz": 245.0851,
+     "snr": 734.7452,
+     "n_events": 425,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 8,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3175.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 17,
+   "boxes": [
+    [
+     421.1709899902344,
+     261.70001220703125,
+     476.2200012207031,
+     297.79998779296875
+    ]
+   ],
+   "scores": [
+    0.533723
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.5,
+     "snr": 1424.9543,
+     "n_events": 422,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 4210.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 18,
+   "boxes": [
+    [
+     424.447998046875,
+     262.05499267578125,
+     480.1510009765625,
+     298.0270080566406
+    ]
+   ],
+   "scores": [
+    0.507847
+   ],
+   "peaks": [
+    {
+     "peak_hz": 246.7994,
+     "snr": 1661.0054,
+     "n_events": 414,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 9,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 4465.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 19,
+   "boxes": [
+    [
+     420.66400146484375,
+     261.7879943847656,
+     477.5190124511719,
+     298.1090087890625
+    ]
+   ],
+   "scores": [
+    0.523729
+   ],
+   "peaks": [
+    {
+     "peak_hz": 246.435,
+     "snr": 1503.8807,
+     "n_events": 387,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 8,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3725.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 20,
+   "boxes": [
+    [
+     421.0780029296875,
+     262.1109924316406,
+     477.239990234375,
+     297.78399658203125
+    ]
+   ],
+   "scores": [
+    0.522813
+   ],
+   "peaks": [
+    {
+     "peak_hz": 245.7794,
+     "snr": 858.3602,
+     "n_events": 362,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 4,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3175.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 21,
+   "boxes": [
+    [
+     419.2799987792969,
+     261.2929992675781,
+     478.7829895019531,
+     298.3590087890625
+    ]
+   ],
+   "scores": [
+    0.53896
+   ],
+   "peaks": [
+    {
+     "peak_hz": 245.2289,
+     "snr": 1069.8447,
+     "n_events": 358,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 12,
+    "hum_pixels": 4,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3900.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 22,
+   "boxes": [
+    [
+     419.843994140625,
+     261.96600341796875,
+     477.7659912109375,
+     298.3819885253906
+    ]
+   ],
+   "scores": [
+    0.528237
+   ],
+   "peaks": [
+    {
+     "peak_hz": 245.8659,
+     "snr": 967.8707,
+     "n_events": 382,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 5,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3910.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 23,
+   "boxes": [
+    [
+     419.9440002441406,
+     261.77301025390625,
+     478.5950012207031,
+     298.510009765625
+    ]
+   ],
+   "scores": [
+    0.520594
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.4572,
+     "snr": 1313.7479,
+     "n_events": 395,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 9,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3915.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 24,
+   "boxes": [
+    [
+     422.4320068359375,
+     261.9670104980469,
+     478.9179992675781,
+     298.5719909667969
+    ]
+   ],
+   "scores": [
+    0.468486
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.3019,
+     "snr": 865.5114,
+     "n_events": 395,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 9,
+    "hum_pixels": 5,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3925.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 25,
+   "boxes": [
+    [
+     420.9280090332031,
+     261.8739929199219,
+     478.5769958496094,
+     298.0580139160156
+    ]
+   ],
+   "scores": [
+    0.48039
+   ],
+   "peaks": [
+    {
+     "peak_hz": 246.9503,
+     "snr": 781.4064,
+     "n_events": 359,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 6,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 3885.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 26,
+   "boxes": [
+    [
+     424.0010070800781,
+     261.25,
+     479.9750061035156,
+     298.56500244140625
+    ]
+   ],
+   "scores": [
+    0.435985
+   ],
+   "peaks": [
+    {
+     "peak_hz": 246.5722,
+     "snr": 1042.7194,
+     "n_events": 365,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 10,
+    "hum_pixels": 6,
+    "hum_median_hz": 362.5,
+    "fmap_sum": 5090.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 27,
+   "boxes": [
+    [
+     423.32501220703125,
+     261.9049987792969,
+     480.2869873046875,
+     298.5429992675781
+    ]
+   ],
+   "scores": [
+    0.41408
+   ],
+   "peaks": [
+    {
+     "peak_hz": 244.9827,
+     "snr": 1069.7273,
+     "n_events": 380,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 12,
+    "hum_pixels": 8,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 5080.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 28,
+   "boxes": [
+    [
+     422.33599853515625,
+     261.4809875488281,
+     480.2430114746094,
+     298.29901123046875
+    ]
+   ],
+   "scores": [
+    0.450676
+   ],
+   "peaks": [
+    {
+     "peak_hz": 245.0727,
+     "snr": 1498.4211,
+     "n_events": 434,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 14,
+    "hum_pixels": 7,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 6035.0
+   }
+  },
+  {
+   "clip": "clear_mini3_seq93",
+   "frame": 29,
+   "boxes": [
+    [
+     423.447998046875,
+     261.77801513671875,
+     481.8699951171875,
+     299.10101318359375
+    ]
+   ],
+   "scores": [
+    0.433329
+   ],
+   "peaks": [
+    {
+     "peak_hz": 247.0787,
+     "snr": 1917.9927,
+     "n_events": 468,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 15,
+    "hum_pixels": 8,
+    "hum_median_hz": 245.0,
+    "fmap_sum": 5845.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 0,
+   "boxes": [
+    [
+     816.2830200195312,
+     464.06500244140625,
+     954.906982421875,
+     519.208984375
+    ]
+   ],
+   "scores": [
+    0.491632
+   ],
+   "peaks": [
+    {
+     "peak_hz": 324.5616,
+     "snr": 43644.957,
+     "n_events": 38615,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 925,
+    "hum_pixels": 354,
+    "hum_median_hz": 340.0,
+    "fmap_sum": 464435.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 1,
+   "boxes": [
+    [
+     818.0830078125,
+     462.09698486328125,
+     949.6890258789062,
+     516.6790161132812
+    ]
+   ],
+   "scores": [
+    0.452605
+   ],
+   "peaks": [
+    {
+     "peak_hz": 323.2316,
+     "snr": 23036.2695,
+     "n_events": 39833,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 947,
+    "hum_pixels": 351,
+    "hum_median_hz": 340.0,
+    "fmap_sum": 456840.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 2,
+   "boxes": [
+    [
+     799.5609741210938,
+     463.1809997558594,
+     944.8359985351562,
+     518.2269897460938
+    ]
+   ],
+   "scores": [
+    0.49636
+   ],
+   "peaks": [
+    {
+     "peak_hz": 320.4809,
+     "snr": 7614.7607,
+     "n_events": 40929,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 958,
+    "hum_pixels": 365,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 472490.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 3,
+   "boxes": [
+    [
+     797.4149780273438,
+     463.6090087890625,
+     945.7379760742188,
+     517.947998046875
+    ],
+    [
+     1011.6079711914062,
+     438.4179992675781,
+     1076.58203125,
+     468.89599609375
+    ]
+   ],
+   "scores": [
+    0.502943,
+    0.243151
+   ],
+   "peaks": [
+    {
+     "peak_hz": 320.1457,
+     "snr": 3350.5388,
+     "n_events": 41834,
+     "clear": true
+    },
+    {
+     "peak_hz": 744.8108,
+     "snr": 10.8505,
+     "n_events": 73,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 974,
+    "hum_pixels": 368,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 475225.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 4,
+   "boxes": [
+    [
+     799.0349731445312,
+     465.2569885253906,
+     941.593994140625,
+     517.844970703125
+    ]
+   ],
+   "scores": [
+    0.55447
+   ],
+   "peaks": [
+    {
+     "peak_hz": 320.0,
+     "snr": 26155.293,
+     "n_events": 41221,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 946,
+    "hum_pixels": 363,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 464740.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 5,
+   "boxes": [
+    [
+     799.2369995117188,
+     463.08099365234375,
+     941.9320068359375,
+     517.4039916992188
+    ]
+   ],
+   "scores": [
+    0.554123
+   ],
+   "peaks": [
+    {
+     "peak_hz": 328.3708,
+     "snr": 15163.5879,
+     "n_events": 40747,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 914,
+    "hum_pixels": 393,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 460755.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 6,
+   "boxes": [
+    [
+     798.8619995117188,
+     465.9490051269531,
+     939.1690063476562,
+     518.5759887695312
+    ]
+   ],
+   "scores": [
+    0.561424
+   ],
+   "peaks": [
+    {
+     "peak_hz": 326.0604,
+     "snr": 7144.2715,
+     "n_events": 40250,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 901,
+    "hum_pixels": 387,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 461950.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 7,
+   "boxes": [
+    [
+     803.1749877929688,
+     466.6180114746094,
+     935.4660034179688,
+     516.1329956054688
+    ]
+   ],
+   "scores": [
+    0.570905
+   ],
+   "peaks": [
+    {
+     "peak_hz": 324.8504,
+     "snr": 13576.4648,
+     "n_events": 39492,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 888,
+    "hum_pixels": 382,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 444400.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 8,
+   "boxes": [
+    [
+     804.4929809570312,
+     466.3269958496094,
+     940.8740234375,
+     518.1729736328125
+    ]
+   ],
+   "scores": [
+    0.551304
+   ],
+   "peaks": [
+    {
+     "peak_hz": 323.6995,
+     "snr": 6957.5591,
+     "n_events": 38927,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 894,
+    "hum_pixels": 375,
+    "hum_median_hz": 340.0,
+    "fmap_sum": 443625.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 9,
+   "boxes": [
+    [
+     797.72802734375,
+     465.3429870605469,
+     933.8400268554688,
+     516.4669799804688
+    ]
+   ],
+   "scores": [
+    0.566024
+   ],
+   "peaks": [
+    {
+     "peak_hz": 315.2748,
+     "snr": 15216.9414,
+     "n_events": 38118,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 895,
+    "hum_pixels": 382,
+    "hum_median_hz": 340.0,
+    "fmap_sum": 426820.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 10,
+   "boxes": [
+    [
+     795.22998046875,
+     466.43701171875,
+     925.0089721679688,
+     515.489990234375
+    ]
+   ],
+   "scores": [
+    0.532594
+   ],
+   "peaks": [
+    {
+     "peak_hz": 315.5122,
+     "snr": 6630.0347,
+     "n_events": 38102,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 902,
+    "hum_pixels": 405,
+    "hum_median_hz": 340.0,
+    "fmap_sum": 440670.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 11,
+   "boxes": [
+    [
+     793.905029296875,
+     465.2749938964844,
+     939.60400390625,
+     518.7769775390625
+    ]
+   ],
+   "scores": [
+    0.520116
+   ],
+   "peaks": [
+    {
+     "peak_hz": 320.0682,
+     "snr": 1816.8379,
+     "n_events": 39024,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 896,
+    "hum_pixels": 407,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 439880.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 12,
+   "boxes": [
+    [
+     798.9130249023438,
+     464.531005859375,
+     936.9010009765625,
+     515.6820068359375
+    ]
+   ],
+   "scores": [
+    0.537162
+   ],
+   "peaks": [
+    {
+     "peak_hz": 317.2879,
+     "snr": 5829.6953,
+     "n_events": 39528,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 901,
+    "hum_pixels": 385,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 453885.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 13,
+   "boxes": [
+    [
+     795.5269775390625,
+     463.4779968261719,
+     941.3610229492188,
+     516.0230102539062
+    ]
+   ],
+   "scores": [
+    0.503976
+   ],
+   "peaks": [
+    {
+     "peak_hz": 316.7585,
+     "snr": 21922.4883,
+     "n_events": 39724,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 892,
+    "hum_pixels": 405,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 461375.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 14,
+   "boxes": [
+    [
+     793.5750122070312,
+     464.99798583984375,
+     926.8319702148438,
+     515.2310180664062
+    ]
+   ],
+   "scores": [
+    0.525498
+   ],
+   "peaks": [
+    {
+     "peak_hz": 315.96,
+     "snr": 29881.5527,
+     "n_events": 39240,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 877,
+    "hum_pixels": 417,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 457285.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 15,
+   "boxes": [
+    [
+     795.6119995117188,
+     464.38800048828125,
+     938.2899780273438,
+     515.8809814453125
+    ]
+   ],
+   "scores": [
+    0.50842
+   ],
+   "peaks": [
+    {
+     "peak_hz": 314.095,
+     "snr": 31312.4473,
+     "n_events": 39421,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 874,
+    "hum_pixels": 413,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 455865.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 16,
+   "boxes": [
+    [
+     790.1329956054688,
+     464.552001953125,
+     929.7009887695312,
+     515.8159790039062
+    ]
+   ],
+   "scores": [
+    0.521423
+   ],
+   "peaks": [
+    {
+     "peak_hz": 313.7702,
+     "snr": 38362.6992,
+     "n_events": 38350,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 876,
+    "hum_pixels": 401,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 451730.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 17,
+   "boxes": [
+    [
+     796.3939819335938,
+     465.48199462890625,
+     930.7919921875,
+     515.5919799804688
+    ]
+   ],
+   "scores": [
+    0.524478
+   ],
+   "peaks": [
+    {
+     "peak_hz": 319.5177,
+     "snr": 5231.2251,
+     "n_events": 36845,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 855,
+    "hum_pixels": 417,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 447780.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 18,
+   "boxes": [
+    [
+     794.7520141601562,
+     465.5350036621094,
+     921.1640014648438,
+     513.614013671875
+    ]
+   ],
+   "scores": [
+    0.512474
+   ],
+   "peaks": [
+    {
+     "peak_hz": 317.5,
+     "snr": 4271.3921,
+     "n_events": 36298,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 841,
+    "hum_pixels": 405,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 445885.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 19,
+   "boxes": [
+    [
+     791.6099853515625,
+     464.2359924316406,
+     924.31201171875,
+     514.9439697265625
+    ]
+   ],
+   "scores": [
+    0.492434
+   ],
+   "peaks": [
+    {
+     "peak_hz": 313.1545,
+     "snr": 26412.4297,
+     "n_events": 36590,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 835,
+    "hum_pixels": 402,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 452600.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 20,
+   "boxes": [
+    [
+     792.5050048828125,
+     464.31500244140625,
+     924.0419921875,
+     514.0709838867188
+    ]
+   ],
+   "scores": [
+    0.519794
+   ],
+   "peaks": [
+    {
+     "peak_hz": 313.1264,
+     "snr": 20006.4062,
+     "n_events": 36320,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 816,
+    "hum_pixels": 403,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 441720.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 21,
+   "boxes": [
+    [
+     793.7080078125,
+     464.72100830078125,
+     919.3980102539062,
+     514.4920043945312
+    ]
+   ],
+   "scores": [
+    0.527964
+   ],
+   "peaks": [
+    {
+     "peak_hz": 314.6819,
+     "snr": 38018.7734,
+     "n_events": 35952,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 802,
+    "hum_pixels": 397,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 429015.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 22,
+   "boxes": [
+    [
+     796.5399780273438,
+     463.96600341796875,
+     931.3590087890625,
+     515.7849731445312
+    ]
+   ],
+   "scores": [
+    0.527828
+   ],
+   "peaks": [
+    {
+     "peak_hz": 316.5901,
+     "snr": 24784.5312,
+     "n_events": 35825,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 802,
+    "hum_pixels": 396,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 436215.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 23,
+   "boxes": [
+    [
+     792.6110229492188,
+     466.5610046386719,
+     918.3259887695312,
+     514.9840087890625
+    ]
+   ],
+   "scores": [
+    0.520459
+   ],
+   "peaks": [
+    {
+     "peak_hz": 318.5672,
+     "snr": 10682.2598,
+     "n_events": 35188,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 785,
+    "hum_pixels": 383,
+    "hum_median_hz": 330.0,
+    "fmap_sum": 428265.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 24,
+   "boxes": [
+    [
+     794.8330078125,
+     465.20001220703125,
+     928.4409790039062,
+     516.2999877929688
+    ]
+   ],
+   "scores": [
+    0.540183
+   ],
+   "peaks": [
+    {
+     "peak_hz": 319.4906,
+     "snr": 15187.9785,
+     "n_events": 34297,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 765,
+    "hum_pixels": 400,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 416130.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 25,
+   "boxes": [
+    [
+     784.2449951171875,
+     464.2019958496094,
+     928.7899780273438,
+     516.7239990234375
+    ]
+   ],
+   "scores": [
+    0.488971
+   ],
+   "peaks": [
+    {
+     "peak_hz": 319.5244,
+     "snr": 11906.4893,
+     "n_events": 34192,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 761,
+    "hum_pixels": 402,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 415965.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 26,
+   "boxes": [
+    [
+     785.9110107421875,
+     464.1780090332031,
+     926.6389770507812,
+     516.4400024414062
+    ]
+   ],
+   "scores": [
+    0.480706
+   ],
+   "peaks": [
+    {
+     "peak_hz": 319.4801,
+     "snr": 7653.6602,
+     "n_events": 33649,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 755,
+    "hum_pixels": 397,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 401830.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 27,
+   "boxes": [
+    [
+     780.2020263671875,
+     464.4070129394531,
+     918.322998046875,
+     515.4769897460938
+    ]
+   ],
+   "scores": [
+    0.481112
+   ],
+   "peaks": [
+    {
+     "peak_hz": 318.5504,
+     "snr": 14629.1709,
+     "n_events": 33581,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 765,
+    "hum_pixels": 371,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 392265.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 28,
+   "boxes": [
+    [
+     794.6179809570312,
+     463.4909973144531,
+     933.5960083007812,
+     515.1669921875
+    ]
+   ],
+   "scores": [
+    0.458786
+   ],
+   "peaks": [
+    {
+     "peak_hz": 317.1036,
+     "snr": 30620.334,
+     "n_events": 33573,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 758,
+    "hum_pixels": 366,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 381455.0
+   }
+  },
+  {
+   "clip": "clear_mini2_seq202",
+   "frame": 29,
+   "boxes": [
+    [
+     787.156982421875,
+     464.1159973144531,
+     925.843994140625,
+     514.4349975585938
+    ]
+   ],
+   "scores": [
+    0.49961
+   ],
+   "peaks": [
+    {
+     "peak_hz": 316.0519,
+     "snr": 33929.1992,
+     "n_events": 32979,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 763,
+    "hum_pixels": 384,
+    "hum_median_hz": 335.0,
+    "fmap_sum": 391040.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 0,
+   "boxes": [
+    [
+     410.7850036621094,
+     293.35699462890625,
+     451.5249938964844,
+     323.9320068359375
+    ]
+   ],
+   "scores": [
+    0.322271
+   ],
+   "peaks": [
+    {
+     "peak_hz": 427.1863,
+     "snr": 7.2548,
+     "n_events": 408,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 44,
+    "hum_pixels": 22,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 18025.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 1,
+   "boxes": [
+    [
+     415.1050109863281,
+     294.5090026855469,
+     455.6809997558594,
+     325.57598876953125
+    ]
+   ],
+   "scores": [
+    0.313946
+   ],
+   "peaks": [
+    {
+     "peak_hz": 238.8702,
+     "snr": 8.7012,
+     "n_events": 423,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 42,
+    "hum_pixels": 15,
+    "hum_median_hz": 210.0,
+    "fmap_sum": 14700.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 2,
+   "boxes": [
+    [
+     423.4440002441406,
+     297.406005859375,
+     464.61700439453125,
+     328.64599609375
+    ],
+    [
+     385.7040100097656,
+     377.78399658203125,
+     445.593994140625,
+     415.3909912109375
+    ]
+   ],
+   "scores": [
+    0.303506,
+    0.190636
+   ],
+   "peaks": [
+    {
+     "peak_hz": 622.5,
+     "snr": 8.3151,
+     "n_events": 420,
+     "clear": false
+    },
+    {
+     "peak_hz": 220.0874,
+     "snr": 1771.0128,
+     "n_events": 1396,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 39,
+    "hum_pixels": 11,
+    "hum_median_hz": 215.0,
+    "fmap_sum": 13835.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 3,
+   "boxes": [
+    [
+     384.7640075683594,
+     376.4540100097656,
+     446.5419921875,
+     414.2919921875
+    ],
+    [
+     428.7449951171875,
+     298.85101318359375,
+     468.9259948730469,
+     329.9540100097656
+    ]
+   ],
+   "scores": [
+    0.438765,
+    0.292594
+   ],
+   "peaks": [
+    {
+     "peak_hz": 217.5,
+     "snr": 1586.1039,
+     "n_events": 1715,
+     "clear": true
+    },
+    {
+     "peak_hz": 435.7022,
+     "snr": 7.062,
+     "n_events": 430,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 50,
+    "hum_pixels": 14,
+    "hum_median_hz": 220.0,
+    "fmap_sum": 19290.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 4,
+   "boxes": [
+    [
+     386.37701416015625,
+     377.7760009765625,
+     442.1709899902344,
+     413.3190002441406
+    ],
+    [
+     445.7749938964844,
+     302.52801513671875,
+     486.0360107421875,
+     333.9880065917969
+    ]
+   ],
+   "scores": [
+    0.414495,
+    0.272526
+   ],
+   "peaks": [
+    {
+     "peak_hz": 224.7107,
+     "snr": 1679.0983,
+     "n_events": 2064,
+     "clear": true
+    },
+    {
+     "peak_hz": 428.9976,
+     "snr": 15.0162,
+     "n_events": 413,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 53,
+    "hum_pixels": 15,
+    "hum_median_hz": 215.0,
+    "fmap_sum": 17400.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 5,
+   "boxes": [
+    [
+     387.1719970703125,
+     377.5360107421875,
+     446.0899963378906,
+     414.6289978027344
+    ],
+    [
+     452.52099609375,
+     305.56500244140625,
+     494.2659912109375,
+     337.822998046875
+    ]
+   ],
+   "scores": [
+    0.332,
+    0.251048
+   ],
+   "peaks": [
+    {
+     "peak_hz": 230.3153,
+     "snr": 1749.3817,
+     "n_events": 2541,
+     "clear": true
+    },
+    {
+     "peak_hz": 969.775,
+     "snr": 9.6258,
+     "n_events": 405,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 64,
+    "hum_pixels": 20,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 21530.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 6,
+   "boxes": [
+    [
+     462.39801025390625,
+     308.947998046875,
+     504.8070068359375,
+     340.64898681640625
+    ],
+    [
+     387.6549987792969,
+     377.27099609375,
+     448.11199951171875,
+     415.1709899902344
+    ]
+   ],
+   "scores": [
+    0.330936,
+    0.163666
+   ],
+   "peaks": [
+    {
+     "peak_hz": 517.6456,
+     "snr": 10.5466,
+     "n_events": 396,
+     "clear": false
+    },
+    {
+     "peak_hz": 233.7404,
+     "snr": 2718.9221,
+     "n_events": 2786,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 66,
+    "hum_pixels": 27,
+    "hum_median_hz": 230.0,
+    "fmap_sum": 22920.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 7,
+   "boxes": [
+    [
+     471.7980041503906,
+     310.96099853515625,
+     511.9360046386719,
+     342.21099853515625
+    ],
+    [
+     389.90399169921875,
+     377.8070068359375,
+     451.6260070800781,
+     416.4469909667969
+    ]
+   ],
+   "scores": [
+    0.295705,
+    0.183189
+   ],
+   "peaks": [
+    {
+     "peak_hz": 764.6373,
+     "snr": 26.9802,
+     "n_events": 363,
+     "clear": false
+    },
+    {
+     "peak_hz": 234.0194,
+     "snr": 3421.8523,
+     "n_events": 2794,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 67,
+    "hum_pixels": 33,
+    "hum_median_hz": 235.0,
+    "fmap_sum": 23400.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 8,
+   "boxes": [
+    [
+     480.84100341796875,
+     312.9079895019531,
+     523.2030029296875,
+     345.1510009765625
+    ],
+    [
+     389.15899658203125,
+     378.12298583984375,
+     448.8919982910156,
+     415.6700134277344
+    ]
+   ],
+   "scores": [
+    0.321328,
+    0.227207
+   ],
+   "peaks": [
+    {
+     "peak_hz": 770.213,
+     "snr": 13.7467,
+     "n_events": 352,
+     "clear": false
+    },
+    {
+     "peak_hz": 232.9971,
+     "snr": 2950.7791,
+     "n_events": 2489,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 66,
+    "hum_pixels": 23,
+    "hum_median_hz": 235.0,
+    "fmap_sum": 23950.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 9,
+   "boxes": [
+    [
+     484.218994140625,
+     315.3479919433594,
+     526.5900268554688,
+     347.34698486328125
+    ],
+    [
+     390.114013671875,
+     377.1929931640625,
+     451.2799987792969,
+     415.5989990234375
+    ]
+   ],
+   "scores": [
+    0.284733,
+    0.168022
+   ],
+   "peaks": [
+    {
+     "peak_hz": 772.3707,
+     "snr": 11.4328,
+     "n_events": 390,
+     "clear": false
+    },
+    {
+     "peak_hz": 228.043,
+     "snr": 1843.9353,
+     "n_events": 2013,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 61,
+    "hum_pixels": 12,
+    "hum_median_hz": 227.5,
+    "fmap_sum": 20655.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 10,
+   "boxes": [
+    [
+     385.8429870605469,
+     377.6839904785156,
+     446.9909973144531,
+     415.614013671875
+    ],
+    [
+     488.9570007324219,
+     317.3529968261719,
+     531.0560302734375,
+     349.4530029296875
+    ]
+   ],
+   "scores": [
+    0.404055,
+    0.224606
+   ],
+   "peaks": [
+    {
+     "peak_hz": 220.3325,
+     "snr": 1487.9799,
+     "n_events": 1529,
+     "clear": true
+    },
+    {
+     "peak_hz": 178.2101,
+     "snr": 5.0511,
+     "n_events": 382,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 51,
+    "hum_pixels": 16,
+    "hum_median_hz": 222.5,
+    "fmap_sum": 17295.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 11,
+   "boxes": [
+    [
+     499.39898681640625,
+     320.3840026855469,
+     539.0999755859375,
+     350.88299560546875
+    ]
+   ],
+   "scores": [
+    0.283422
+   ],
+   "peaks": [
+    {
+     "peak_hz": 944.4862,
+     "snr": 9.6208,
+     "n_events": 390,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 46,
+    "hum_pixels": 19,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 14240.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 12,
+   "boxes": [
+    [
+     511.7149963378906,
+     323.88299560546875,
+     553.0809936523438,
+     355.8999938964844
+    ]
+   ],
+   "scores": [
+    0.294296
+   ],
+   "peaks": [
+    {
+     "peak_hz": 431.5317,
+     "snr": 7.8686,
+     "n_events": 397,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 43,
+    "hum_pixels": 23,
+    "hum_median_hz": 220.0,
+    "fmap_sum": 15310.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 13,
+   "boxes": [
+    [
+     388.90399169921875,
+     376.4639892578125,
+     454.0669860839844,
+     415.59600830078125
+    ],
+    [
+     519.4130249023438,
+     327.6759948730469,
+     559.60302734375,
+     357.9200134277344
+    ]
+   ],
+   "scores": [
+    0.325883,
+    0.279015
+   ],
+   "peaks": [
+    {
+     "peak_hz": 221.7366,
+     "snr": 1473.7167,
+     "n_events": 972,
+     "clear": true
+    },
+    {
+     "peak_hz": 639.3747,
+     "snr": 9.0626,
+     "n_events": 407,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 39,
+    "hum_pixels": 22,
+    "hum_median_hz": 220.0,
+    "fmap_sum": 14770.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 14,
+   "boxes": [
+    [
+     386.2019958496094,
+     376.2850036621094,
+     452.7279968261719,
+     415.4960021972656
+    ],
+    [
+     524.8790283203125,
+     329.8789978027344,
+     568.8870239257812,
+     362.8760070800781
+    ]
+   ],
+   "scores": [
+    0.454878,
+    0.289445
+   ],
+   "peaks": [
+    {
+     "peak_hz": 222.7957,
+     "snr": 1398.2247,
+     "n_events": 968,
+     "clear": true
+    },
+    {
+     "peak_hz": 355.4182,
+     "snr": 5.9359,
+     "n_events": 393,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 40,
+    "hum_pixels": 23,
+    "hum_median_hz": 215.0,
+    "fmap_sum": 13990.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 15,
+   "boxes": [
+    [
+     392.71600341796875,
+     377.45599365234375,
+     453.61700439453125,
+     415.6180114746094
+    ],
+    [
+     530.5650024414062,
+     333.15301513671875,
+     571.3629760742188,
+     363.6619873046875
+    ]
+   ],
+   "scores": [
+    0.411984,
+    0.280845
+   ],
+   "peaks": [
+    {
+     "peak_hz": 222.5,
+     "snr": 2453.8354,
+     "n_events": 994,
+     "clear": true
+    },
+    {
+     "peak_hz": 570.3701,
+     "snr": 9.1868,
+     "n_events": 376,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 46,
+    "hum_pixels": 23,
+    "hum_median_hz": 220.0,
+    "fmap_sum": 17725.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 16,
+   "boxes": [
+    [
+     544.2119750976562,
+     334.5899963378906,
+     586.6649780273438,
+     367.2279968261719
+    ],
+    [
+     391.8949890136719,
+     378.3689880371094,
+     450.50299072265625,
+     415.79998779296875
+    ],
+    [
+     529.093994140625,
+     334.32501220703125,
+     573.1489868164062,
+     365.5929870605469
+    ]
+   ],
+   "scores": [
+    0.295097,
+    0.276686,
+    0.136085
+   ],
+   "peaks": [
+    {
+     "peak_hz": 574.2784,
+     "snr": 6.9029,
+     "n_events": 380,
+     "clear": false
+    },
+    {
+     "peak_hz": 224.552,
+     "snr": 2864.8911,
+     "n_events": 1014,
+     "clear": true
+    },
+    {
+     "peak_hz": 572.5,
+     "snr": 7.6535,
+     "n_events": 367,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 44,
+    "hum_pixels": 27,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 16660.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 17,
+   "boxes": [
+    [
+     552.7849731445312,
+     343.2929992675781,
+     594.1680297851562,
+     374.0889892578125
+    ],
+    [
+     394.2340087890625,
+     378.7669982910156,
+     451.93798828125,
+     416.1199951171875
+    ]
+   ],
+   "scores": [
+    0.297001,
+    0.132648
+   ],
+   "peaks": [
+    {
+     "peak_hz": 553.8823,
+     "snr": 6.051,
+     "n_events": 364,
+     "clear": false
+    },
+    {
+     "peak_hz": 225.0082,
+     "snr": 3320.0442,
+     "n_events": 1003,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 43,
+    "hum_pixels": 25,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 16435.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 18,
+   "boxes": [
+    [
+     394.3500061035156,
+     378.7959899902344,
+     454.45098876953125,
+     416.9830017089844
+    ],
+    [
+     567.7999877929688,
+     346.75201416015625,
+     606.9420166015625,
+     377.0880126953125
+    ]
+   ],
+   "scores": [
+    0.354556,
+    0.270811
+   ],
+   "peaks": [
+    {
+     "peak_hz": 225.8732,
+     "snr": 2891.8682,
+     "n_events": 996,
+     "clear": true
+    },
+    {
+     "peak_hz": 367.7488,
+     "snr": 6.7191,
+     "n_events": 299,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 41,
+    "hum_pixels": 19,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 14755.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 19,
+   "boxes": [
+    [
+     395.2309875488281,
+     377.10699462890625,
+     454.26800537109375,
+     415.5929870605469
+    ],
+    [
+     577.6530151367188,
+     349.31298828125,
+     616.6640014648438,
+     379.7130126953125
+    ]
+   ],
+   "scores": [
+    0.448234,
+    0.233293
+   ],
+   "peaks": [
+    {
+     "peak_hz": 454.323,
+     "snr": 1370.8013,
+     "n_events": 1026,
+     "clear": true
+    },
+    {
+     "peak_hz": 725.0,
+     "snr": 6.0415,
+     "n_events": 278,
+     "clear": false
+    }
+   ],
+   "fmap": {
+    "active": 42,
+    "hum_pixels": 17,
+    "hum_median_hz": 220.0,
+    "fmap_sum": 16805.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 20,
+   "boxes": [
+    [
+     395.7900085449219,
+     378.0719909667969,
+     453.6629943847656,
+     416.2040100097656
+    ]
+   ],
+   "scores": [
+    0.425949
+   ],
+   "peaks": [
+    {
+     "peak_hz": 226.8359,
+     "snr": 1184.0239,
+     "n_events": 1066,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 43,
+    "hum_pixels": 21,
+    "hum_median_hz": 220.0,
+    "fmap_sum": 16680.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 21,
+   "boxes": [
+    [
+     393.8869934082031,
+     377.64801025390625,
+     453.1199951171875,
+     416.46600341796875
+    ]
+   ],
+   "scores": [
+    0.409254
+   ],
+   "peaks": [
+    {
+     "peak_hz": 225.7184,
+     "snr": 1881.4733,
+     "n_events": 1166,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 46,
+    "hum_pixels": 27,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 17275.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 22,
+   "boxes": [
+    [
+     393.60101318359375,
+     377.4809875488281,
+     453.2380065917969,
+     416.6839904785156
+    ]
+   ],
+   "scores": [
+    0.411541
+   ],
+   "peaks": [
+    {
+     "peak_hz": 226.2617,
+     "snr": 2286.8345,
+     "n_events": 1239,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 46,
+    "hum_pixels": 25,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 19250.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 23,
+   "boxes": [
+    [
+     386.677001953125,
+     379.12701416015625,
+     448.9259948730469,
+     416.72900390625
+    ]
+   ],
+   "scores": [
+    0.412971
+   ],
+   "peaks": [
+    {
+     "peak_hz": 227.3688,
+     "snr": 2741.4236,
+     "n_events": 1331,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 43,
+    "hum_pixels": 23,
+    "hum_median_hz": 230.0,
+    "fmap_sum": 15190.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 24,
+   "boxes": [
+    [
+     391.1050109863281,
+     379.0060119628906,
+     448.3909912109375,
+     416.2919921875
+    ]
+   ],
+   "scores": [
+    0.398334
+   ],
+   "peaks": [
+    {
+     "peak_hz": 228.1007,
+     "snr": 2769.9949,
+     "n_events": 1387,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 44,
+    "hum_pixels": 24,
+    "hum_median_hz": 235.0,
+    "fmap_sum": 19060.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 25,
+   "boxes": [
+    [
+     385.6700134277344,
+     380.52801513671875,
+     444.5360107421875,
+     416.5769958496094
+    ]
+   ],
+   "scores": [
+    0.382763
+   ],
+   "peaks": [
+    {
+     "peak_hz": 227.8118,
+     "snr": 4466.8574,
+     "n_events": 1379,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 43,
+    "hum_pixels": 23,
+    "hum_median_hz": 235.0,
+    "fmap_sum": 18895.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 26,
+   "boxes": [
+    [
+     391.3949890136719,
+     377.9209899902344,
+     453.58599853515625,
+     417.0790100097656
+    ]
+   ],
+   "scores": [
+    0.425106
+   ],
+   "peaks": [
+    {
+     "peak_hz": 226.6068,
+     "snr": 1749.922,
+     "n_events": 1415,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 46,
+    "hum_pixels": 20,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 18225.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 27,
+   "boxes": [
+    [
+     392.4119873046875,
+     377.7860107421875,
+     455.4830017089844,
+     417.7380065917969
+    ]
+   ],
+   "scores": [
+    0.4122
+   ],
+   "peaks": [
+    {
+     "peak_hz": 225.8747,
+     "snr": 2759.6619,
+     "n_events": 1395,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 48,
+    "hum_pixels": 23,
+    "hum_median_hz": 215.0,
+    "fmap_sum": 17270.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 28,
+   "boxes": [
+    [
+     384.29901123046875,
+     377.6050109863281,
+     454.6700134277344,
+     418.47601318359375
+    ]
+   ],
+   "scores": [
+    0.408338
+   ],
+   "peaks": [
+    {
+     "peak_hz": 226.1981,
+     "snr": 3706.0398,
+     "n_events": 1418,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 50,
+    "hum_pixels": 31,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 18280.0
+   }
+  },
+  {
+   "clip": "clear_cineape20ger_seq64",
+   "frame": 29,
+   "boxes": [
+    [
+     380.55499267578125,
+     378.3059997558594,
+     453.87799072265625,
+     419.21099853515625
+    ]
+   ],
+   "scores": [
+    0.372056
+   ],
+   "peaks": [
+    {
+     "peak_hz": 225.0,
+     "snr": 5652.6099,
+     "n_events": 1415,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 50,
+    "hum_pixels": 33,
+    "hum_median_hz": 225.0,
+    "fmap_sum": 18110.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 0,
+   "boxes": [
+    [
+     651.9840087890625,
+     291.9320068359375,
+     792.906005859375,
+     346.7049865722656
+    ]
+   ],
+   "scores": [
+    0.361894
+   ],
+   "peaks": [
+    {
+     "peak_hz": 454.8191,
+     "snr": 1342.1243,
+     "n_events": 34082,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 763,
+    "hum_pixels": 205,
+    "hum_median_hz": 645.0,
+    "fmap_sum": 468905.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 1,
+   "boxes": [
+    [
+     687.177001953125,
+     293.6650085449219,
+     820.7540283203125,
+     348.00201416015625
+    ]
+   ],
+   "scores": [
+    0.366133
+   ],
+   "peaks": [
+    {
+     "peak_hz": 460.8005,
+     "snr": 1555.058,
+     "n_events": 32544,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 712,
+    "hum_pixels": 210,
+    "hum_median_hz": 630.0,
+    "fmap_sum": 441575.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 2,
+   "boxes": [
+    [
+     684.1489868164062,
+     294.1029968261719,
+     816.8619995117188,
+     348.3009948730469
+    ]
+   ],
+   "scores": [
+    0.369403
+   ],
+   "peaks": [
+    {
+     "peak_hz": 481.0748,
+     "snr": 1711.2172,
+     "n_events": 33069,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 749,
+    "hum_pixels": 240,
+    "hum_median_hz": 620.0,
+    "fmap_sum": 468595.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 3,
+   "boxes": [
+    [
+     680.3319702148438,
+     294.35699462890625,
+     816.22998046875,
+     349.2049865722656
+    ]
+   ],
+   "scores": [
+    0.377151
+   ],
+   "peaks": [
+    {
+     "peak_hz": 492.5,
+     "snr": 1984.7753,
+     "n_events": 34293,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 823,
+    "hum_pixels": 260,
+    "hum_median_hz": 615.0,
+    "fmap_sum": 511420.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 4,
+   "boxes": [
+    [
+     639.7150268554688,
+     291.9169921875,
+     784.0819702148438,
+     350.6549987792969
+    ]
+   ],
+   "scores": [
+    0.412517
+   ],
+   "peaks": [
+    {
+     "peak_hz": 510.3227,
+     "snr": 4552.3574,
+     "n_events": 36351,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 843,
+    "hum_pixels": 281,
+    "hum_median_hz": 605.0,
+    "fmap_sum": 505740.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 5,
+   "boxes": [
+    [
+     640.5390014648438,
+     293.3080139160156,
+     780.5390014648438,
+     351.5220031738281
+    ]
+   ],
+   "scores": [
+    0.415201
+   ],
+   "peaks": [
+    {
+     "peak_hz": 515.0,
+     "snr": 5164.4775,
+     "n_events": 38302,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 849,
+    "hum_pixels": 311,
+    "hum_median_hz": 600.0,
+    "fmap_sum": 492470.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 6,
+   "boxes": [
+    [
+     639.406005859375,
+     294.2330017089844,
+     777.7130126953125,
+     353.10699462890625
+    ]
+   ],
+   "scores": [
+    0.428568
+   ],
+   "peaks": [
+    {
+     "peak_hz": 592.5,
+     "snr": 3870.1863,
+     "n_events": 42790,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 875,
+    "hum_pixels": 331,
+    "hum_median_hz": 595.0,
+    "fmap_sum": 507115.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 7,
+   "boxes": [
+    [
+     639.7680053710938,
+     294.9150085449219,
+     776.3400268554688,
+     353.8240051269531
+    ]
+   ],
+   "scores": [
+    0.438674
+   ],
+   "peaks": [
+    {
+     "peak_hz": 593.5734,
+     "snr": 15364.4941,
+     "n_events": 42590,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 851,
+    "hum_pixels": 346,
+    "hum_median_hz": 590.0,
+    "fmap_sum": 486305.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 8,
+   "boxes": [
+    [
+     631.323974609375,
+     295.4849853515625,
+     775.3289794921875,
+     355.73699951171875
+    ]
+   ],
+   "scores": [
+    0.436299
+   ],
+   "peaks": [
+    {
+     "peak_hz": 591.3084,
+     "snr": 4666.1982,
+     "n_events": 43165,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 849,
+    "hum_pixels": 360,
+    "hum_median_hz": 590.0,
+    "fmap_sum": 483630.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 9,
+   "boxes": [
+    [
+     665.77099609375,
+     300.3559875488281,
+     804.2620239257812,
+     356.3590087890625
+    ]
+   ],
+   "scores": [
+    0.400418
+   ],
+   "peaks": [
+    {
+     "peak_hz": 534.2755,
+     "snr": 3556.5903,
+     "n_events": 39218,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 814,
+    "hum_pixels": 368,
+    "hum_median_hz": 590.0,
+    "fmap_sum": 467375.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 10,
+   "boxes": [
+    [
+     664.22802734375,
+     300.70599365234375,
+     801.7540283203125,
+     356.5010070800781
+    ]
+   ],
+   "scores": [
+    0.404365
+   ],
+   "peaks": [
+    {
+     "peak_hz": 537.1268,
+     "snr": 1318.564,
+     "n_events": 39212,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 790,
+    "hum_pixels": 352,
+    "hum_median_hz": 590.0,
+    "fmap_sum": 452575.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 11,
+   "boxes": [
+    [
+     663.3779907226562,
+     301.2879943847656,
+     800.5050048828125,
+     357.2149963378906
+    ]
+   ],
+   "scores": [
+    0.421414
+   ],
+   "peaks": [
+    {
+     "peak_hz": 538.6774,
+     "snr": 2805.2515,
+     "n_events": 40701,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 804,
+    "hum_pixels": 361,
+    "hum_median_hz": 595.0,
+    "fmap_sum": 458230.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 12,
+   "boxes": [
+    [
+     660.85400390625,
+     300.0039978027344,
+     800.405029296875,
+     358.5450134277344
+    ]
+   ],
+   "scores": [
+    0.408481
+   ],
+   "peaks": [
+    {
+     "peak_hz": 539.5649,
+     "snr": 1406.4906,
+     "n_events": 43662,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 861,
+    "hum_pixels": 415,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 492195.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 13,
+   "boxes": [
+    [
+     659.4580078125,
+     300.9590148925781,
+     800.552001953125,
+     359.7650146484375
+    ]
+   ],
+   "scores": [
+    0.433
+   ],
+   "peaks": [
+    {
+     "peak_hz": 543.6443,
+     "snr": 1395.0037,
+     "n_events": 48154,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 887,
+    "hum_pixels": 510,
+    "hum_median_hz": 575.0,
+    "fmap_sum": 506440.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 14,
+   "boxes": [
+    [
+     658.27001953125,
+     301.75,
+     799.0380249023438,
+     359.90899658203125
+    ]
+   ],
+   "scores": [
+    0.435922
+   ],
+   "peaks": [
+    {
+     "peak_hz": 547.4272,
+     "snr": 2635.978,
+     "n_events": 51641,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 902,
+    "hum_pixels": 560,
+    "hum_median_hz": 570.0,
+    "fmap_sum": 514915.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 15,
+   "boxes": [
+    [
+     657.6069946289062,
+     301.1929931640625,
+     798.5819702148438,
+     360.3169860839844
+    ]
+   ],
+   "scores": [
+    0.440806
+   ],
+   "peaks": [
+    {
+     "peak_hz": 547.9242,
+     "snr": 1513.5414,
+     "n_events": 51891,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 890,
+    "hum_pixels": 569,
+    "hum_median_hz": 570.0,
+    "fmap_sum": 507050.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 16,
+   "boxes": [
+    [
+     618.0670166015625,
+     298.7829895019531,
+     766.5880126953125,
+     362.8070068359375
+    ]
+   ],
+   "scores": [
+    0.437206
+   ],
+   "peaks": [
+    {
+     "peak_hz": 579.2696,
+     "snr": 8487.1162,
+     "n_events": 53467,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 840,
+    "hum_pixels": 514,
+    "hum_median_hz": 575.0,
+    "fmap_sum": 480840.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 17,
+   "boxes": [
+    [
+     619.1220092773438,
+     301.1340026855469,
+     765.7000122070312,
+     363.2049865722656
+    ]
+   ],
+   "scores": [
+    0.431333
+   ],
+   "peaks": [
+    {
+     "peak_hz": 583.2067,
+     "snr": 4400.8823,
+     "n_events": 50160,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 777,
+    "hum_pixels": 440,
+    "hum_median_hz": 580.0,
+    "fmap_sum": 443780.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 18,
+   "boxes": [
+    [
+     619.593994140625,
+     302.0329895019531,
+     765.1640014648438,
+     363.3380126953125
+    ]
+   ],
+   "scores": [
+    0.421197
+   ],
+   "peaks": [
+    {
+     "peak_hz": 584.5049,
+     "snr": 26071.9434,
+     "n_events": 47344,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 709,
+    "hum_pixels": 408,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 408000.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 19,
+   "boxes": [
+    [
+     658.9359741210938,
+     305.8970031738281,
+     796.833984375,
+     361.72100830078125
+    ]
+   ],
+   "scores": [
+    0.412846
+   ],
+   "peaks": [
+    {
+     "peak_hz": 583.215,
+     "snr": 8264.1826,
+     "n_events": 31163,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 672,
+    "hum_pixels": 380,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 383140.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 20,
+   "boxes": [
+    [
+     660.2579956054688,
+     306.8999938964844,
+     798.2589721679688,
+     361.8999938964844
+    ]
+   ],
+   "scores": [
+    0.400466
+   ],
+   "peaks": [
+    {
+     "peak_hz": 582.8565,
+     "snr": 10949.1035,
+     "n_events": 29465,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 642,
+    "hum_pixels": 355,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 365280.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 21,
+   "boxes": [
+    [
+     661.9760131835938,
+     306.21099853515625,
+     799.6480102539062,
+     361.7250061035156
+    ]
+   ],
+   "scores": [
+    0.394482
+   ],
+   "peaks": [
+    {
+     "peak_hz": 607.5,
+     "snr": 2340.3784,
+     "n_events": 25289,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 609,
+    "hum_pixels": 343,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 346280.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 22,
+   "boxes": [
+    [
+     662.8280029296875,
+     307.5740051269531,
+     799.3900146484375,
+     362.0799865722656
+    ]
+   ],
+   "scores": [
+    0.386307
+   ],
+   "peaks": [
+    {
+     "peak_hz": 540.6523,
+     "snr": 2086.9341,
+     "n_events": 36272,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 599,
+    "hum_pixels": 318,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 340655.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 23,
+   "boxes": [
+    [
+     662.4860229492188,
+     307.5589904785156,
+     799.89697265625,
+     362.3819885253906
+    ]
+   ],
+   "scores": [
+    0.382339
+   ],
+   "peaks": [
+    {
+     "peak_hz": 535.2129,
+     "snr": 4003.707,
+     "n_events": 35413,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 594,
+    "hum_pixels": 311,
+    "hum_median_hz": 590.0,
+    "fmap_sum": 339270.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 24,
+   "boxes": [
+    [
+     664.5280151367188,
+     308.3810119628906,
+     800.2269897460938,
+     362.81201171875
+    ]
+   ],
+   "scores": [
+    0.378963
+   ],
+   "peaks": [
+    {
+     "peak_hz": 535.8075,
+     "snr": 1476.4705,
+     "n_events": 35216,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 669,
+    "hum_pixels": 304,
+    "hum_median_hz": 590.0,
+    "fmap_sum": 378345.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 25,
+   "boxes": [
+    [
+     626.7839965820312,
+     305.3529968261719,
+     770.2849731445312,
+     364.0589904785156
+    ]
+   ],
+   "scores": [
+    0.38134
+   ],
+   "peaks": [
+    {
+     "peak_hz": 546.001,
+     "snr": 1316.2723,
+     "n_events": 37017,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 697,
+    "hum_pixels": 299,
+    "hum_median_hz": 580.0,
+    "fmap_sum": 394555.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 26,
+   "boxes": [
+    [
+     628.5239868164062,
+     303.7349853515625,
+     772.1539916992188,
+     363.3789978027344
+    ]
+   ],
+   "scores": [
+    0.382371
+   ],
+   "peaks": [
+    {
+     "peak_hz": 549.2129,
+     "snr": 255.9036,
+     "n_events": 38359,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 666,
+    "hum_pixels": 302,
+    "hum_median_hz": 575.0,
+    "fmap_sum": 383535.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 27,
+   "boxes": [
+    [
+     634.0089721679688,
+     305.6300048828125,
+     773.9730224609375,
+     363.9419860839844
+    ]
+   ],
+   "scores": [
+    0.414317
+   ],
+   "peaks": [
+    {
+     "peak_hz": 580.9072,
+     "snr": 1926.3633,
+     "n_events": 39298,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 663,
+    "hum_pixels": 308,
+    "hum_median_hz": 580.0,
+    "fmap_sum": 378125.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 28,
+   "boxes": [
+    [
+     636.5570068359375,
+     306.1310119628906,
+     776.5360107421875,
+     364.1419982910156
+    ]
+   ],
+   "scores": [
+    0.429045
+   ],
+   "peaks": [
+    {
+     "peak_hz": 584.3898,
+     "snr": 12024.0186,
+     "n_events": 38170,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 697,
+    "hum_pixels": 315,
+    "hum_median_hz": 585.0,
+    "fmap_sum": 397920.0
+   }
+  },
+  {
+   "clip": "clear_tello_seq230",
+   "frame": 29,
+   "boxes": [
+    [
+     640.041015625,
+     306.26800537109375,
+     781.8779907226562,
+     364.4750061035156
+    ]
+   ],
+   "scores": [
+    0.41675
+   ],
+   "peaks": [
+    {
+     "peak_hz": 538.8412,
+     "snr": 5110.9365,
+     "n_events": 35495,
+     "clear": true
+    }
+   ],
+   "fmap": {
+    "active": 720,
+    "hum_pixels": 300,
+    "hum_median_hz": 580.0,
+    "fmap_sum": 414450.0
+   }
+  }
+ ]
+}

@@ -1,0 +1,153 @@
+{
+ "meta": {
+  "label": "det-pip-x86-c7i.xlarge",
+  "host": "ip-172-31-4-130",
+  "machine": "x86_64",
+  "cpu_count": 4,
+  "python": "3.12.3",
+  "opencv": "5.0.0",
+  "cv2_file": "/srv/strobe/venv/lib/python3.12/site-packages/cv2/__init__.py",
+  "numpy": "2.5.4",
+  "build": [
+   "Baseline:                    SSE SSE2 SSE3",
+   "Dispatched code generation:  SSE4_1 SSE4_2 AVX FP16 AVX2 AVX512_SKX",
+   "Parallel framework:            pthreads",
+   "Custom HAL:                  YES (ipp (ver 0.0.1))"
+  ],
+  "time_utc": "2026-10-27T04:13:24Z",
+  "onnx": "strobe_drone_960x544.onnx",
+  "reference": "engine new, default target, 4 threads (the current setting)",
+  "tolerance": 0.001,
+  "opencv_targets": [
+   0
+  ]
+ },
+ "configs": [
+  {
+   "engine": "new",
+   "target": "default",
+   "threads": 4,
+   "net_layers": 161,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 73.41024299999788,
+   "det_mean_ms": 73.4162191444449,
+   "det_p95_ms": 73.87763980000557,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 0.0,
+   "correct": true
+  },
+  {
+   "engine": "new",
+   "target": "default",
+   "threads": 2,
+   "net_layers": 161,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 78.60392849999442,
+   "det_mean_ms": 78.400241499999,
+   "det_p95_ms": 79.67557165000798,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 0.0,
+   "correct": true
+  },
+  {
+   "engine": "new",
+   "target": "cpu",
+   "threads": 4,
+   "net_layers": 161,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 72.54195750000036,
+   "det_mean_ms": 72.59560173888917,
+   "det_p95_ms": 73.60302505000007,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 0.0,
+   "correct": true
+  },
+  {
+   "engine": "new",
+   "target": "cpu",
+   "threads": 2,
+   "net_layers": 161,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 79.55172149999612,
+   "det_mean_ms": 79.26682097777744,
+   "det_p95_ms": 80.23491100001507,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 0.0,
+   "correct": true
+  },
+  {
+   "engine": "classic",
+   "target": "default",
+   "threads": 4,
+   "net_layers": 181,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 67.82523700000809,
+   "det_mean_ms": 67.881455427778,
+   "det_p95_ms": 69.19200099999898,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 9.1552734375e-05,
+   "correct": true
+  },
+  {
+   "engine": "classic",
+   "target": "default",
+   "threads": 2,
+   "net_layers": 181,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 86.55470349999916,
+   "det_mean_ms": 86.67485791666505,
+   "det_p95_ms": 87.75567265000603,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 9.1552734375e-05,
+   "correct": true
+  },
+  {
+   "engine": "classic",
+   "target": "cpu",
+   "threads": 4,
+   "net_layers": 181,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 70.5100999999928,
+   "det_mean_ms": 70.55179640000043,
+   "det_p95_ms": 71.87757615000692,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 9.1552734375e-05,
+   "correct": true
+  },
+  {
+   "engine": "classic",
+   "target": "cpu",
+   "threads": 2,
+   "net_layers": 181,
+   "windows": 180,
+   "boxes": 147,
+   "det_p50_ms": 87.38361250000537,
+   "det_mean_ms": 87.44226757222324,
+   "det_p95_ms": 88.61518914998925,
+   "box_count_mismatch_windows": 0,
+   "max_abs_diff_box_px_or_score": 9.1552734375e-05,
+   "correct": true
+  }
+ ],
+ "best": {
+  "engine": "classic",
+  "target": "default",
+  "threads": 4,
+  "net_layers": 181,
+  "windows": 180,
+  "boxes": 147,
+  "det_p50_ms": 67.82523700000809,
+  "det_mean_ms": 67.881455427778,
+  "det_p95_ms": 69.19200099999898,
+  "box_count_mismatch_windows": 0,
+  "max_abs_diff_box_px_or_score": 9.1552734375e-05,
+  "correct": true
+ }
+}

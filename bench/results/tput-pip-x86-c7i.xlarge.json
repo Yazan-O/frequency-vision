@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "label": "tput-pip-x86-c7i.xlarge",
+  "host": "ip-172-31-8-245",
+  "machine": "x86_64",
+  "cpu_count": 4,
+  "python": "3.12.3",
+  "opencv": "5.0.0",
+  "cv2_file": "/srv/strobe/venv/lib/python3.12/site-packages/cv2/__init__.py",
+  "numpy": "2.5.4",
+  "build": [
+   "Baseline:                    SSE SSE2 SSE3",
+   "Dispatched code generation:  SSE4_1 SSE4_2 AVX FP16 AVX2 AVX512_SKX",
+   "Parallel framework:            pthreads",
+   "Custom HAL:                  YES (ipp (ver 0.0.1))"
+  ],
+  "time_utc": "2026-10-27T04:28:22Z",
+  "onnx": "strobe_drone_960x544.onnx",
+  "detector_engine": "classic",
+  "detector_target": "default",
+  "price_usd_hour": 0.1785,
+  "workload": "each worker process runs the full E2E window (detector + hum checks + frequency map) over all 210 windows x reps; wall time from the first worker's start after warm-up to the last worker's end"
+ },
+ "rows": [
+  {
+   "workers": 1,
+   "cv_threads_per_worker": 4,
+   "windows": 180,
+   "wall_s": 17.926956577999988,
+   "windows_per_s": 10.040745020875239,
+   "usd_per_1000_windows": 0.004938212575884256,
+   "windows_per_usd": 202502.42058908043
+  },
+  {
+   "workers": 2,
+   "cv_threads_per_worker": 2,
+   "windows": 360,
+   "wall_s": 30.305711109000015,
+   "windows_per_s": 11.878949109796315,
+   "usd_per_1000_windows": 0.004174050488392363,
+   "windows_per_usd": 239575.44423118618
+  },
+  {
+   "workers": 4,
+   "cv_threads_per_worker": 1,
+   "windows": 720,
+   "wall_s": 55.99356978899999,
+   "windows_per_s": 12.858619350635596,
+   "usd_per_1000_windows": 0.003856038660237846,
+   "windows_per_usd": 259333.49950861707
+  }
+ ]
+}
