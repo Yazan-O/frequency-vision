@@ -20,7 +20,8 @@
 </p>
 
 <p align="center">
-  <b>▶&nbsp;Video:</b> [VIDEO_URL]&nbsp;&nbsp;·&nbsp;&nbsp;<b>Repo:</b> <a href="https://github.com/Yazan-O/frequency-vision">github.com/Yazan-O/frequency-vision</a>&nbsp;&nbsp;·&nbsp;&nbsp;<b>Live:</b> <a href="https://100-27-6-111.sslip.io">100-27-6-111.sslip.io</a> (no login, served by COOL on Graviton4)
+  <b>▶&nbsp;Video:</b> [VIDEO_URL]&nbsp;&nbsp;·&nbsp;&nbsp;<b>Repo:</b> <a href="https://github.com/Yazan-O/frequency-vision">github.com/Yazan-O/frequency-vision</a>&nbsp;&nbsp;·&nbsp;&nbsp;<b>Live:</b> <a href="https://100-27-6-111.sslip.io">100-27-6-111.sslip.io</a> (no login, served by COOL on Graviton4)<br>
+  <b>Team:</b> Mohamad Yazan Sadoun, PhD candidate, Electrical and Computer Engineering, University of Oklahoma
 </p>
 
 <p align="center">
@@ -31,7 +32,7 @@
 
 <p align="center">
   <b>−25% false alarms at the same recall, on 84 minutes of real drone video.</b><br>
-  <sub>412.7 → 308.4 false alarms per minute, recall 0.544 → 0.544, FRED test split (47 sequences, every frame). High-precision setting (hum score ≥ 98): precision 0.815 at recall 0.146.</sub>
+  <sub>Precision 0.670 → 0.731. False boxes summed over every frame: 412.7 → 308.4 per minute of video, recall 0.544 → 0.544, FRED test split (47 sequences, every frame). High-precision setting (hum score ≥ 98): precision 0.815 at recall 0.146.</sub>
 </p>
 
 <p align="center">
@@ -53,20 +54,20 @@ Frequency Vision meets every final submission requirement and enters the overall
 
 ### Submission requirements
 
-| Requirement | Met | Evidence |
-|---|---|---|
-| OpenCV 5 for substantive image or video analysis | Yes | [`hertz/freq.py`](hertz/freq.py), [`hertz/detect.py`](hertz/detect.py), live [`/version`](https://100-27-6-111.sslip.io/version) |
-| A meaningful component on AWS | Yes | COOL on Graviton4 `c8g.medium` serves the page, the engine and the agent tools; Amazon Bedrock plans the agent ([deploy README](deploy/README.md)) |
-| Technical report: problem, users, architecture, OpenCV 5, AWS, evaluation, limitations, responsible use | Yes | [`docs/REPORT.md`](docs/REPORT.md) §1 to §11 |
-| Judge-accessible code repository | Yes | [github.com/Yazan-O/frequency-vision](https://github.com/Yazan-O/frequency-vision), public |
-| Pinned dependencies, build, deployment and test instructions | Yes | [`requirements.txt`](requirements.txt), [`requirements-dev.txt`](requirements-dev.txt), [Reproduce](#reproduce), [deploy README](deploy/README.md), [CI](.github/workflows/ci.yml) |
-| Architecture diagram with OpenCV 5, AWS, COOL and agent parts | Yes | [Architecture](#architecture), [`docs/architecture.svg`](docs/architecture.svg), [`docs/agent_workflow.svg`](docs/agent_workflow.svg) |
-| Working web endpoint | Yes | [100-27-6-111.sslip.io](https://100-27-6-111.sslip.io), always on |
-| Video of five minutes or less: team, app working, architecture, results | Yes | [VIDEO_URL] |
-| Evaluation evidence with failure cases and limitations | Yes | [Results](#results), [REPORT §8 to §10](docs/REPORT.md) |
-| Best Use of COOL evidence: COOL version, instance config, reproducible method, proof COOL runs the workload | Yes | [COOL on Graviton4](#cool-on-graviton4), [`bench/results/cool-proof-c8g.xlarge.json`](bench/results/cool-proof-c8g.xlarge.json) |
-| Agentic Vision evidence: workflow diagram, a trace where OpenCV 5 output changes the next action, evaluation of success, failures and human control | Yes | [The agent](#the-agent), [trace `bedrock_late_142`](results/agent/eval_v3/traces/bedrock_late_142.jsonl), [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json) |
-| Rights to data, models and media | Yes | FRED under Apache-2.0, detector weights not distributed, [`THIRD_PARTY.md`](THIRD_PARTY.md) |
+| Requirement | Evidence |
+|---|---|
+| OpenCV 5 for substantive image or video analysis | [`hertz/freq.py`](hertz/freq.py), [`hertz/detect.py`](hertz/detect.py), live [`/version`](https://100-27-6-111.sslip.io/version) |
+| A meaningful component on AWS | COOL on Graviton4 `c8g.medium` serves the page, the engine and the agent tools; Amazon Bedrock plans the agent ([deploy README](deploy/README.md)) |
+| Technical report: problem, users, architecture, OpenCV 5, AWS, evaluation, limitations, responsible use | [`docs/REPORT.md`](docs/REPORT.md) §1 to §11 |
+| Judge-accessible code repository | [github.com/Yazan-O/frequency-vision](https://github.com/Yazan-O/frequency-vision), public |
+| Pinned dependencies, build, deployment and test instructions | [`requirements.txt`](requirements.txt), [`requirements-dev.txt`](requirements-dev.txt), [Reproduce](#reproduce), [deploy README](deploy/README.md), [CI](.github/workflows/ci.yml) |
+| Architecture diagram with OpenCV 5, AWS, COOL and agent parts | [Architecture](#architecture), [`docs/architecture.svg`](docs/architecture.svg), [`docs/agent_workflow.svg`](docs/agent_workflow.svg) |
+| Working web endpoint | [100-27-6-111.sslip.io](https://100-27-6-111.sslip.io), always on |
+| Video of five minutes or less: team, app working, architecture, results | [VIDEO_URL] |
+| Evaluation evidence with failure cases and limitations | [Results](#results), [REPORT §8 to §10](docs/REPORT.md) |
+| Best Use of COOL evidence: COOL version, instance config, reproducible method, proof COOL runs the workload | [COOL on Graviton4](#cool-on-graviton4), [live host proof `c8g.medium`](bench/results/cool-proof-live-c8g.medium.json), [benchmark host proof `c8g.xlarge`](bench/results/cool-proof-c8g.xlarge.json) |
+| Agentic Vision evidence: workflow diagram, a trace where OpenCV 5 output changes the next action, evaluation of success, failures and human control | [The agent](#the-agent), [trace `bedrock_late_142`](results/agent/eval_v3/traces/bedrock_late_142.jsonl), [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json) |
+| Rights to data, models and media | FRED under Apache-2.0, detector weights not distributed, [`THIRD_PARTY.md`](THIRD_PARTY.md) |
 
 ### Overall rubric
 
@@ -288,7 +289,7 @@ flowchart TD
     R --> E["finish"]
 ```
 
-The visual result decides the next call. After **ambiguous**, the Bedrock planner asked for a new window 6 of 9 times. After **none**, it moved to a new frame (6) or searched the whole frame with `frequency_map` (3). After **hum**, it tracked (3) or asked a human (1). Source: [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), `summary.bedrock.next_tool_after_verdict`. The drawn version is [`docs/agent_workflow.svg`](docs/agent_workflow.svg).
+The next call follows the visual verdict. After **ambiguous**, the Bedrock planner asked for a new window 6 of 9 times. After **none**, it moved to a new frame (6) or searched the whole frame with `frequency_map` (3). After **hum**, it tracked (3) or asked a human (1). Source: [`results/agent/eval_v3/results.json`](results/agent/eval_v3/results.json), `summary.bedrock.next_tool_after_verdict`. The drawn version is [`docs/agent_workflow.svg`](docs/agent_workflow.svg).
 
 ### One real trace: `bedrock_late_142`
 
@@ -350,7 +351,7 @@ All on FRED, a public dataset of real event + RGB drone recordings (Apache-2.0).
 | High-precision setting, RGB + hum score ≥ 98 | precision **0.815** at recall 0.146, 51.2 false alarms per minute | same |
 | Hum score AUC, drone box vs random patch / vs busiest non-drone patch (100 ms) | **0.917** / 0.758 (26,911 drone boxes) | [`summary.json`](results/engine/summary.json) |
 | Blade-pass medians over all test boxes vs PropPulse published medians | DJI Mini 2 **320 Hz (median over all Mini 2 test sequences, 1,951 boxes) vs PropPulse 316 Hz**, Tello EDU 564 vs 539 Hz, Mini 3 245 vs 223 Hz | [`per_model_youden.json`](results/engine/per_model_youden.json) |
-| COOL vs pip OpenCV 5, event-engine ops, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster under COOL; DNN forward 0.92x | [COOL on Graviton4](#cool-on-graviton4) |
+| COOL vs pip OpenCV 5, OpenCV ops the engine uses on a 1280×720 test image, same Graviton4 host, 4 threads | GaussianBlur **1.89x**, dft **1.54x**, connectedComponentsWithStats **1.17x** faster under COOL; DNN forward 0.92x | [COOL on Graviton4](#cool-on-graviton4) |
 | End-to-end confirm step, COOL vs pip, same Graviton4 host, 210 FRED windows | p50 **106.2 vs 98.9 ms** per window (COOL 7% slower, the detector dominates); frequency map **1.13x** faster under COOL; outputs identical | [`E2E.md`](bench/results/E2E.md) |
 | Graviton4 vs x86 (pip OpenCV 5, 4 vCPUs, 4 threads) | faster on 5 of 6 ops, up to **2.07x** (cvtColor) | [`pip-graviton4-c8g.xlarge.json`](bench/results/pip-graviton4-c8g.xlarge.json), [`pip-x86-c7i.xlarge.json`](bench/results/pip-x86-c7i.xlarge.json) |
 | Agent, 8 FRED scenarios fixed before any run | Bedrock **4 / 8, 0 false alerts**, the same score as the hand-tuned rule planner with **30% fewer tool calls** (12.25 vs 17.38 per episode); critical alerts wait for a human (simulated in the evaluation) | [`results.json`](results/agent/eval_v3/results.json) |
@@ -435,7 +436,7 @@ Failure cases with numbers: [`docs/REPORT.md`](docs/REPORT.md) §9.
 
 ## COOL on Graviton4
 
-COOL (Cloud Optimized OpenCV for AWS Graviton4, AWS Marketplace product code `aajkmdd4qo3r7yhqg61a7aah9`, AMI `ami-033e481a24f94c8cb`) runs the whole live workload. Proof captured through SSM on the benchmark instance ([`cool-proof-c8g.xlarge.json`](bench/results/cool-proof-c8g.xlarge.json)):
+COOL (Cloud Optimized OpenCV for AWS Graviton4, AWS Marketplace product code `aajkmdd4qo3r7yhqg61a7aah9`, AMI `ami-033e481a24f94c8cb`) runs the whole live workload. The live host `c8g.medium` (`i-0d59ee3505c397229`) serves `cv2` from `/opt/cool`, read from `/version` and the EC2 API ([`cool-proof-live-c8g.medium.json`](bench/results/cool-proof-live-c8g.medium.json)). Proof captured through SSM on the benchmark instance ([`cool-proof-c8g.xlarge.json`](bench/results/cool-proof-c8g.xlarge.json)):
 
 ```
 opencv          5.1.0-dev

@@ -1,0 +1,13 @@
+{
+ "captured_utc": "2026-10-27T03:57:07Z",
+ "source": "GET https://100-27-6-111.sslip.io/version + EC2 DescribeInstances/DescribeImages",
+ "opencv": "5.1.0-dev",
+ "cv2_file": "/opt/cool/python_3.12/site-packages/cv2/__init__.py",
+ "cool": true,
+ "machine": "aarch64",
+ "instance_type": "c8g.medium",
+ "instance_id": "i-0d59ee3505c397229",
+ "ami_id": "ami-033e481a24f94c8cb",
+ "product_codes": "aajkmdd4qo3r7yhqg61a7aah9",
+ "custom_hal": "YES (carotene (ver 0.0.1) KleidiCV (ver 0.7.0))"
+}
