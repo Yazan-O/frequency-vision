@@ -21,7 +21,7 @@ HERE = Path(__file__).parent
 ROOT = HERE.parent
 DATA = HERE / "data"
 STATIC = HERE / "static" / "data"
-STATE = Path(os.environ.get("HERTZ_STATE") or os.environ.get("STROBE_STATE", str(Path.home() / ".strobe")))
+STATE = Path(os.environ.get("HERTZ_STATE", str(Path.home() / ".hertz")))
 FMAX = 1200.0
 MAX_APPROVALS = 20000
 LIMITS = {"approve": (10, 60.0), "detect": (30, 60.0), "agent": (4, 60.0)}
@@ -32,7 +32,7 @@ LIVE_MAX_S = LIVE_WAIT_S + 30
 BEDROCK_DAY_CAP = 100
 LIVE_PLANNER = os.environ.get("HERTZ_LIVE_PLANNER", "bedrock")
 _live = {"lock": threading.Lock(), "runs": {}, "client": None}
-DET_PATH = os.environ.get("HERTZ_DETECTOR_ONNX") or os.environ.get("STROBE_DETECTOR_ONNX", str(ROOT.parent / "build" / "models" / "strobe_drone_960x544.onnx"))
+DET_PATH = os.environ.get("HERTZ_DETECTOR_ONNX", str(ROOT.parent / "build" / "models" / "strobe_drone_960x544.onnx"))
 DET_CONF = 0.125
 HERO = "clear_mini2_seq202"
 router = APIRouter(prefix="/api")

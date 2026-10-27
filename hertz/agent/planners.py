@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 from .tools import schemas
 
-MODEL = os.environ.get("HERTZ_MODEL") or os.environ.get("STROBE_MODEL", "us.anthropic.claude-sonnet-4-6")
+MODEL = os.environ.get("HERTZ_MODEL", "us.anthropic.claude-sonnet-4-6")
 
 
 class PlannerError(Exception):

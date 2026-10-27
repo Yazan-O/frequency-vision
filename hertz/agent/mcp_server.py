@@ -10,8 +10,8 @@ from .data import Store
 from .guard import Budget, Reject, State, check
 from .tools import Toolbox
 
-DATA = os.environ.get("HERTZ_DATA") or os.environ.get("STROBE_DATA", str(Path(__file__).resolve().parents[2] / "data" / "fred_slices"))
-TRACE = os.environ.get("HERTZ_MCP_TRACE") or os.environ.get("STROBE_MCP_TRACE", "")
+DATA = os.environ.get("HERTZ_DATA", str(Path(__file__).resolve().parents[2] / "data" / "fred_slices"))
+TRACE = os.environ.get("HERTZ_MCP_TRACE", "")
 
 mcp = FastMCP("hertz")
 _store = Store(DATA)

@@ -93,7 +93,7 @@ def frequency_map(sl, t0, t1):
             "hum_spots": spots[:6], "source": SOURCE["spectrum"]}
 
 
-DNN_PATH = os.environ.get("HERTZ_DETECTOR_ONNX") or os.environ.get("STROBE_DETECTOR_ONNX", str(Path(__file__).resolve().parents[3] / "build" / "models" / "strobe_drone_960x544.onnx"))
+DNN_PATH = os.environ.get("HERTZ_DETECTOR_ONNX", str(Path(__file__).resolve().parents[3] / "build" / "models" / "strobe_drone_960x544.onnx"))
 DNN_CONF = 0.125
 _DNN = {"net": None, "tried": False, "error": None}
 

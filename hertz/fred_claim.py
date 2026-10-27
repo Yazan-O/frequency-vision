@@ -117,4 +117,4 @@ if __name__ == "__main__":
         dst = out / f"{s}.csv"
         if dst.exists():
             continue
-        print(s, run(root / s, dst, int(os.environ.get("HERTZ_STRIDE") or os.environ.get("STROBE_STRIDE", 5))), flush=True)
+        print(s, run(root / s, dst, int(os.environ.get("HERTZ_STRIDE", 5))), flush=True)

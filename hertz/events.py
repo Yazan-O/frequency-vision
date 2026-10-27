@@ -15,7 +15,7 @@ _lib = None
 def _ecf():
     global _lib
     if _lib is None:
-        _lib = ctypes.CDLL(os.environ.get("HERTZ_ECF_LIB") or os.environ.get("STROBE_ECF_LIB", str(Path(__file__).parent / "ecf" / "libecf_shim.so")))
+        _lib = ctypes.CDLL(os.environ.get("HERTZ_ECF_LIB", str(Path(__file__).parent / "ecf" / "libecf_shim.so")))
         _lib.ecf_size.restype = ctypes.c_size_t
         _lib.ecf_size.argtypes = [ctypes.c_char_p]
         _lib.ecf_decode.restype = ctypes.c_size_t
