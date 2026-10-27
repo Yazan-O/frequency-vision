@@ -3,8 +3,8 @@
  "data": "data/fred_slices",
  "scenarios": "eval/scenarios.json",
  "vision_source": {
-  "spectrum": "strobe.freq (lane L1)",
-  "detect": "strobe.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125)"
+  "spectrum": "strobe.freq (event hum engine)",
+  "detect": "strobe.detect.Detector (FRED-trained drone detector, strobe_drone_960x544.onnx, score >= 0.125)"
  },
  "thresholds": {
   "hum_snr": 98.0,

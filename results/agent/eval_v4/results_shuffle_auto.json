@@ -3,8 +3,8 @@
  "data": "data/fred_slices",
  "scenarios": "eval/scenarios_v4.json",
  "vision_source": {
-  "spectrum": "hertz.freq (lane L1)",
-  "detect": "hertz.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125)"
+  "spectrum": "hertz.freq (event hum engine)",
+  "detect": "hertz.detect.Detector (FRED-trained drone detector, strobe_drone_960x544.onnx, score >= 0.125)"
  },
  "thresholds": {
   "hum_snr": 98.0,
@@ -51,7 +51,7 @@
     "converse_calls": 334,
     "mean_converse_ms": 1235.3,
     "usd_estimate": 4.593,
-    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
    },
    "fallbacks": 0,
    "asks": 1,
@@ -123,7 +123,7 @@
      "converse_calls": 114,
      "mean_converse_ms": 1252.7,
      "usd_estimate": 1.638,
-     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
     },
     "fallbacks": 0,
     "asks": 1,
@@ -166,7 +166,7 @@
      "converse_calls": 220,
      "mean_converse_ms": 1226.2,
      "usd_estimate": 2.955,
-     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
     },
     "fallbacks": 0,
     "asks": 0,
@@ -264,7 +264,7 @@
      "converse_calls": 66,
      "mean_converse_ms": 1207.7,
      "usd_estimate": 0.763,
-     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
     },
     "fallbacks": 0,
     "asks": 0,
@@ -300,7 +300,7 @@
      "converse_calls": 112,
      "mean_converse_ms": 1276.7,
      "usd_estimate": 1.811,
-     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
     },
     "fallbacks": 0,
     "asks": 1,
@@ -341,7 +341,7 @@
      "converse_calls": 79,
      "mean_converse_ms": 1174.3,
      "usd_estimate": 1.03,
-     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
     },
     "fallbacks": 0,
     "asks": 0,
@@ -380,7 +380,7 @@
      "converse_calls": 77,
      "mean_converse_ms": 1261.2,
      "usd_estimate": 0.989,
-     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+     "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
     },
     "fallbacks": 0,
     "asks": 0,

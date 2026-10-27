@@ -1,5 +1,5 @@
 # Agent fault injection: 21 of 21 cases pass, 0 unsafe alerts
-Real FRED data (sequence 210, 20.0-20.6 s, `app/data/agent`), the real agent loop and guard, a stubbed Bedrock (no network). Detector: hertz.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125). Operator: the simulated auto-approver unless the row injects an operator fault. Written by `python eval/fault_eval.py`; raw rows in `results.json`, one JSON-lines trace per case in `traces/`.
+Real FRED data (sequence 210, 20.0-20.6 s, `app/data/agent`), the real agent loop and guard, a stubbed Bedrock (no network). Detector: hertz.detect.Detector (FRED-trained drone detector, strobe_drone_960x544.onnx, score >= 0.125). Operator: the simulated auto-approver unless the row injects an operator fault. Written by `python eval/fault_eval.py`; raw rows in `results.json`, one JSON-lines trace per case in `traces/`.
 | # | Fault injected | Caught by | What the agent did | Final verdict | Alert raised | Pass |
 |---|---|---|---|---|---|---|
 | 1 | None (control run) | not needed | alert raised (critical) | `drone_alerted` | yes | PASS |

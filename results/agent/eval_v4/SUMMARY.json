@@ -23,7 +23,7 @@
     "converse_calls": 307,
     "mean_converse_ms": 1285.2,
     "usd_estimate": 4.152,
-    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (unverified)"
+    "price_basis": "USD per million tokens in/out {'input': 3.0, 'output': 15.0}, Bedrock on-demand list price for Claude Sonnet 4.6 (estimate from list price)"
    }
   },
   "rule": {
