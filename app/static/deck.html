@@ -170,14 +170,19 @@
   </section>
 
   <section class="slide s5" id="s6" aria-label="Results">
-    <h2 class="hl">Each drone model hums at its own pitch.</h2>
+    <h2 class="hl" id="hl6">Fewer false alarms, a pitch for each drone, and OpenCV 5 speed on Graviton4.</h2>
     <div class="res">
       <div class="fa">
         <div class="tag"><svg class="ic"><use href="#i-alert"/></svg><span id="fatag">false alarms</span></div>
         <div class="fapair" id="fa"></div>
       </div>
+      <div class="bench cool">
+        <div class="tag"><svg class="ic"><use href="#i-chip"/></svg><span>COOL vs pip · same Graviton4</span></div>
+        <div id="coolbars" class="bb"></div>
+        <p class="coolnote" id="coolnote"></p>
+      </div>
       <div class="bench">
-        <div class="tag"><svg class="ic"><use href="#i-chip"/></svg><span>OpenCV 5 speed</span></div>
+        <div class="tag"><svg class="ic"><use href="#i-chip"/></svg><span>Graviton4 vs x86 · pip OpenCV 5</span></div>
         <div class="win5" id="winner"></div>
         <div id="benchbars" class="bb"></div>
         <div class="bkey"><span><i class="sw g4"></i>times faster on Graviton4 than x86</span><span><i class="sw one"></i>same speed</span></div>

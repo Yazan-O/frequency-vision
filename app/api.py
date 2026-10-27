@@ -402,10 +402,30 @@ def bench():
                     for o in ops]}
 
 
+def cool_vs_pip():
+    R = ROOT / "bench" / "results"
+    try:
+        c, p = (json.loads((R / f).read_text()) for f in ("cool-graviton4-c8g.xlarge.json", "pip-graviton4-c8g.xlarge-samehost.json"))
+        ec, ep = (json.loads((R / f).read_text())["summary"] for f in ("e2e-cool-graviton4-c8g.xlarge-r1.json", "e2e-pip-graviton4-c8g.xlarge-r1.json"))
+    except (OSError, ValueError, KeyError):
+        return {"status": "pending"}
+    top = max(r["threads"] for r in c["rows"])
+    pc = {r["op"]: r["p50_ms"] for r in p["rows"] if r["threads"] == top}
+    cc = {r["op"]: r["p50_ms"] for r in c["rows"] if r["threads"] == top}
+    ops = [{"op": o, "label": lab, "cool_ms": round(cc[o], 3), "pip_ms": round(pc[o], 3), "ratio": round(pc[o] / cc[o], 2), "scope": f"single op, {top} threads"}
+           for o, lab in (("GaussianBlur", "blur"), ("dft", "dft"))]
+    ops.append({"op": "frequency_map", "label": "frequency map", "cool_ms": round(ec["stage_p50_ms"]["fmap"], 3), "pip_ms": round(ep["stage_p50_ms"]["fmap"], 3),
+                "ratio": round(ep["stage_p50_ms"]["fmap"] / ec["stage_p50_ms"]["fmap"], 2), "scope": "end-to-end stage on 210 FRED windows"})
+    return {"status": "ok", "instance": c["meta"]["instance_type"], "cool": c["meta"]["opencv"], "pip": p["meta"]["opencv"], "ops": ops,
+            "end_to_end": {"cool_p50_ms": round(ec["p50_ms"], 1), "pip_p50_ms": round(ep["p50_ms"], 1), "pip_faster_pct": round(100 * (ec["p50_ms"] / ep["p50_ms"] - 1))},
+            "files": ["bench/results/cool-graviton4-c8g.xlarge.json", "bench/results/pip-graviton4-c8g.xlarge-samehost.json",
+                      "bench/results/e2e-cool-graviton4-c8g.xlarge-r1.json", "bench/results/e2e-pip-graviton4-c8g.xlarge-r1.json"]}
+
+
 @router.get("/results")
 def results():
     fa = DATA / "false_alarms.json"
-    return {"false_alarms": json.loads(fa.read_text()) if fa.exists() else {"status": "pending"}, "bench": bench(),
+    return {"false_alarms": json.loads(fa.read_text()) if fa.exists() else {"status": "pending"}, "bench": bench(), "cool_vs_pip": cool_vs_pip(),
             "end_to_end": e2e(), "live_spectrum": freq is not None, "live_detector": Path(DET_PATH).exists()}
 
 

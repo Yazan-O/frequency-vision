@@ -706,6 +706,21 @@ async function slide5() {
     fa.append(cell(["i-camera"], "RGB", a.toLocaleString()), drop, cell(["i-camera", "i-sine"], "+ hum", b2.toLocaleString(), true));
     fa.title = `${f.rgb_only.note}; ${f.rgb_event.note}. ${f.source}`;
   } else fa.append(cell(["i-camera"], "RGB", "pending"), el("span"), cell(["i-camera", "i-sine"], "+ hum", "pending"));
+  const cp = d && d.cool_vs_pip, cb = $("coolbars");
+  if (cp && cp.status === "ok") {
+    const cmax = Math.max(...cp.ops.map((o) => o.ratio));
+    cp.ops.forEach((o) => {
+      const row = el("div", "bbrow"); row.title = `${o.op}: COOL ${o.cool_ms} ms, pip ${o.pip_ms} ms (${o.scope}, ${cp.instance})`;
+      const bars = el("div", "bars2"), g = el("div", "b g4"); g.style.width = (o.ratio / cmax * 100) + "%"; g.style.transform = "scaleX(0)";
+      const one = el("i", "one"); one.style.left = (100 / cmax) + "%"; bars.append(g, one);
+      row.append(el("span", "", o.label), bars, el("span", "r win", `${fmt(o.ratio, 2)}×`));
+      cb.append(row);
+    });
+    const e = cp.end_to_end;
+    $("coolnote").textContent = `Times faster under COOL ${cp.cool} than pip ${cp.pip}. End to end, pip is ${e.pip_faster_pct}% faster (${e.pip_p50_ms} vs ${e.cool_p50_ms} ms per window): the detector runs slower under COOL.`;
+    cb.setAttribute("aria-label", `COOL versus pip OpenCV on one ${cp.instance}: ${cp.ops.map((o) => `${o.label} ${o.ratio} times faster under COOL`).join(", ")}. End to end pip is ${e.pip_faster_pct}% faster. Source: ${cp.files.join(", ")}.`);
+  } else cb.append(el("div", "win5", "pending"));
+  if (ok) $("hl6").textContent = `${Math.round(100 * (1 - f.rgb_event.false_alarms / f.rgb_only.false_alarms))}% fewer false alarms, a pitch for each drone, and OpenCV 5 speed on Graviton4.`;
   const b = d && d.bench, bb = $("benchbars");
   if (!b || b.status !== "ok") { bb.append(el("div", "win5", "pending")); return; }
   const short = { connectedComponentsWithStats: "components", dnn_forward: "DNN", GaussianBlur: "blur", cvtColor: "cvtColor", resize: "resize", dft: "DFT" };
