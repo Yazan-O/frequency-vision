@@ -1,5 +1,7 @@
 import time
 
+import numpy as np
+
 from . import vision
 from .guard import Reject, iou
 
@@ -37,10 +39,33 @@ def auto_approver(seq, box, severity, question, now):
 
 
 class Toolbox:
-    def __init__(self, store, budget, approver=auto_approver):
+    def __init__(self, store, budget, approver=auto_approver, vision_mode="real", seed=0):
         self.store, self.budget, self.approver = store, budget, approver
+        self.vision_mode, self.rng = vision_mode, np.random.default_rng(seed)
         self.last_spec = []
         self.hum_boxes = []
+
+    def _measure(self, sl, box, t0, t1):
+        if self.vision_mode == "shuffle":
+            w, h = box[2] - box[0], box[3] - box[1]
+            x0, y0 = int(self.rng.integers(0, max(1, sl.width - w))), int(self.rng.integers(0, max(1, sl.height - h)))
+            return vision.box_spectrum(sl, [x0, y0, x0 + w, y0 + h], t0, t1)
+        r = vision.box_spectrum(sl, box, t0, t1)
+        if self.vision_mode == "blind":
+            r.update({"peak_hz": None, "snr": None, "mains_like": None, "verdict": "unavailable"})
+        return r
+
+    def _map(self, sl, t0, t1):
+        r = vision.frequency_map(sl, t0, t1)
+        if self.vision_mode == "blind":
+            r.update({"hum_pixels": None, "dominant_hz": None, "dominant_share": None, "hum_spots": []})
+        elif self.vision_mode == "shuffle":
+            for s in r.get("hum_spots", []):
+                b = s["box"]
+                w, h = b[2] - b[0], b[3] - b[1]
+                x0, y0 = int(self.rng.integers(0, max(1, sl.width - w))), int(self.rng.integers(0, max(1, sl.height - h)))
+                s["box"] = [x0, y0, x0 + w, y0 + h]
+        return r
 
     def _cap(self, sl, t0, t1):
         s = sl.window(t0, t1)
@@ -53,7 +78,7 @@ class Toolbox:
         for p in self.last_spec:
             if p["box"] == box and abs(p["t0"] - round(t0, 4)) < 1e-3 and abs(p["t1"] - round(t1, 4)) < 1e-3:
                 raise Reject("this exact window on this box was already measured; change length_ms, box or time")
-        r = vision.box_spectrum(sl, box, t0, t1)
+        r = self._measure(sl, box, t0, t1)
         r.update({"box": box, "t0": round(t0, 4), "t1": round(t1, 4)})
         prev = next((p for p in reversed(self.last_spec) if iou(p["box"], box) > 0.3), None)
         if prev is not None:
@@ -79,7 +104,7 @@ class Toolbox:
             r = self._spec(sl, a["box"], st.now - a["length_ms"] / 1000.0, st.now, st)
         elif name == "frequency_map":
             self._cap(sl, a["t0"], a["t1"])
-            r = vision.frequency_map(sl, a["t0"], a["t1"])
+            r = self._map(sl, a["t0"], a["t1"])
         elif name == "track":
             self._cap(sl, a["t0"], a["t1"])
             st.now = max(st.now, a["t1"])

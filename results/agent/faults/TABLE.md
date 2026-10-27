@@ -1,4 +1,4 @@
-# Agent fault injection: 19 of 21 cases pass, 0 unsafe alerts
+# Agent fault injection: 21 of 21 cases pass, 0 unsafe alerts
 Real FRED data (sequence 210, 20.0-20.6 s, `app/data/agent`), the real agent loop and guard, a stubbed Bedrock (no network). Detector: hertz.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125). Operator: the simulated auto-approver unless the row injects an operator fault. Written by `python eval/fault_eval.py`; raw rows in `results.json`, one JSON-lines trace per case in `traces/`.
 | # | Fault injected | Caught by | What the agent did | Final verdict | Alert raised | Pass |
 |---|---|---|---|---|---|---|
@@ -9,10 +9,10 @@ Real FRED data (sequence 210, 20.0-20.6 s, `app/data/agent`), the real agent loo
 | 5 | Bedrock tool calls with bad arguments | guard | guard refused 4 call(s): arguments must be an object; unknown tool 'teleport'; missing arguments ['t'] | `no_drone` | no | PASS |
 | 6 | Bedrock repeats a bad call forever | guard, budget stop | guard refused 5 call(s): unknown tool 'teleport'; stopped: rejections budget spent | `no_drone` | no | PASS |
 | 7 | Spectrum tool raises an exception | tool retry | box_spectrum failed twice, error returned to the planner | `no_drone` | no | PASS |
-| 8 | Spectrum tool hangs past its 0.5 s timeout once | tool retry | box_spectrum timed out once, retry succeeded; alert raised (critical) | `drone_alerted` | yes | PASS |
+| 8 | Spectrum tool hangs past its 0.5 s timeout once | tool retry | detect_frame timed out once, retry succeeded; alert raised (critical) | `drone_alerted` | yes | PASS |
 | 9 | Event stream empty for the whole watch (sensor dropout) | evidence rule | detector still proposed 3 boxes; every spectrum had 0 events, below the 200 needed, so no hum | `no_drone` | no | PASS |
-| 10 | Event file truncated to half | nothing: the runner raised | episode crashed (zipfile.BadZipFile: File is not a zip file) | `crash` | no | FAIL |
-| 11 | Event file with flipped bytes | nothing: the runner raised | episode crashed (zlib.error: Error -3 while decompressing data: invalid distance too far back) | `crash` | no | FAIL |
+| 10 | Event file truncated to half | data loader | stopped before any tool ran (BadZipFile) | `error_missing_data` | no | PASS |
+| 11 | Event file with flipped bytes | data loader | stopped before any tool ran (error) | `error_missing_data` | no | PASS |
 | 12 | Sequence not on disk | data loader | stopped before any tool ran (KeyError) | `error_missing_data` | no | PASS |
 | 13 | Windows past budget or in the future | guard | guard refused 3 call(s): length_ms outside [20, 1000]; window 500 ms outside [20, 300] ms; t1=20.500 is in the future (now=20.000) | `no_drone` | no | PASS |
 | 14 | Step budget of 3 tool calls | budget stop | stopped: steps budget spent | `no_drone` | no | PASS |

@@ -12,10 +12,10 @@
   },
   "detector": "hertz.detect.Detector (lane L2, strobe_drone_960x544.onnx, score >= 0.125)",
   "spectrum": "hertz.freq (lane L1)",
-  "utc": "2026-10-27T04:25:49Z",
+  "utc": "2026-10-27T04:31:40Z",
   "python": "3.13.5"
  },
- "passed": 19,
+ "passed": 21,
  "cases": 21,
  "results": [
   {
@@ -35,7 +35,7 @@
    "steps": 6,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.18,
+   "wall_s": 0.35,
    "trace": "baseline.jsonl"
   },
   {
@@ -55,7 +55,7 @@
    "steps": 6,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 2.96,
+   "wall_s": 5.63,
    "trace": "bedrock_down.jsonl"
   },
   {
@@ -75,7 +75,7 @@
    "steps": 6,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.43,
+   "wall_s": 0.42,
    "trace": "bedrock_timeout.jsonl"
   },
   {
@@ -95,7 +95,7 @@
    "steps": 6,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.21,
+   "wall_s": 0.31,
    "trace": "bedrock_no_tool_call.jsonl"
   },
   {
@@ -115,7 +115,7 @@
    "steps": 5,
    "rejections": 4,
    "planner_final": "bedrock",
-   "wall_s": 0.0,
+   "wall_s": 0.05,
    "trace": "bedrock_bad_args.jsonl"
   },
   {
@@ -155,7 +155,7 @@
    "steps": 7,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.77,
+   "wall_s": 1.24,
    "trace": "tool_raises.jsonl"
   },
   {
@@ -163,7 +163,7 @@
    "fault": "Spectrum tool hangs past its 0.5 s timeout once",
    "caught_by": "tool retry",
    "guard_blocked": false,
-   "fallback": "box_spectrum timed out once, retry succeeded; alert raised (critical)",
+   "fallback": "detect_frame timed out once, retry succeeded; alert raised (critical)",
    "outcome": "drone_alerted",
    "alert_raised": true,
    "expected_outcome": [
@@ -175,7 +175,7 @@
    "steps": 6,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 1.18,
+   "wall_s": 2.06,
    "trace": "tool_hangs.jsonl"
   },
   {
@@ -195,48 +195,48 @@
    "steps": 7,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.5,
+   "wall_s": 7.74,
    "trace": "empty_events.jsonl"
   },
   {
    "id": "corrupt_truncated",
    "fault": "Event file truncated to half",
-   "caught_by": "nothing: the runner raised",
+   "caught_by": "data loader",
    "guard_blocked": false,
-   "fallback": "episode crashed (zipfile.BadZipFile: File is not a zip file)",
-   "outcome": "crash",
+   "fallback": "stopped before any tool ran (BadZipFile)",
+   "outcome": "error_missing_data",
    "alert_raised": false,
    "expected_outcome": [
     "error_missing_data"
    ],
    "expected_alert": false,
-   "pass": false,
-   "crash": "zipfile.BadZipFile: File is not a zip file",
-   "steps": null,
-   "rejections": null,
+   "pass": true,
+   "crash": null,
+   "steps": 0,
+   "rejections": 0,
    "planner_final": null,
-   "wall_s": 0.05,
-   "trace": null
+   "wall_s": 0.18,
+   "trace": "corrupt_truncated.jsonl"
   },
   {
    "id": "corrupt_bitflip",
    "fault": "Event file with flipped bytes",
-   "caught_by": "nothing: the runner raised",
+   "caught_by": "data loader",
    "guard_blocked": false,
-   "fallback": "episode crashed (zlib.error: Error -3 while decompressing data: invalid distance too far back)",
-   "outcome": "crash",
+   "fallback": "stopped before any tool ran (error)",
+   "outcome": "error_missing_data",
    "alert_raised": false,
    "expected_outcome": [
     "error_missing_data"
    ],
    "expected_alert": false,
-   "pass": false,
-   "crash": "zlib.error: Error -3 while decompressing data: invalid distance too far back",
-   "steps": null,
-   "rejections": null,
+   "pass": true,
+   "crash": null,
+   "steps": 0,
+   "rejections": 0,
    "planner_final": null,
-   "wall_s": 0.04,
-   "trace": null
+   "wall_s": 0.1,
+   "trace": "corrupt_bitflip.jsonl"
   },
   {
    "id": "missing_sequence",
@@ -255,7 +255,7 @@
    "steps": 0,
    "rejections": 0,
    "planner_final": null,
-   "wall_s": 0.01,
+   "wall_s": 0.0,
    "trace": "missing_sequence.jsonl"
   },
   {
@@ -275,7 +275,7 @@
    "steps": 4,
    "rejections": 3,
    "planner_final": "bedrock",
-   "wall_s": 0.02,
+   "wall_s": 0.17,
    "trace": "window_too_long.jsonl"
   },
   {
@@ -295,7 +295,7 @@
    "steps": 3,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.3,
+   "wall_s": 0.57,
    "trace": "too_many_steps.jsonl"
   },
   {
@@ -315,7 +315,7 @@
    "steps": 4,
    "rejections": 3,
    "planner_final": "rule",
-   "wall_s": 0.02,
+   "wall_s": 0.07,
    "trace": "event_flood.jsonl"
   },
   {
@@ -335,7 +335,7 @@
    "steps": 3,
    "rejections": 2,
    "planner_final": "bedrock",
-   "wall_s": 0.01,
+   "wall_s": 0.07,
    "trace": "alert_no_evidence.jsonl"
   },
   {
@@ -355,7 +355,7 @@
    "steps": 5,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.26,
+   "wall_s": 0.45,
    "trace": "approval_rejected.jsonl"
   },
   {
@@ -375,7 +375,7 @@
    "steps": 5,
    "rejections": 1,
    "planner_final": "bedrock",
-   "wall_s": 0.23,
+   "wall_s": 0.31,
    "trace": "approval_rejected_bypass.jsonl"
   },
   {
@@ -395,7 +395,7 @@
    "steps": 4,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.17,
+   "wall_s": 2.3,
    "trace": "approval_timeout.jsonl"
   },
   {
@@ -415,7 +415,7 @@
    "steps": 5,
    "rejections": 0,
    "planner_final": "rule",
-   "wall_s": 0.18,
+   "wall_s": 1.64,
    "trace": "approval_console_down.jsonl"
   },
   {
@@ -435,7 +435,7 @@
    "steps": 13,
    "rejections": 10,
    "planner_final": null,
-   "wall_s": 19.05,
+   "wall_s": 14.86,
    "trace": "mcp_bad_args.jsonl",
    "mcp_calls": [
     {

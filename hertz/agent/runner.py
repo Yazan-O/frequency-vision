@@ -1,5 +1,7 @@
 import json
 import time
+import zipfile
+import zlib
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutTimeout
 from datetime import datetime, timezone
 from pathlib import Path
@@ -44,11 +46,11 @@ def _exec(pool, toolbox, name, a, st, timeout_s):
     return {"error": last}, 2, last
 
 
-def run_episode(scn, store, planner_name, trace_path, budget=None, timeout_s=8.0, model=None, approver=None, client=None):
+def run_episode(scn, store, planner_name, trace_path, budget=None, timeout_s=8.0, model=None, approver=None, client=None, vision_mode="real", seed=0):
     budget = budget or Budget()
     try:
         sl = store.get(scn["seq"])
-    except (KeyError, OSError, ValueError) as e:
+    except (KeyError, OSError, ValueError, zipfile.BadZipFile, zlib.error) as e:
         tr = Trace(trace_path, scn["id"])
         tr.log("missing_data", scenario=scn, error=f"{type(e).__name__}: {e}")
         summary = {"verdict": "error_missing_data", "alerts": [], "steps": 0, "rejections": 0, "planner_final": None,
@@ -57,7 +59,7 @@ def run_episode(scn, store, planner_name, trace_path, budget=None, timeout_s=8.0
         tr.close()
         return summary, tr.rows
     st = State(seq=str(scn["seq"]), t_start=float(scn["t0"]), t_end=float(scn["t1"]), width=sl.width, height=sl.height)
-    tb = Toolbox(store, budget) if approver is None else Toolbox(store, budget, approver)
+    tb = Toolbox(store, budget, vision_mode=vision_mode, seed=seed) if approver is None else Toolbox(store, budget, approver, vision_mode=vision_mode, seed=seed)
     tr = Trace(trace_path, scn["id"])
     kw = {}
     if planner_name == "bedrock":
@@ -72,7 +74,7 @@ def run_episode(scn, store, planner_name, trace_path, budget=None, timeout_s=8.0
         tr.log("fallback", reason=f"planner init failed: {type(e).__name__}: {str(e)[:200]}", to="rule")
         planner, active, usage = RulePlanner(st), "rule", None
     tr.log("start", scenario=scn, planner=active, model=getattr(planner, "model", None), budget=budget.__dict__,
-           vision_source=dict(vision.SOURCE), hot_pixels_masked=len(sl.hot), now=st.now)
+           vision_source=dict(vision.SOURCE), vision_mode=vision_mode, hot_pixels_masked=len(sl.hot), now=st.now)
     t_ep = time.perf_counter()
     results, planner_failures = [], 0
     with ThreadPoolExecutor(max_workers=2) as pool:

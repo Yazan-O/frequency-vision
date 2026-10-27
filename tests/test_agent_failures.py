@@ -72,3 +72,22 @@ def test_unanswered_approval_ends_unconfirmed_without_alert(store, tmp_path):
     s, rows = run_episode(SCN, store, "bedrock", tmp_path / "t.jsonl", Budget(), client=ScriptedClient(calls), approver=timeout)
     tools = [r["tool"] for r in rows if r["kind"] == "step"]
     assert s["verdict"] == "unconfirmed_waiting_for_operator" and not s["alerts"] and tools == ["ask_human"]
+
+
+def test_rejected_approval_blocks_any_alert_on_that_box(store, tmp_path):
+    box = [100, 100, 150, 150]
+    calls = [("ask_human", {"seq": "111", "box": box, "severity": "critical", "question": "alert?"}),
+             ("raise_alert", {"seq": "111", "box": box, "severity": "warning", "reason": "operator said no"}),
+             ("finish", {"verdict": "no_drone", "reason": "rejected"})]
+    reject = lambda *a: {"approved": False, "responder": "operator: no"}
+    s, rows = run_episode(SCN, store, "bedrock", tmp_path / "t.jsonl", Budget(), client=ScriptedClient(calls), approver=reject)
+    st = [r for r in rows if r["kind"] == "step" and r["tool"] == "raise_alert"][0]
+    assert st["guard"].startswith("rejected: the operator rejected") and not s["alerts"] and s["verdict"] == "no_drone"
+
+
+def test_blind_vision_removes_the_verdict(store, tmp_path):
+    calls = [("box_spectrum", {"seq": "111", "box": [100, 100, 150, 150], "t0": 24.9, "t1": 25.0}),
+             ("finish", {"verdict": "no_drone", "reason": "test"})]
+    s, rows = run_episode(SCN, store, "bedrock", tmp_path / "t.jsonl", Budget(), client=ScriptedClient(calls), vision_mode="blind")
+    r = [r for r in rows if r["kind"] == "step" and r["tool"] == "box_spectrum"][0]["result"]
+    assert r["verdict"] == "unavailable" and r["snr"] is None and r["peak_hz"] is None

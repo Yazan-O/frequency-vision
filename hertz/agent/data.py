@@ -12,9 +12,9 @@ class Slice:
     def __init__(self, folder):
         self.folder = Path(folder)
         self.meta = json.loads((self.folder / "meta.json").read_text())
-        z = np.load(self.folder / "events.npz")
-        self.x, self.y, self.p = z["x"], z["y"], z["p"]
-        self.t = z["t"].astype(np.int64)
+        with np.load(self.folder / "events.npz") as z:
+            self.x, self.y, self.p = z["x"], z["y"], z["p"]
+            self.t = z["t"].astype(np.int64)
         self.origin = float(self.meta["origin_s"])
         self.t_lo, self.t_hi = float(self.meta["t_lo"]), float(self.meta["t_hi"])
         self.width, self.height = int(self.meta["width"]), int(self.meta["height"])

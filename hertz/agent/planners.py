@@ -78,7 +78,10 @@ class RulePlanner(GeneratorPlanner):
                 ap = yield ("ask_human", {"seq": seq, "box": tr["box"], "severity": "critical",
                                           "question": f"Drone hum {sp['peak_hz']} Hz (snr {sp['snr']}) at {tr['box']}. Approve critical alert?"},
                             "critical alert needs approval")
-                sev = "critical" if _ok(ap) and ap.get("approved") else "warning"
+                if not (_ok(ap) and ap.get("approved")):
+                    yield ("finish", {"verdict": "no_drone", "reason": "operator did not approve the alert"}, "human control")
+                    return
+                sev = "critical"
                 yield ("raise_alert", {"seq": seq, "box": tr["box"], "severity": sev,
                                        "reason": f"blade-pass {sp['peak_hz']} Hz snr {sp['snr']}, tracked {tr['displacement_px']} px"},
                        "confirmed")
@@ -119,7 +122,7 @@ Decide what to look at next from what the tools return:
 - verdict ambiguous: do not alert and do not drop it; call request_window on the same box with a longer window (e.g. 300 then 1000 ms) for finer resolution and more events, or a tighter one if the target moves fast.
 - verdict none on every candidate: move on in time (detect_frame later) or use frequency_map to search for a hum the detector missed.
 - raise_alert is refused unless that box (or the start box of a track ending there) had a hum verdict in the last 1.5 s. Ambiguous evidence never justifies an alert: re-check, or move on.
-- A critical alert needs ask_human approval on the same box first; warning does not.
+- A critical alert needs ask_human approval on the same box first; warning does not. If the operator rejects, raise no alert on that box (the guard refuses it).
 - Do not repeat a measurement already made (same box, same window).
 - Finish with drone_alerted after an alert, or no_drone when the watch window ends without a confirmed hum. Do not alert on non-humming movers.
 Budgets: at most {max_steps} tool calls; windows {min_w}-{max_w} ms; frequency_map at most {max_map} ms. Call exactly one tool per turn. Keep any text before the tool call to one short sentence of reasoning."""

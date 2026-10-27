@@ -1,5 +1,6 @@
 import math
 import os
+import threading
 from pathlib import Path
 
 import cv2 as cv
@@ -96,9 +97,15 @@ def frequency_map(sl, t0, t1):
 DNN_PATH = os.environ.get("HERTZ_DETECTOR_ONNX", str(Path(__file__).resolve().parents[3] / "build" / "models" / "strobe_drone_960x544.onnx"))
 DNN_CONF = 0.125
 _DNN = {"net": None, "tried": False, "error": None}
+_LOCK = threading.Lock()
 
 
 def _dnn():
+    with _LOCK:
+        return _dnn_load()
+
+
+def _dnn_load():
     if not _DNN["tried"]:
         _DNN["tried"] = True
         try:
@@ -134,7 +141,8 @@ def detect(sl, t, win=0.033, k=5):
     net = _dnn()
     img, ft = sl.frame(t) if net is not None else (None, None)
     if net is not None and img is not None:
-        b, s, _ = net.detect(img)
+        with _LOCK:
+            b, s, _ = net.detect(img)
         z = sl.width / img.shape[1]
         dets = [{"box": [int(v * z) for v in bb], "score": round(float(sc), 3), "label": "drone (dnn)"} for bb, sc in zip(b, s)]
         dets.sort(key=lambda d: -d["score"])

@@ -146,6 +146,8 @@ def check(name, args, st, budget):
     if name == "raise_alert":
         if len(st.alerts) >= budget.max_alerts:
             raise Reject("alert budget spent")
+        if any(not ap["approved"] and iou(ap["box"], a["box"]) > 0.3 for ap in st.approvals):
+            raise Reject("the operator rejected an alert on this box; no alert may be raised on it")
         if a["severity"] == "critical" and not any(ap["approved"] and iou(ap["box"], a["box"]) > 0.3 and ap["now"] >= st.now - 0.5 for ap in st.approvals):
             raise Reject("critical alert needs an approved ask_human on this box first")
     if name == "finish" and a["verdict"] not in VERDICTS:
