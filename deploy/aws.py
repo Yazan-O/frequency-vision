@@ -261,7 +261,7 @@ def main():
         sp.add_parser(n).add_argument("--name", required=True)
     sp.add_parser("cool-ami")
     cb = sp.add_parser("cool-bench")
-    cb.add_argument("--name", default="strobe-cool")
+    cb.add_argument("--name", default="strobe-cool-bench")
     cb.add_argument("--out", default=str(REPO / "bench" / "results"))
     cb.add_argument("--keep", action="store_true")
     be = sp.add_parser("bench")
