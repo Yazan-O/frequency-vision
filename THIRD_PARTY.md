@@ -43,7 +43,7 @@ Detector weights: trained with Ultralytics (AGPL-3.0), fine-tuned from its YOLOv
 
 | Dataset | Licence | How it is used |
 |---|---|---|
-| FRED, huggingface.co/datasets/GabrieleMagrini/FRED | Apache-2.0, as stated on its Hugging Face card (its GitHub repository has no licence file) | Training, thresholds and every evaluation number. Seven short demo clips from the test split (sequences 210, 138, 64, 202, 93, 195 and 20) ship in `app/data` and `app/static/data` |
+| FRED, huggingface.co/datasets/GabrieleMagrini/FRED | Apache-2.0, as stated on its Hugging Face card (its GitHub repository has no licence file) | Training, thresholds and every evaluation number. Six short demo clips from the test split (sequences 210, 138, 64, 202, 93 and 230) ship in `app/data` and `app/static/data` |
 | EEPPR (github.com/JackPieCZ/EEPPR, arXiv:2408.06899) | GPL-3.0 | Known-frequency check only. Downloaded at run time by the user and never committed or redistributed |
 | Prophesee sample recording `monitoring_40_50hz` (docs.prophesee.ai) | CC0, per the Prophesee datasets page | Mains-frequency check only. Downloaded at run time, not committed |
 | OpenCV sample image `fruits.jpg` (github.com/opencv/opencv, samples/data) | OpenCV repository sample data | Benchmark input, fetched at run time by `bench/bench.py`, not redistributed |
@@ -56,3 +56,4 @@ Detector weights: trained with Ultralytics (AGPL-3.0), fine-tuned from its YOLOv
 | Amazon Bedrock, Claude Sonnet 4.6 (`us.anthropic.claude-sonnet-4-6`) | AWS Service Terms and the model provider's terms; called through the Bedrock API, nothing redistributed |
 | COOL, Cloud Optimized OpenCV for AWS Graviton4 (AWS Marketplace) | Commercial Marketplace licence; runs the live endpoint and the benchmark on our own subscribed instances, nothing redistributed |
 | sslip.io | Free wildcard DNS service for the endpoint host name |
+| Fonts Archivo, Unbounded and JetBrains Mono (Google Fonts; the README logo embeds Unbounded SemiBold outlines in `docs/figures/wordmark.json`) | SIL Open Font License 1.1 |
