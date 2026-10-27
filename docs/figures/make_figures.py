@@ -19,7 +19,7 @@ HUM, INK, GREY, SOFT, BLUE = "#FF5A1F", "#1E1E1E", "#8A847C", "#DDD8D2", "#2E5AA
 PALE, DEEP, PAPER = "#FFB596", "#B8400F", "#F3F1EE"
 DEMO, DEMO_T, DEMO_FRAME = "clear_mini2_seq202", 1.767, 14
 plt.rcParams.update({
-    "font.family": "DejaVu Sans", "font.size": 10, "axes.edgecolor": INK, "axes.labelcolor": INK,
+    "font.family": ["Inter", "Arial", "DejaVu Sans"], "font.size": 10, "axes.edgecolor": INK, "axes.labelcolor": INK,
     "xtick.color": INK, "ytick.color": INK, "axes.spines.top": False, "axes.spines.right": False,
     "axes.titleweight": "bold", "axes.titlesize": 11, "axes.titlelocation": "left", "figure.facecolor": "white",
     "savefig.facecolor": "white", "legend.frameon": False, "axes.grid": False, "figure.titleweight": "bold",
@@ -124,7 +124,7 @@ def cloud(ax, w, box, color, title):
     ax.set_box_aspect((2.2, 1, 0.75), zoom=1.3)
     ax.set_title(title, fontsize=9.5, loc="center", fontweight="bold", y=0.93)
     for a in (ax.xaxis, ax.yaxis, ax.zaxis):
-        a.pane.set_facecolor(PAPER)
+        a.pane.set_facecolor("white")
         a.pane.set_edgecolor(SOFT)
         a._axinfo["grid"]["linewidth"] = 0
     ax.view_init(elev=18, azim=-72)
@@ -161,6 +161,9 @@ def fig_events():
     return {"drone": [rd["peak_hz"], rd["snr"]], "bg": [rb["peak_hz"], rb["snr"]], "bg_box": bg}
 
 
+MODEL_NAME = {"DarwinFPV cineape20ger": "DarwinFPV Cineape20 (GER)", "DarwinFPV cineape20": "DarwinFPV Cineape20"}
+
+
 def fig_models():
     pm = load("results/engine/per_model_youden.json")
     pp = {}
@@ -176,7 +179,7 @@ def fig_models():
         ax.text(r["iqr"][1] + 12, i, f"{r['median_hz']:.0f} Hz   n = {r['n_boxes']:,} boxes, {r['share_above_7.86'] * 100:.1f}% scored", va="center", fontsize=8.5)
         if m in pp:
             ax.plot(pp[m], i, "D", mfc="white", mec=INK, mew=1.6, ms=8, zorder=4)
-    ax.set_yticks(range(len(rows)), [m for m, _ in rows])
+    ax.set_yticks(range(len(rows)), [MODEL_NAME.get(m, m) for m, _ in rows])
     ax.plot([], [], "o", color=HUM, label="Frequency Vision median (bar: IQR), FRED test")
     ax.plot([], [], "D", mfc="white", mec=INK, label="PropPulse / DENSE-CUAS published median")
     ax.set(xlabel="blade-pass frequency (Hz)", xlim=(150, 1150))
@@ -408,11 +411,12 @@ def fig_hero():
     c, ev, origin, fr, box, other, t0, t1 = demo_window()
     img = cv.cvtColor(cv.imread(str(ROOT / "app/static" / fr["src"])), cv.COLOR_BGR2RGB)
     s = img.shape[1] / c["width"]
+    other = busiest_patch(ev, box, t0, t1)
     rd, ro = freq.box_spectrum(ev, box, t0, t1), freq.box_spectrum(ev, other, t0, t1)
     hz = c["hum"]["median_hz"]
-    LIGHT = "#F3F1EE"
+    LIGHT = INK
     fig = plt.figure(figsize=(10, 4.375), dpi=160)
-    fig.patch.set_facecolor(INK)
+    fig.patch.set_facecolor("white")
     ax = fig.add_axes([0.03, 0.2, 0.48, 0.48 * 10 / 4.375 * img.shape[0] / img.shape[1]])
     ax.imshow(img)
     x0, y0, x1, y1 = [v * s for v in box]
@@ -433,7 +437,7 @@ def fig_hero():
     fig.text(0.03, 0.9, "What a 30 fps camera sees", color=LIGHT, fontsize=15, fontweight="bold")
     fig.text(0.03, 0.835, "A drone or a bird? The rotors are a blur.", color=GREY, fontsize=10.5)
     bx = fig.add_axes([0.6, 0.24, 0.37, 0.52])
-    bx.set_facecolor(INK)
+    bx.set_facecolor("white")
     for r, col, lw in ((ro, GREY, 1.4), (rd, HUM, 2.2)):
         k = (r["freqs"] >= 50) & (r["freqs"] <= 1000)
         band = (r["freqs"] >= freq.BAND[0]) & (r["freqs"] <= freq.BAND[1])
@@ -456,7 +460,7 @@ def fig_hero():
     fig.text(0.03, 0.03, f"Real FRED test sequence {c['seq']}, DJI Mini 2. Spectrum of 100 ms of events in the drone box (cv.calcHist + cv.dft): "
              f"peak {rd['peak_hz']:.1f} Hz, score {rd['snr']:,.0f}.\nGrey: busiest patch with no drone, score {ro['snr']:,.0f}. "
              f"Clip median {hz:.0f} Hz over {c['hum']['n_windows']} windows of 100 ms.", color=GREY, fontsize=7.6, linespacing=1.5)
-    fig.savefig(OUT / "hero.png", dpi=160, facecolor=INK)
+    fig.savefig(OUT / "hero.png", dpi=160, facecolor="white")
     plt.close(fig)
     print("wrote hero.png", round(rd["peak_hz"], 1), round(rd["snr"]), round(ro["peak_hz"], 1), round(ro["snr"], 1))
 
