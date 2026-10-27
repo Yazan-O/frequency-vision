@@ -489,7 +489,7 @@ COOL speeds up the event engine's own operations. Resize and the DNN forward pas
 
 ## Reproduce
 
-Python 3.12 or 3.13, pinned dependencies, pip OpenCV 5.0.0 locally. The demo clips ship in `app/data` and `app/static/data`, so the app needs no download.
+Python 3.12 or 3.13, pinned dependencies, pip OpenCV 5.0.0 locally. The demo clips ship in `app/data` and `app/static/data`, so the app needs no download. The DNN detector model is not in the repo: put it at `build/models/strobe_drone_960x544.onnx` beside the repo folder, or point `HERTZ_DETECTOR_ONNX` at it ([`THIRD_PARTY.md`](THIRD_PARTY.md) shows how to retrain and export it). Without it, the app runs the event-blob fallback.
 
 ```bash
 pip install -r requirements-dev.txt
@@ -568,7 +568,7 @@ We found no prior system that combines an RGB proposer, an event-frequency confi
 
 ## Licences
 
-Apache-2.0, see [`LICENSE`](LICENSE). Third-party code, models and data are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). FRED is used under Apache-2.0 per its Hugging Face card. EEPPR is GPL-3.0 and is downloaded at run time, never committed. The Prophesee sample recording is CC0. The detector weights were trained with Ultralytics (AGPL-3.0) in a separate training environment and are not distributed; the runtime uses only OpenCV.
+Copyright 2026 Mohamad Yazan Sadoun. Apache-2.0, see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). Third-party code, models and data are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). FRED is used under Apache-2.0 per its Hugging Face card. EEPPR is GPL-3.0 and is downloaded at run time, never committed. The Prophesee sample recording is CC0. The detector weights were trained with Ultralytics (AGPL-3.0) in a separate training environment and are not distributed; the runtime uses only OpenCV.
 
 ---
 
